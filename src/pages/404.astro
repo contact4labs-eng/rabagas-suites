@@ -1,0 +1,80 @@
+---
+/**
+ * 404 — page-not-found.
+ *
+ * Astro's static-prerender mode emits this as `dist/client/404.html`,
+ * which @astrojs/node serves automatically with a 404 status when no
+ * route matches.
+ *
+ * Locale: a 404 by definition has no matched route, so we can't infer
+ * the user's preferred locale from the URL. We render in EL (the site
+ * default) and offer EL/EN/FR home-links so the visitor can re-orient
+ * regardless of language. No fancy schema here — 404s shouldn't be
+ * indexed and don't need rich-results markup.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { locales, getLocalizedPath } from '../lib/i18n';
+import type { Locale } from '../lib/i18n';
+
+const locale: Locale = 'el';
+
+const homeLabels: Record<Locale, string> = {
+  el: 'Επιστροφή στην αρχική',
+  en: 'Return to home',
+  fr: 'Retour à l’accueil',
+};
+
+const messages: Record<Locale, { heading: string; body: string }> = {
+  el: {
+    heading: 'Η σελίδα δεν βρέθηκε.',
+    body: 'Η διεύθυνση που ζητήσατε δεν υπάρχει. Επιστρέψτε στην αρχική και ξεκινήστε ξανά από εκεί.',
+  },
+  en: {
+    heading: 'Page not found.',
+    body: 'The address you requested doesn’t exist. Return home and start again from there.',
+  },
+  fr: {
+    heading: 'Page introuvable.',
+    body: 'L’adresse que vous avez demandée n’existe pas. Revenez à l’accueil pour repartir de là.',
+  },
+};
+---
+
+<BaseLayout
+  title="404 — Rabagas Suites"
+  description="Page not found"
+  locale={locale}
+>
+  <section class="flex min-h-svh flex-col items-center justify-center bg-cream px-5 py-32 text-center lg:px-8">
+    <div class="mx-auto max-w-xl">
+      <span class="label-uppercase mb-6 block text-stone-500">Rabagas Suites</span>
+      <h1 class="font-heading text-[clamp(3rem,8vw,5.5rem)] font-light leading-[0.95] text-ink">
+        404
+      </h1>
+      <hr class="mx-auto mt-8 w-12 border-t border-stone-300" />
+
+      {/* Trilingual stack — EL first (site default), then EN, then FR.
+          Each block links to its locale's homepage so the visitor can
+          continue in their preferred language. */}
+      <div class="mt-12 space-y-10">
+        {locales.map((loc) => (
+          <div lang={loc}>
+            <h2 class="font-heading text-2xl font-light text-ink md:text-3xl">
+              {messages[loc].heading}
+            </h2>
+            <p class="mx-auto mt-3 max-w-md text-sm leading-[1.7] text-stone-500 md:text-base">
+              {messages[loc].body}
+            </p>
+            <a
+              href={getLocalizedPath('/', loc)}
+              class="mt-5 inline-flex h-11 items-center rounded-none bg-charcoal px-7 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-ink"
+              style="text-decoration: none;"
+            >
+              {homeLabels[loc]}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

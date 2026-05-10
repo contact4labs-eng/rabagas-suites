@@ -5,8 +5,9 @@ import Footer from '../components/layout/Footer.astro';
 import MobileBookingBar from '../components/layout/MobileBookingBar.astro';
 import Lightbox from '../components/ui/Lightbox.astro';
 import type { Locale } from '../lib/i18n';
-import { getAlternates, getLocalizedPath, stripLocale } from '../lib/i18n';
+import { getAlternates, getLocalizedPath, stripLocale, locales } from '../lib/i18n';
 import { propertyImages } from '../data/images';
+import { buildHotelSchema, BCP47 } from '../lib/schema';
 
 interface Props {
   title: string;
@@ -14,9 +15,24 @@ interface Props {
   locale: Locale;
   ogImage?: string;
   canonicalPath?: string;
+  /** Open Graph type. Defaults to "website"; pages emitting Article schema
+   *  (Our Story) should pass "article". */
+  ogType?: 'website' | 'article';
+  /** Page-specific JSON-LD blocks (BreadcrumbList, Suite, Article).
+   *  BaseLayout emits the property-level Hotel block universally; pages
+   *  pass their own schema objects in this array to be rendered alongside. */
+  pageSchemas?: Array<Record<string, unknown>>;
 }
 
-const { title, description, locale, ogImage, canonicalPath } = Astro.props;
+const {
+  title,
+  description,
+  locale,
+  ogImage,
+  canonicalPath,
+  ogType = 'website',
+  pageSchemas = [],
+} = Astro.props;
 
 const currentPath = Astro.url.pathname;
 const canonical = canonicalPath
@@ -26,11 +42,20 @@ const alternates = getAlternates(currentPath);
 const xDefaultUrl = `https://rabagas-suites.com${getLocalizedPath(stripLocale(currentPath), 'el')}`;
 const og = ogImage || '/og-image.webp';
 
+// OG locale codes (underscore-separated, used by Open Graph). BCP-47 variants
+// for the same locales live in src/lib/schema.ts as the BCP47 map.
 const ogLocaleMap: Record<Locale, string> = {
   el: 'el_GR',
   en: 'en_US',
   fr: 'fr_FR',
 };
+
+// Phase 10 — alternate OG locales (every locale except the active one).
+// Helps Facebook/Twitter cluster the multilingual pages as variants of one
+// canonical entity.
+const ogLocaleAlternates = locales
+  .filter((loc) => loc !== locale)
+  .map((loc) => ogLocaleMap[loc]);
 
 const skipLinkText: Record<Locale, string> = {
   el: 'Μετάβαση στο περιεχόμενο',
@@ -122,32 +147,40 @@ const heroPreloadSrcset = isHomepage
     ))}
     <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <!-- Open Graph (Phase 10: og:type per page, locale alternates,
+         ogImage absolute URL preferred for FB scraper compat) -->
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={og} />
+    <meta property="og:image" content={og.startsWith('http') ? og : `https://rabagas-suites.com${og}`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocaleMap[locale]} />
+    {ogLocaleAlternates.map((altLocale) => (
+      <meta property="og:locale:alternate" content={altLocale} />
+    ))}
     <meta property="og:site_name" content="Rabagas Suites" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={og} />
+    <meta name="twitter:image" content={og.startsWith('http') ? og : `https://rabagas-suites.com${og}`} />
 
-    <!-- Self-hosted Latin font subsets — preload for the LCP wordmark
+    <!-- Self-hosted font subsets — preload for the LCP wordmark
          (Cormorant Garamond 400) and primary body text (Inter 400).
-         The @font-face declarations are also INLINED below so the
-         browser can associate the preloaded woff2 with the @font-face
-         immediately, without waiting for the main CSS file (65 KB) to
-         arrive. The same declarations live in src/styles/global.css for
-         the cases where the inline style is suppressed (e.g. CSP); the
-         duplicate is harmless. The Google Fonts <link> below still ships
-         for italic/300/500 weights and the Greek subset on EL pages. -->
+         The @font-face declarations are INLINED below so the browser
+         can associate the preloaded woff2 with the @font-face
+         immediately, without waiting for the main CSS file. Phase 10:
+         Greek subset for Inter is also self-hosted; Cormorant has no
+         Greek subset on Google Fonts so EL headlines fall back to the
+         OS serif (unchanged from the live-site behaviour). -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-400-latin.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-400-latin.woff2" crossorigin />
+    {locale === 'el' && (
+      <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-400-greek.woff2" crossorigin />
+    )}
     <style is:inline>
       /* Cormorant Garamond — the same Latin woff2 covers weights 300 + 400
          (variable font internals on Google's CDN; we self-host one file
@@ -209,6 +242,37 @@ const heroPreloadSrcset = isHomepage
         src: url('/fonts/inter-400-latin.woff2') format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
       }
+      /* Inter Greek subset (Phase 10) — covers Modern Greek body copy on
+         EL pages. Same file serves all 3 weights via variable-font internals.
+         The unicode-range mirrors Google Fonts' /* greek */ subset exactly.
+         Cormorant Garamond does NOT ship a Greek subset on Google Fonts —
+         Greek headlines fall back to the OS serif (Georgia or system),
+         which has been the rendering on the live site since launch and
+         is not changed by Phase 10. */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-display: swap;
+        src: url('/fonts/inter-400-greek.woff2') format('woff2');
+        unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('/fonts/inter-400-greek.woff2') format('woff2');
+        unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url('/fonts/inter-400-greek.woff2') format('woff2');
+        unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+      }
     </style>
 
     {heroPreloadSrcset && (
@@ -221,55 +285,31 @@ const heroPreloadSrcset = isHomepage
       />
     )}
 
-    {/* Google Fonts only ships on the EL locale (it carries the Greek
-        subset for body copy). EN and FR pages are entirely self-hosted
-        — see the inline @font-face declarations above. The print-media
-        deferral keeps the stylesheet off the render-blocking path. */}
-    {locale === 'el' && (
-      <>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
-          rel="stylesheet"
-          media="print"
-          onload="this.media='all'"
-        />
-        <noscript>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
-            rel="stylesheet"
-          />
-        </noscript>
-      </>
-    )}
+    {/* Phase 10: Google Fonts <link> removed entirely — all locales use
+        the self-hosted Latin + Greek subsets declared above. Cormorant
+        Garamond does not ship a Greek subset on Google Fonts, so EL
+        Greek headlines render in the OS serif fallback (Georgia /
+        system) — unchanged from the live-site rendering since launch. */}
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": "Rabagas Suites",
-      "description": "Heritage luxury suites in the heart of Apollonia, Sifnos, Greece",
-      "url": "https://rabagas-suites.com",
-      "telephone": "+302117159002",
-      "email": "info@rabagas-suites.gr",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Apollonia",
-        "addressLocality": "Sifnos",
-        "postalCode": "84003",
-        "addressCountry": "GR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 36.972574,
-        "longitude": 24.72438
-      },
-      "priceRange": "$$$"
-    })} />
+    <!-- Structured Data (Phase 10).
+         Layer 1: Hotel block — emitted on every page for entity-consolidation
+         across locale variants. Stable @id (https://rabagas-suites.com/#hotel)
+         is the canonical URI. The home route adds containsPlace with the 6
+         suites by @id reference.
+         Layer 2: page-specific blocks (BreadcrumbList, Suite, Article) passed
+         via the pageSchemas prop and rendered after the Hotel block.
+         No fabricated trust: starRating, aggregateRating, checkinTime,
+         checkoutTime, petsAllowed all omitted (see src/lib/schema.ts). -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(buildHotelSchema(locale, { withContainsPlace: isHomepage }))}
+    />
+    {pageSchemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
   </head>
   <body>
     <!-- GTM noscript -->

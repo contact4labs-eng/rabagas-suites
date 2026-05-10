@@ -9,6 +9,7 @@ import type { Locale } from '../../lib/i18n';
 import { suiteHeroImages, suiteGalleries } from '../../data/images';
 import Gallery from '../../components/ui/Gallery.astro';
 import Amenities from '../../components/sections/Amenities.astro';
+import { buildSuiteSchema, buildBreadcrumbSchema } from '../../lib/schema';
 
 export function getStaticPaths() {
   return getAllSuites().map((suite) => ({ params: { slug: suite.slug } }));
@@ -30,9 +31,28 @@ const imgSrc = suiteHeroImages[suite.id];
 const relatedSuites = getAllSuites().filter((s) => s.id !== suite.id).slice(0, 2);
 const focalMap: Record<string, string> = { sunshine: 'object-center', moonshine: 'object-bottom', euphoria: 'object-center', epicure: 'object-center', boutique: 'object-top', apollonia: 'object-center' };
 const focalClass = focalMap[suite.id] || 'object-center';
+
+// Phase 10 SEO: per-suite Suite schema + 3-level BreadcrumbList.
+const pageSchemas = [
+  buildSuiteSchema(suite, locale),
+  buildBreadcrumbSchema(
+    [
+      { labelKey: 'nav.home', canonicalPath: '/' },
+      { labelKey: 'nav.suites', canonicalPath: '/suites' },
+      { label: name, canonicalPath: `/suites/${suite.slug}` },
+    ],
+    locale,
+  ),
+];
 ---
 
-<BaseLayout title={`${name} — Rabagas Suites`} description={suite.shortDescription[locale]} locale={locale}>
+<BaseLayout
+  title={`${name} — Rabagas Suites`}
+  description={suite.shortDescription[locale]}
+  locale={locale}
+  ogImage={imgSrc?.src}
+  pageSchemas={pageSchemas}
+>
   <section class="relative min-h-[50vh] w-full overflow-hidden md:min-h-[60vh]">
     <div class="absolute inset-0">
       {imgSrc ? (

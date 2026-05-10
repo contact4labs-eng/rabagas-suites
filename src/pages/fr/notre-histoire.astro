@@ -6,6 +6,7 @@ import HostsModule from '../../components/sections/HostsModule.astro';
 import { t } from '../../lib/i18n';
 import type { Locale } from '../../lib/i18n';
 import { propertyImages } from '../../data/images';
+import { buildArticleSchema, buildBreadcrumbSchema } from '../../lib/schema';
 
 const locale: Locale = 'fr';
 
@@ -17,12 +18,26 @@ const essaySections = [
   { kicker: 'story.essay.venue.kicker',         body: 'story.essay.venue.body' },
   { kicker: 'story.essay.suites.kicker',        body: 'story.essay.suites.body' },
 ];
+
+// Phase 10 SEO: Article schema + 2-level BreadcrumbList. og:type=article.
+const pageSchemas = [
+  buildArticleSchema(locale),
+  buildBreadcrumbSchema(
+    [
+      { labelKey: 'nav.home', canonicalPath: '/' },
+      { labelKey: 'nav.story', canonicalPath: '/our-story' },
+    ],
+    locale,
+  ),
+];
 ---
 
 <BaseLayout
   title={t('meta.story.title', locale)}
   description={t('meta.story.description', locale)}
   locale={locale}
+  ogType="article"
+  pageSchemas={pageSchemas}
 >
   <!-- Hero — left-aligned editorial -->
   <section class="relative flex min-h-[70vh] items-end overflow-hidden text-white">

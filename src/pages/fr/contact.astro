@@ -5,14 +5,27 @@ import BookingInquiry from '../../components/ui/BookingInquiry.astro';
 import { t } from '../../lib/i18n';
 import type { Locale } from '../../lib/i18n';
 import { propertyImages } from '../../data/images';
+import { buildBreadcrumbSchema } from '../../lib/schema';
 
 const locale: Locale = 'fr';
+
+// Phase 10 SEO: 2-level BreadcrumbList (Home → Contact).
+const pageSchemas = [
+  buildBreadcrumbSchema(
+    [
+      { labelKey: 'nav.home', canonicalPath: '/' },
+      { labelKey: 'nav.contact', canonicalPath: '/contact' },
+    ],
+    locale,
+  ),
+];
 ---
 
 <BaseLayout
   title={t('meta.contact.title', locale)}
   description={t('meta.contact.description', locale)}
   locale={locale}
+  pageSchemas={pageSchemas}
 >
   <!-- Dark cinematic hero -->
   <section class="relative overflow-hidden bg-charcoal px-5 pb-20 pt-40 text-white md:pb-28 lg:px-8">

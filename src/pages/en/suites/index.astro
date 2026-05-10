@@ -5,15 +5,28 @@ import BookingInquiry from '../../../components/ui/BookingInquiry.astro';
 import { getAllSuites } from '../../../data/suites';
 import { t, getSuiteUrl } from '../../../lib/i18n';
 import type { Locale } from '../../../lib/i18n';
+import { buildBreadcrumbSchema } from '../../../lib/schema';
 
 const locale: Locale = 'en';
 const suites = getAllSuites();
+
+// Phase 10 SEO: 2-level BreadcrumbList (Home → Suites).
+const pageSchemas = [
+  buildBreadcrumbSchema(
+    [
+      { labelKey: 'nav.home', canonicalPath: '/' },
+      { labelKey: 'nav.suites', canonicalPath: '/suites' },
+    ],
+    locale,
+  ),
+];
 ---
 
 <BaseLayout
   title={t('meta.suites.title', locale)}
   description={t('meta.suites.description', locale)}
   locale={locale}
+  pageSchemas={pageSchemas}
 >
   <section class="px-5 pb-16 pt-32 md:pb-20 lg:px-8">
     <div class="mx-auto max-w-7xl">
