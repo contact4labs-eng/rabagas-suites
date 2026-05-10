@@ -126,72 +126,54 @@ const navItems = [
 </header>
 
 <script>
-  // Phase 8 — view-transition resilient. Element-level handlers re-bind
-  // on every astro:page-load (the new <header> is a different DOM node).
-  // The window-level scroll handler is bound once (document persists, so
-  // the listener survives navigation).
+  // Phase 9: simplified after ClientRouter removal — full page reloads,
+  // so bind handlers once at script eval and let normal page-unload reset.
   let isOpen = false;
   let lastScroll = 0;
 
-  function bindHeader() {
-    const toggle = document.getElementById('menu-toggle');
-    const mobileNav = document.getElementById('mobile-nav');
-    const icon = document.getElementById('hamburger-icon');
+  const toggle = document.getElementById('menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const icon = document.getElementById('hamburger-icon');
+  const header = document.getElementById('site-header');
 
-    toggle?.addEventListener('click', () => {
-      isOpen = !isOpen;
-      toggle.setAttribute('aria-expanded', String(isOpen));
-      mobileNav?.classList.toggle('hidden', !isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+  toggle?.addEventListener('click', () => {
+    isOpen = !isOpen;
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    mobileNav?.classList.toggle('hidden', !isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
 
-      const bars = icon?.querySelectorAll('span');
-      if (bars && isOpen) {
-        (bars[0] as HTMLElement).style.transform = 'translateY(3.5px) rotate(45deg)';
-        (bars[1] as HTMLElement).style.transform = 'translateY(-3.5px) rotate(-45deg)';
-      } else if (bars) {
-        (bars[0] as HTMLElement).style.transform = '';
-        (bars[1] as HTMLElement).style.transform = '';
-      }
-    });
-
-    mobileNav?.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        isOpen = false;
-        toggle?.setAttribute('aria-expanded', 'false');
-        mobileNav.classList.add('hidden');
-        document.body.style.overflow = '';
-      });
-    });
-  }
-
-  if (!(window as any).__rabagasHeaderScrollBound) {
-    (window as any).__rabagasHeaderScrollBound = true;
-    const onScroll = () => {
-      const y = window.scrollY;
-      const header = document.getElementById('site-header');
-      if (!header) return;
-      if (y > 50) header.classList.add('header-scrolled');
-      else header.classList.remove('header-scrolled');
-      if (y > 300 && y > lastScroll && !isOpen) {
-        header.style.transform = 'translateY(-100%)';
-      } else {
-        header.style.transform = '';
-      }
-      lastScroll = y;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
-
-  // Reset mobile-menu state across navigation.
-  document.addEventListener('astro:before-swap', () => {
-    if (isOpen) {
-      isOpen = false;
-      document.body.style.overflow = '';
+    const bars = icon?.querySelectorAll('span');
+    if (bars && isOpen) {
+      (bars[0] as HTMLElement).style.transform = 'translateY(3.5px) rotate(45deg)';
+      (bars[1] as HTMLElement).style.transform = 'translateY(-3.5px) rotate(-45deg)';
+    } else if (bars) {
+      (bars[0] as HTMLElement).style.transform = '';
+      (bars[1] as HTMLElement).style.transform = '';
     }
   });
 
-  bindHeader();
-  document.addEventListener('astro:page-load', bindHeader);
+  mobileNav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      isOpen = false;
+      toggle?.setAttribute('aria-expanded', 'false');
+      mobileNav.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+  });
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    if (!header) return;
+    if (y > 50) header.classList.add('header-scrolled');
+    else header.classList.remove('header-scrolled');
+    if (y > 300 && y > lastScroll && !isOpen) {
+      header.style.transform = 'translateY(-100%)';
+    } else {
+      header.style.transform = '';
+    }
+    lastScroll = y;
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
 </script>
 
 <style is:global>

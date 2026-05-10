@@ -168,12 +168,9 @@ const suites = getAllSuites();
 </style>
 
 <script>
-  // Phase 8 — view-transition resilient. Re-binds form submit handler on
-  // every astro:page-load. Idempotency guard via dataset flag.
-  function bindBookingForm() {
-    const form = document.getElementById('booking-form') as HTMLFormElement | null;
-    if (!form || form.dataset.lbBound === 'true') return;
-    form.dataset.lbBound = 'true';
+  // Phase 9: simplified after ClientRouter removal — full page reloads.
+  const form = document.getElementById('booking-form') as HTMLFormElement | null;
+  if (form) {
     const successEl = document.getElementById('booking-success');
     const errorEl = document.getElementById('booking-error');
     const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
@@ -207,6 +204,4 @@ const suites = getAllSuites();
       }
     });
   }
-  bindBookingForm();
-  document.addEventListener('astro:page-load', bindBookingForm);
 </script>

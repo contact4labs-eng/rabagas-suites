@@ -32,7 +32,7 @@ const locale: Locale = 'el';
   <section class="px-5 py-24 md:py-32 lg:px-8">
     <div class="mx-auto max-w-5xl">
       <div class="mb-16" data-reveal>
-        <span class="label-uppercase mb-4 block text-stone-400">{t('contact.gettingHere.kicker', locale)}</span>
+        <span class="label-uppercase mb-4 block text-stone-500">{t('contact.gettingHere.kicker', locale)}</span>
         <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">{t('contact.gettingHere.h2', locale)}</h2>
         <div class="mt-4 h-px w-10 bg-stone-300"></div>
       </div>
@@ -62,7 +62,7 @@ const locale: Locale = 'el';
     <div class="mx-auto max-w-5xl">
       <div class="grid grid-cols-1 gap-16 md:grid-cols-[1.2fr_1fr] md:items-start">
         <div data-reveal="left">
-          <span class="label-uppercase mb-4 block text-stone-400">{t('contact.direct.kicker', locale)}</span>
+          <span class="label-uppercase mb-4 block text-stone-500">{t('contact.direct.kicker', locale)}</span>
           <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">{t('contact.direct.h2', locale)}</h2>
           <div class="mt-4 h-px w-10 bg-stone-300"></div>
 
@@ -93,7 +93,7 @@ const locale: Locale = 'el';
         </div>
 
         <div class="rounded-xl border border-sand-200 bg-cream p-8 md:p-10" data-reveal="right">
-          <span class="label-uppercase mb-4 block text-stone-400">{t('contact.concierge.kicker', locale)}</span>
+          <span class="label-uppercase mb-4 block text-stone-500">{t('contact.concierge.kicker', locale)}</span>
           <h3 class="font-heading text-2xl font-light text-ink">{t('contact.concierge.h3', locale)}</h3>
           <div class="mt-6 space-y-5">
             <div class="flex gap-4">
@@ -177,11 +177,9 @@ const locale: Locale = 'el';
   </section>
 
   <script>
-    // Phase 8 — view-transition resilient. Idempotent rebind on each page-load.
-    function bindContactForm() {
-      const cf = document.getElementById('contact-form') as HTMLFormElement | null;
-      if (!cf || cf.dataset.lbBound === 'true') return;
-      cf.dataset.lbBound = 'true';
+    // Phase 9: simplified after ClientRouter removal — full page reloads.
+    const cf = document.getElementById('contact-form') as HTMLFormElement | null;
+    if (cf) {
       const cSuccess = document.getElementById('contact-success');
       const cError = document.getElementById('contact-error');
       const cBtn = cf.querySelector('button[type="submit"]') as HTMLButtonElement | null;
@@ -200,8 +198,6 @@ const locale: Locale = 'el';
         } catch { cError?.classList.remove('hidden'); if (cBtn) { cBtn.disabled = false; cBtn.textContent = cLabel; } }
       });
     }
-    bindContactForm();
-    document.addEventListener('astro:page-load', bindContactForm);
   </script>
 
   <BookingInquiry locale={locale} />

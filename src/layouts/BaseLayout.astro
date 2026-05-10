@@ -1,11 +1,12 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+import { getImage } from 'astro:assets';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import MobileBookingBar from '../components/layout/MobileBookingBar.astro';
 import Lightbox from '../components/ui/Lightbox.astro';
 import type { Locale } from '../lib/i18n';
 import { getAlternates, getLocalizedPath, stripLocale } from '../lib/i18n';
+import { propertyImages } from '../data/images';
 
 interface Props {
   title: string;
@@ -36,6 +37,31 @@ const skipLinkText: Record<Locale, string> = {
   en: 'Skip to content',
   fr: 'Aller au contenu',
 };
+
+// Phase 9 LCP image preload. The homepage's LCP candidate (after Phase 9
+// font preloads) is the hero image rendered by Hero.astro at 100vw with
+// widths [640, 1024, 1440, 1920]. We compute the same srcset here at
+// build time via getImage() so the preload `<link>` and the rendered
+// `<img>` reference identical hashed URLs — the browser's preload scanner
+// picks the same variant the body img would, no double fetch.
+//
+// Only emit on the three homepage routes; other pages have different LCP
+// candidates (suite detail uses a per-suite hero; our-story has no full-
+// bleed image).
+const isHomepage = currentPath === '/' || currentPath === '/en/' || currentPath === '/fr/';
+const heroPreloadSrcset = isHomepage
+  ? await Promise.all(
+      [640, 1024, 1440, 1920].map(async (w) => {
+        const img = await getImage({
+          src: propertyImages.hero,
+          width: w,
+          format: 'webp',
+          quality: 80,
+        });
+        return `${img.src} ${w}w`;
+      }),
+    ).then((parts) => parts.join(', '))
+  : null;
 ---
 
 <!doctype html>
@@ -45,21 +71,46 @@ const skipLinkText: Record<Locale, string> = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
 
-    <!-- Google Tag Manager -->
-    <script is:inline>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-PM6PBJQW');
-    </script>
-    <!-- Google tag (gtag.js) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=GT-PZZMTZ9M"></script>
+    <!-- Analytics (Phase 9): bootstrap is deferred until 1.5s after the
+         `load` event so GTM/GA's ~640KB JS does NOT compete with the LCP
+         frame. The dataLayer is initialised synchronously so any pre-load
+         events queued by the page (e.g. Lightbox open) are captured; the
+         actual container injection is delayed.
+
+         Conversion attribution: GTM's pageview hit fires on container
+         init, not on document parse — a 2–3s offset is invisible to
+         GA4/Ads reporting (both bucket to date). First-paint queue stays
+         intact via the synchronous `gtag('js', new Date())` call which
+         records a timestamp the eventual hit will reference. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag(){ dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'GT-PZZMTZ9M');
+
+      function bootRabagasAnalytics() {
+        // GTM container
+        (function(w,d,s,l,i){
+          var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),
+              dl=l!='dataLayer'?'&l='+l:'';
+          j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+          f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-PM6PBJQW');
+        // gtag.js for the GT-* tag (sibling to the gtag('config'…) above)
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=GT-PZZMTZ9M';
+        document.head.appendChild(s);
+      }
+
+      if (document.readyState === 'complete') {
+        setTimeout(bootRabagasAnalytics, 1500);
+      } else {
+        window.addEventListener('load', function(){
+          setTimeout(bootRabagasAnalytics, 1500);
+        }, { once: true });
+      }
     </script>
 
     <title>{title}</title>
@@ -86,23 +137,115 @@ const skipLinkText: Record<Locale, string> = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={og} />
 
-    <!-- Fonts — preconnect + display=swap for fast LCP -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Self-hosted Latin font subsets — preload for the LCP wordmark
+         (Cormorant Garamond 400) and primary body text (Inter 400).
+         The @font-face declarations are also INLINED below so the
+         browser can associate the preloaded woff2 with the @font-face
+         immediately, without waiting for the main CSS file (65 KB) to
+         arrive. The same declarations live in src/styles/global.css for
+         the cases where the inline style is suppressed (e.g. CSP); the
+         duplicate is harmless. The Google Fonts <link> below still ships
+         for italic/300/500 weights and the Greek subset on EL pages. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-400-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-400-latin.woff2" crossorigin />
+    <style is:inline>
+      /* Cormorant Garamond — the same Latin woff2 covers weights 300 + 400
+         (variable font internals on Google's CDN; we self-host one file
+         per style and let @font-face map both weights to it). */
+      @font-face {
+        font-family: 'Cormorant Garamond';
+        font-style: normal;
+        font-weight: 300;
+        font-display: swap;
+        src: url('/fonts/cormorant-garamond-400-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Cormorant Garamond';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('/fonts/cormorant-garamond-400-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Cormorant Garamond';
+        font-style: italic;
+        font-weight: 300;
+        font-display: swap;
+        src: url('/fonts/cormorant-garamond-italic-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Cormorant Garamond';
+        font-style: italic;
+        font-weight: 400;
+        font-display: swap;
+        src: url('/fonts/cormorant-garamond-italic-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* Inter — the Latin woff2 covers all 3 weights (300/400/500). */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-display: swap;
+        src: url('/fonts/inter-400-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('/fonts/inter-400-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url('/fonts/inter-400-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+    </style>
+
+    {heroPreloadSrcset && (
+      <link
+        rel="preload"
+        as="image"
+        imagesrcset={heroPreloadSrcset}
+        imagesizes="100vw"
+        fetchpriority="high"
+      />
+    )}
+
+    {/* Google Fonts only ships on the EL locale (it carries the Greek
+        subset for body copy). EN and FR pages are entirely self-hosted
+        — see the inline @font-face declarations above. The print-media
+        deferral keeps the stylesheet off the render-blocking path. */}
+    {locale === 'el' && (
+      <>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
+          rel="stylesheet"
+          media="print"
+          onload="this.media='all'"
+        />
+        <noscript>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
+            rel="stylesheet"
+          />
+        </noscript>
+      </>
+    )}
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-    <!-- Client-side view-transitions (Phase 8). Cross-fade between routes
-         using the browser-native View Transitions API. Customized below
-         via ::view-transition-* CSS so editorial pages get a 360ms
-         cream-fade. prefers-reduced-motion users get instant nav (Astro
-         respects the user-agent media query natively). -->
-    <ClientRouter />
 
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -149,12 +292,11 @@ const skipLinkText: Record<Locale, string> = {
     <!-- Lightbox: single instance per page; activates only when a Gallery dispatches its event -->
     <Lightbox locale={locale} />
 
-    <!-- Reveal Observer — triggers the motion system.
-         Phase 8: navigation-resilient. The observer is created once per
-         document load; on every page-load (initial + view-transition
-         navigation) we walk the new DOM and observe any reveal elements
-         that haven't been observed yet. The WeakSet guard keeps us from
-         re-observing the same element if a script re-runs. -->
+    <!-- Reveal Observer — triggers the motion system. Phase 9: simplified
+         after ClientRouter removal — full page reloads mean the observer
+         only needs to register once per document. The WeakSet guard is
+         retained as a defensive no-op in case a future script triggers
+         double-registration. -->
     <script>
       const seen = new WeakSet();
       const observer = new IntersectionObserver(
@@ -169,42 +311,18 @@ const skipLinkText: Record<Locale, string> = {
         { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
       );
 
-      const attach = () => {
-        document
-          .querySelectorAll('[data-reveal], [data-reveal-stagger]')
-          .forEach((el) => {
-            if (!seen.has(el)) {
-              seen.add(el);
-              observer.observe(el);
-            }
-          });
-      };
-
-      attach();
-      // Astro fires astro:page-load after every view-transition swap; the
-      // event listener on document survives navigations (document is
-      // persisted), so a single registration is enough.
-      document.addEventListener('astro:page-load', attach);
+      document
+        .querySelectorAll('[data-reveal], [data-reveal-stagger]')
+        .forEach((el) => {
+          if (!seen.has(el)) {
+            seen.add(el);
+            observer.observe(el);
+          }
+        });
     </script>
 
     <style is:global>
       @import '../styles/global.css';
-
-      /* Phase 8 view-transition styling. Override the default browser
-         cross-fade duration to match the considered token (360ms) with
-         the considered ease curve. Reduced-motion users get the browser
-         default suppression (Astro respects `prefers-reduced-motion`). */
-      ::view-transition-old(root),
-      ::view-transition-new(root) {
-        animation-duration: var(--motion-considered);
-        animation-timing-function: var(--ease-considered);
-      }
-      @media (prefers-reduced-motion: reduce) {
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-          animation: none !important;
-        }
-      }
     </style>
   </body>
 </html>

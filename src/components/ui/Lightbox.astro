@@ -84,7 +84,7 @@ const labels = {
   </div>
 </dialog>
 
-<script is:inline define:vars={{ counterTemplate: labels.counter }} data-astro-rerun>
+<script is:inline define:vars={{ counterTemplate: labels.counter }}>
   // Vanilla TS-ish runtime. Uses native <dialog>.
   const dialog = document.getElementById('rabagas-lightbox');
   const img = document.getElementById('lb-img');
@@ -177,25 +177,12 @@ const labels = {
 
   function nav(delta) { index += delta; render(); }
 
-  // Event wiring. Phase 8 — navigation-resilient: the inline script
-  // is `data-astro-rerun`, so it re-executes on every view-transition
-  // page-load and creates fresh closures over the new DOM. The previous
-  // window-level open handler must be removed before binding a new one,
-  // otherwise old closures keep references to detached dialog nodes.
-  if (window.__rabagasLightboxOpenHandler) {
-    window.removeEventListener('rabagas:lightbox-open', window.__rabagasLightboxOpenHandler);
-  }
-  function onOpen(e) {
+  // Event wiring. Phase 9: simplified after ClientRouter removal — full
+  // page reloads mean this script only runs once per pageview, so a
+  // single window-level listener registration is sufficient.
+  window.addEventListener('rabagas:lightbox-open', (e) => {
     const detail = e.detail || {};
     if (detail.id) open(detail.id, detail.index || 0);
-  }
-  window.addEventListener('rabagas:lightbox-open', onOpen);
-  window.__rabagasLightboxOpenHandler = onOpen;
-
-  // Defensive: if a previous lightbox was open during navigation, close
-  // it so it doesn't zombie onto the next page.
-  document.addEventListener('astro:before-swap', () => {
-    if (activeId) close();
   });
 
   btnClose.addEventListener('click', close);

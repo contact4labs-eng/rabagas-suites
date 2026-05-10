@@ -34,15 +34,11 @@ const { locale } = Astro.props;
 </div>
 
 <script>
-  // Phase 8 — view-transition resilient. The window scroll listener is
-  // bound once (document persists). On every tick we re-fetch the bar
-  // by id, so the listener works against whichever bar element is in
-  // the current DOM after view-transition swaps.
-  if (!(window as any).__rabagasMobileBarBound) {
-    (window as any).__rabagasMobileBarBound = true;
+  // Phase 9: simplified after ClientRouter removal — full page reloads,
+  // so a single bind at script-eval is enough.
+  const bar = document.getElementById('mobile-booking-bar');
+  if (bar) {
     window.addEventListener('scroll', () => {
-      const bar = document.getElementById('mobile-booking-bar');
-      if (!bar) return;
       bar.style.transform = window.scrollY > 400 ? 'translateY(0)' : 'translateY(100%)';
     }, { passive: true });
   }
