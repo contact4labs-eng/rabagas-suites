@@ -8,6 +8,12 @@
  * Falls back to storing submissions if no email service is configured.
  */
 import type { APIRoute } from 'astro';
+// Phase 11a: Astro 6 + @astrojs/cloudflare exposes runtime env via the
+// virtual `cloudflare:workers` module (the previous `Astro.locals.runtime.env`
+// pattern was removed in Astro v6). Bindings are populated from
+// `wrangler.toml [vars]` for local dev (.dev.vars file) and from the
+// Cloudflare Pages dashboard secrets in production.
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
@@ -69,9 +75,14 @@ export const POST: APIRoute = async ({ request }) => {
       `Form: ${data.form}`,
     ].filter(Boolean).join('\n');
 
-    // Send via configured email service
-    const emailTo = import.meta.env.EMAIL_TO || 'info@rabagas-suites.gr';
-    const resendKey = import.meta.env.RESEND_API_KEY;
+    // Phase 11a: env vars come from the Cloudflare Workers runtime binding
+    // (see `cloudflare:workers` import at the top). The cast lets us read
+    // optional secrets without TS complaining when no `Env` interface is
+    // declared. `import.meta.env` is no longer used here — it's replaced at
+    // build time and would bake secrets into the bundle.
+    const cfEnv = env as { RESEND_API_KEY?: string; EMAIL_TO?: string };
+    const emailTo = cfEnv.EMAIL_TO || 'info@rabagas-suites.gr';
+    const resendKey = cfEnv.RESEND_API_KEY;
 
     if (resendKey) {
       // Production: send via Resend

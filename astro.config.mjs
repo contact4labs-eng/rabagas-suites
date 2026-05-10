@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://rabagas-suites.com',
@@ -101,7 +101,22 @@ export default defineConfig({
     }),
   ],
 
-  adapter: node({
-    mode: 'standalone',
+  // Phase 11a: swapped @astrojs/node → @astrojs/cloudflare per Plan.
+  // imageService 'passthrough' disables Cloudflare's runtime image service.
+  // All <Image> variants are emitted at build time by sharp, hashed under
+  // dist/_astro/, served as static files via the ASSETS binding. The
+  // runtime Worker never decodes/resizes images.
+  //
+  // Output layout (Workers-with-Static-Assets, not Pages-Functions):
+  //   dist/client/  static prerendered HTML + _astro/ + fonts/ + _headers
+  //   dist/server/  worker entry (entry.mjs) + chunks + wrangler.json
+  //                 (the wrangler.json declares an ASSETS binding that
+  //                 references ../client at runtime)
+  // For Phase 11b deployment, this maps cleanly to either Workers Static
+  // Assets or Cloudflare Pages — `wrangler deploy --config dist/server/
+  // wrangler.json` for the former, or copying dist/client to a Pages
+  // build-output dir for the latter.
+  adapter: cloudflare({
+    imageService: 'passthrough',
   }),
 });
