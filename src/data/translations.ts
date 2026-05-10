@@ -307,7 +307,7 @@ export const t: Translations = {
   'lightbox.close': { en: 'Close gallery', el: 'Κλείσιμο γκαλερί', fr: 'Fermer la galerie' },
   'lightbox.prev': { en: 'Previous image', el: 'Προηγούμενη εικόνα', fr: 'Image précédente' },
   'lightbox.next': { en: 'Next image', el: 'Επόμενη εικόνα', fr: 'Image suivante' },
-  'lightbox.counter': { en: '{n} / {total}', el: '{n} / {total}', fr: '{n} / {total}' },
+  'lightbox.counter': { en: '{n} / {total}', el: '{n} / {total}', fr: '{n} sur {total}' },
   'hosts.title': { en: 'Meet George & Didi', el: 'Γνωρίστε τον Γιώργο και τη Ντίντι', fr: 'Rencontrez George et Didi' },
   'hosts.kicker': { en: 'Your hosts', el: 'Οι οικοδεσπότες σας', fr: 'Vos hôtes' },
   'hosts.bio.p1': { en: 'George and Didi are the hosts at Rabagas. They live a short walk from the suites in Apollonia, and personally welcome each guest on arrival.', el: 'Ο Γιώργος και η Ντίντι είναι οι οικοδεσπότες του Rabagas. Μένουν λίγα λεπτά με τα πόδια από τις σουίτες, στην Απολλωνία, και υποδέχονται κάθε επισκέπτη προσωπικά κατά την άφιξη.', fr: 'George et Didi sont les hôtes de Rabagas. Ils habitent à quelques minutes à pied des suites, à Apollonia, et accueillent personnellement chaque visiteur à son arrivée.' },
