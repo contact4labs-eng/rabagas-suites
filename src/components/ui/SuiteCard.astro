@@ -45,7 +45,7 @@ const imgSrc = suiteCardImages[suite.id];
       <Image
         src={imgSrc}
         alt={name}
-        class="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+        class="suite-card-img h-full w-full object-cover object-center"
         widths={[400, 640, 800, 1200]}
         sizes={featured ? '(max-width: 640px) 100vw, 66vw' : '(max-width: 640px) 100vw, 33vw'}
         loading="lazy"
@@ -90,9 +90,41 @@ const imgSrc = suiteCardImages[suite.id];
     </div>
 
     <!-- CTA arrow -->
-    <div class="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-white/90 transition-all duration-200 group-hover:gap-3">
+    <div class="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-white/90 transition-[gap] duration-[var(--motion-quick)] ease-[var(--ease-quick)] group-hover:gap-3">
       {t('suite.discover', locale)}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-[var(--motion-quick)] ease-[var(--ease-quick)] group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </div>
   </div>
 </article>
+
+<style>
+  /* Phase 8 hover authorship: image scales gently to 1.04 AND saturation
+     lifts ~8%. Together they produce a "leaning into the image" feel that's
+     warmer than a generic darkening overlay. Quick ease for responsiveness;
+     considered duration so the effect doesn't feel snappy. */
+  .suite-card-img {
+    transition:
+      transform var(--motion-considered) var(--ease-quick),
+      filter var(--motion-considered) var(--ease-quick);
+  }
+  article.group:hover .suite-card-img {
+    transform: scale(1.04);
+    filter: saturate(1.08);
+  }
+  /* Keyboard focus parity — same affordance for screen readers / kbd users.
+     Using :focus-visible on the wrapped <a> rather than the article since the
+     anchor receives focus, not the article. */
+  article.group:has(a:focus-visible) .suite-card-img {
+    transform: scale(1.04);
+    filter: saturate(1.08);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .suite-card-img,
+    article.group:hover .suite-card-img,
+    article.group:has(a:focus-visible) .suite-card-img {
+      transition: none;
+      transform: none;
+      filter: none;
+    }
+  }
+</style>

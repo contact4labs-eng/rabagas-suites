@@ -33,10 +33,13 @@ const baseClass =
   variant === 'header'
     ? 'text-[0.7rem] font-medium tracking-wider'
     : 'text-xs font-medium tracking-wider';
+// Phase 8 hover authorship: link-premium applies the from-center underline
+// reveal (via .link-premium::after in motion.css). Inactives also bump from
+// regular weight to medium on hover/focus — color shift via Tailwind token.
 const inactiveClass =
   variant === 'header'
-    ? 'text-white/60 transition-colors hover:text-white'
-    : 'text-stone-500 transition-colors hover:text-ink';
+    ? 'link-premium text-white/60 transition-colors duration-[var(--motion-quick)] hover:text-white focus-visible:text-white'
+    : 'link-premium text-stone-500 transition-colors duration-[var(--motion-quick)] hover:text-ink focus-visible:text-ink';
 const activeClass =
   variant === 'header'
     ? 'text-white font-semibold'

@@ -49,11 +49,11 @@ const suites = getAllSuites();
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div class="flex flex-col gap-1.5">
             <label for="booking-name" class="text-xs font-medium text-stone-500">{t('contact.name', locale)}</label>
-            <input type="text" id="booking-name" name="name" required autocomplete="name" placeholder={t('booking.placeholder.name', locale)} class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink placeholder:text-stone-300 outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100" />
+            <input type="text" id="booking-name" name="name" required autocomplete="name" placeholder={t('booking.placeholder.name', locale)} class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink placeholder:text-stone-300 outline-none transition-[border-color,box-shadow] duration-[var(--motion-quick)] ease-[var(--ease-quick)] focus:border-aegean-400 focus:ring-1 focus:ring-aegean-100" />
           </div>
           <div class="flex flex-col gap-1.5">
             <label for="booking-email" class="text-xs font-medium text-stone-500">{t('contact.emailField', locale)}</label>
-            <input type="email" id="booking-email" name="email" required autocomplete="email" placeholder="your@email.com" class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink placeholder:text-stone-300 outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100" />
+            <input type="email" id="booking-email" name="email" required autocomplete="email" placeholder="your@email.com" class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink placeholder:text-stone-300 outline-none transition-[border-color,box-shadow] duration-[var(--motion-quick)] ease-[var(--ease-quick)] focus:border-aegean-400 focus:ring-1 focus:ring-aegean-100" />
           </div>
         </div>
       </fieldset>
@@ -99,7 +99,7 @@ const suites = getAllSuites();
         <legend class="label-uppercase mb-3 text-[0.55rem] text-stone-400">
           {t('booking.group.other', locale)}
         </legend>
-        <textarea id="booking-message" name="message" rows="3" placeholder={t('booking.placeholder.message', locale)} class="min-h-24 w-full resize-y rounded-sm border border-sand-200 bg-cream px-4 py-3 text-base text-ink placeholder:text-stone-300 outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100"></textarea>
+        <textarea id="booking-message" name="message" rows="3" placeholder={t('booking.placeholder.message', locale)} class="min-h-24 w-full resize-y rounded-sm border border-sand-200 bg-cream px-4 py-3 text-base text-ink placeholder:text-stone-300 outline-none transition-[border-color,box-shadow] duration-[var(--motion-quick)] ease-[var(--ease-quick)] focus:border-aegean-400 focus:ring-1 focus:ring-aegean-100"></textarea>
       </fieldset>
 
       <!-- Submit -->
@@ -168,36 +168,29 @@ const suites = getAllSuites();
 </style>
 
 <script>
-  const form = document.getElementById('booking-form') as HTMLFormElement | null;
-  const successEl = document.getElementById('booking-success');
-  const errorEl = document.getElementById('booking-error');
-  const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-  const originalLabel = submitBtn?.textContent?.trim() || '';
+  // Phase 8 — view-transition resilient. Re-binds form submit handler on
+  // every astro:page-load. Idempotency guard via dataset flag.
+  function bindBookingForm() {
+    const form = document.getElementById('booking-form') as HTMLFormElement | null;
+    if (!form || form.dataset.lbBound === 'true') return;
+    form.dataset.lbBound = 'true';
+    const successEl = document.getElementById('booking-success');
+    const errorEl = document.getElementById('booking-error');
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    const originalLabel = submitBtn?.textContent?.trim() || '';
 
-  if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       errorEl?.classList.add('hidden');
-
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = '...';
-      }
-
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '...'; }
       try {
         const res = await fetch(form.action, {
           method: 'POST',
           body: new FormData(form),
           headers: { 'Accept': 'application/json' },
         });
-
         const json = await res.json();
-
         if (res.ok && json.ok) {
           form.style.display = 'none';
           successEl?.classList.remove('hidden');
@@ -214,4 +207,6 @@ const suites = getAllSuites();
       }
     });
   }
+  bindBookingForm();
+  document.addEventListener('astro:page-load', bindBookingForm);
 </script>

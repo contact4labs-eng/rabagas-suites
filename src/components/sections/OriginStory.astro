@@ -61,7 +61,13 @@ const { locale } = Astro.props;
 <style>
   /* Italic Cormorant Garamond emphasis on "Rabagas" inside Beat 1.
      Renders at 1.15× the surrounding size, no color shift, no underline —
-     a single typographic anchor the reader's eye lands on first. */
+     a single typographic anchor the reader's eye lands on first.
+     Phase 8 — PART G: when the parent OriginStory section reveals, the
+     mark briefly relaxes its letter-spacing from 0.04em to 0 over 900ms
+     (cinematic ease). This effect appears EXACTLY ONCE on the entire site,
+     by design — no other italic Cormorant text gets it. Triggered by the
+     same `.is-visible` class the IntersectionObserver adds; no extra JS,
+     no sessionStorage, no subagent observer. Plays once per page-load. */
   .origin-story :global(.rabagas-mark) {
     font-family: var(--font-heading), 'Cormorant Garamond', serif;
     font-style: italic;
@@ -69,15 +75,21 @@ const { locale } = Astro.props;
     font-size: 1.15em;
     color: var(--color-ink);
     font-feature-settings: 'liga' 1, 'kern' 1;
+    letter-spacing: 0.04em;
+    transition: letter-spacing 900ms var(--ease-cinematic);
+    transition-delay: calc(280ms + 200ms); /* lands shortly after Beat 1's reveal */
+  }
+  .origin-story.is-visible :global(.rabagas-mark) {
+    letter-spacing: 0;
   }
 
   /* Per-beat reveal timing — overrides the global 80ms cascade so each beat
      reads as its own thought (0ms, 280ms, 560ms). Scoped by .origin-beat
      so it doesn't leak to other data-reveal-stagger sections. */
   .origin-story.is-visible .origin-kicker { transition-delay: 0ms; }
-  .origin-story.is-visible .origin-beat-1 { transition-delay: 280ms; }
-  .origin-story.is-visible .origin-beat-2 { transition-delay: 560ms; }
-  .origin-story.is-visible .origin-beat-3 { transition-delay: 840ms; }
+  .origin-story.is-visible .origin-beat-1 { transition-delay: var(--motion-stagger-deliberate); }
+  .origin-story.is-visible .origin-beat-2 { transition-delay: calc(var(--motion-stagger-deliberate) * 2); }
+  .origin-story.is-visible .origin-beat-3 { transition-delay: calc(var(--motion-stagger-deliberate) * 3); }
 
   /* Desktop-only hairline rule along the column's left edge (kicker → Beat 3)
      reinforces the centered measure as an editorial column.
@@ -96,7 +108,7 @@ const { locale } = Astro.props;
       background: var(--color-sand-200);
       transform: scaleY(0);
       transform-origin: top;
-      transition: transform 1.4s var(--ease-premium, cubic-bezier(0.16, 1, 0.3, 1));
+      transition: transform var(--motion-cinematic) var(--ease-considered);
       transition-delay: 100ms;
     }
     .origin-story.is-visible::before {
@@ -104,12 +116,18 @@ const { locale } = Astro.props;
     }
   }
 
-  /* Reduced-motion: no stagger, no rule animation — global motion.css already
-     suppresses the data-reveal hooks; here we additionally kill the ::before
-     transform so the rule snaps in instantly rather than animating. */
+  /* Reduced-motion: no stagger, no rule animation, no letter-spacing
+     animation. Global motion.css suppresses the data-reveal hooks; here
+     we additionally kill the ::before transform and the `.rabagas-mark`
+     transition so the rule snaps in instantly and the mark renders at
+     its final letter-spacing immediately. */
   @media (prefers-reduced-motion: reduce) {
     .origin-story::before {
       transform: scaleY(1) !important;
+      transition: none !important;
+    }
+    .origin-story :global(.rabagas-mark) {
+      letter-spacing: 0 !important;
       transition: none !important;
     }
     .origin-story.is-visible .origin-kicker,

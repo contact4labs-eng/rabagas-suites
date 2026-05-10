@@ -80,8 +80,13 @@ const featuredImg = suiteCardImages[featured.id];
       <InlineQuote testimonialName="Daniel" locale={locale} />
     </div>
 
-    <!-- Secondary suites grid -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+    <!-- Secondary suites grid.
+         Phase 8 — section authorship: instead of a per-card stagger this grid
+         reveals together as a single unit at considered duration. The featured
+         suite above already gets the editorial (cinematic) treatment, so the
+         supporting cards reading as one breath after creates a hierarchy:
+         "this one, then those." Distinct from a generic 80ms cascade. -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="in-row">
       {secondary.map((suite) => (
         <SuiteCard suite={suite} locale={locale} />
       ))}

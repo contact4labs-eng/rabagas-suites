@@ -177,13 +177,16 @@ const locale: Locale = 'en';
   </section>
 
   <script>
-    const cf = document.getElementById('contact-form') as HTMLFormElement | null;
-    const cSuccess = document.getElementById('contact-success');
-    const cError = document.getElementById('contact-error');
-    const cBtn = cf?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-    const cLabel = cBtn?.textContent?.trim() || '';
+    // Phase 8 — view-transition resilient. Idempotent rebind on each page-load.
+    function bindContactForm() {
+      const cf = document.getElementById('contact-form') as HTMLFormElement | null;
+      if (!cf || cf.dataset.lbBound === 'true') return;
+      cf.dataset.lbBound = 'true';
+      const cSuccess = document.getElementById('contact-success');
+      const cError = document.getElementById('contact-error');
+      const cBtn = cf.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+      const cLabel = cBtn?.textContent?.trim() || '';
 
-    if (cf) {
       cf.addEventListener('submit', async (e) => {
         e.preventDefault();
         cError?.classList.add('hidden');
@@ -197,6 +200,8 @@ const locale: Locale = 'en';
         } catch { cError?.classList.remove('hidden'); if (cBtn) { cBtn.disabled = false; cBtn.textContent = cLabel; } }
       });
     }
+    bindContactForm();
+    document.addEventListener('astro:page-load', bindContactForm);
   </script>
 
   <BookingInquiry locale={locale} />

@@ -49,10 +49,15 @@ const reasons = [
       </div>
     </div>
 
-    <!-- Reasons grid with staggered reveal -->
-    <div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-sand-200 bg-sand-200 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+    <!-- Reasons grid — Phase 8 section authorship: 2-3-1 batched reveal.
+         First two reasons (Location + Heritage) reveal together (the
+         "essentials"), the next three (Views + Comfort + Hospitality)
+         reveal as a cluster after a deliberate beat (the "experience"),
+         and the last (Privacy) lands alone (the "promise"). The rhythm is
+         what tells the reader "these are arguments, not data." -->
+    <div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-sand-200 bg-sand-200 sm:grid-cols-2 lg:grid-cols-3" data-reveal="groups-2-3-1">
       {reasons.map((reason) => (
-        <div class="flex flex-col bg-white p-8 transition-colors duration-300 hover:bg-cream">
+        <div class="flex flex-col bg-white p-8 transition-colors duration-[var(--motion-quick)] hover:bg-cream">
           <h3 class="font-heading text-xl text-ink">{t(reason.titleKey, locale)}</h3>
           <p class="mt-2 text-sm leading-relaxed text-stone-500">{t(reason.descKey, locale)}</p>
         </div>

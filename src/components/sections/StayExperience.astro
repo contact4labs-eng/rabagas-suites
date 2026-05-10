@@ -19,9 +19,14 @@ const moments = [
 ];
 ---
 
-<section class="bg-charcoal px-5 py-24 text-white md:py-36 lg:px-8" data-reveal="slow">
+<!-- Phase 8 — section authorship: cross-fade between the header column and
+     the moments row, like a film cut. Both regions fade in (no translate)
+     and the moments grid lands ~200ms after the header — a small but
+     deliberate gap. The grid itself does NOT stagger card-by-card; the
+     three moments arrive together as a single unit. -->
+<section class="stay-experience bg-charcoal px-5 py-24 text-white md:py-36 lg:px-8">
   <div class="mx-auto max-w-5xl">
-    <div class="mb-16 max-w-lg" data-reveal>
+    <div class="stay-header mb-16 max-w-lg" data-reveal="cross-fade">
       <span class="label-uppercase mb-4 block text-stone-500">
         {t('experience.kicker', locale)}
       </span>
@@ -30,7 +35,7 @@ const moments = [
       </h2>
     </div>
 
-    <div class="grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-white/8 bg-white/8 md:grid-cols-3" data-reveal-stagger>
+    <div class="stay-grid grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-white/8 bg-white/8 md:grid-cols-3" data-reveal="cross-fade">
       {moments.map((m) => (
         <div class="bg-charcoal p-8 md:p-10">
           <span class="label-uppercase text-[0.6rem] text-terra-500">{m.title}</span>
@@ -42,3 +47,14 @@ const moments = [
     </div>
   </div>
 </section>
+
+<style>
+  /* Cross-fade rhythm: header at 0ms, grid at 200ms — a film cut, not a
+     stagger. The default `cross-fade` variant already wires opacity 0 → 1
+     at considered duration; we just bump the grid's transition-delay so it
+     lands a beat after the header. */
+  .stay-experience .stay-grid { transition-delay: 200ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .stay-experience .stay-grid { transition-delay: 0ms !important; }
+  }
+</style>

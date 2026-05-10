@@ -30,7 +30,13 @@ const gridTestimonials = testimonials.filter((item) => !inlineNames.has(item.nam
       <!-- Guest reviews sourced from rabagas-suites.com testimonials section -->
     </div>
 
-    <div class="grid grid-cols-1 gap-5 md:grid-cols-2" data-reveal-stagger>
+    <!-- Phase 8 section authorship: testimonials reveal in PAIRS (children
+         1+2 together, then 3+4 together) at considered duration. Distinct
+         from a card-by-card stagger — reads as "a chorus of voices arriving
+         in conversation," not a sequential list. The 2x2 desktop grid
+         makes pair-wise the visual default; mobile (1-col) still reads as
+         pairs because of the deliberate 280ms gap between them. -->
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2" data-reveal="pairs">
       {gridTestimonials.map((item) => (
         <TestimonialCard testimonial={item} locale={locale} />
       ))}

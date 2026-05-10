@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import MobileBookingBar from '../components/layout/MobileBookingBar.astro';
@@ -96,6 +97,13 @@ const skipLinkText: Record<Locale, string> = {
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!-- Client-side view-transitions (Phase 8). Cross-fade between routes
+         using the browser-native View Transitions API. Customized below
+         via ::view-transition-* CSS so editorial pages get a 360ms
+         cream-fade. prefers-reduced-motion users get instant nav (Astro
+         respects the user-agent media query natively). -->
+    <ClientRouter />
+
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -141,23 +149,62 @@ const skipLinkText: Record<Locale, string> = {
     <!-- Lightbox: single instance per page; activates only when a Gallery dispatches its event -->
     <Lightbox locale={locale} />
 
-    <!-- Reveal Observer — triggers motion system -->
+    <!-- Reveal Observer — triggers the motion system.
+         Phase 8: navigation-resilient. The observer is created once per
+         document load; on every page-load (initial + view-transition
+         navigation) we walk the new DOM and observe any reveal elements
+         that haven't been observed yet. The WeakSet guard keeps us from
+         re-observing the same element if a script re-runs. -->
     <script>
+      const seen = new WeakSet();
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
             }
           });
         },
-        { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+        { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
       );
-      document.querySelectorAll('[data-reveal], [data-reveal-stagger]').forEach((el) => observer.observe(el));
+
+      const attach = () => {
+        document
+          .querySelectorAll('[data-reveal], [data-reveal-stagger]')
+          .forEach((el) => {
+            if (!seen.has(el)) {
+              seen.add(el);
+              observer.observe(el);
+            }
+          });
+      };
+
+      attach();
+      // Astro fires astro:page-load after every view-transition swap; the
+      // event listener on document survives navigations (document is
+      // persisted), so a single registration is enough.
+      document.addEventListener('astro:page-load', attach);
     </script>
 
     <style is:global>
       @import '../styles/global.css';
+
+      /* Phase 8 view-transition styling. Override the default browser
+         cross-fade duration to match the considered token (360ms) with
+         the considered ease curve. Reduced-motion users get the browser
+         default suppression (Astro respects `prefers-reduced-motion`). */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: var(--motion-considered);
+        animation-timing-function: var(--ease-considered);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+          animation: none !important;
+        }
+      }
     </style>
   </body>
 </html>

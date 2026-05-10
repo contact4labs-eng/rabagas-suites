@@ -1,20 +1,24 @@
 /* =========================================
-   RABAGAS SUITES — Premium Motion System
-   Inspired by 21st.dev: Modern Hero clip-path reveal,
-   AnimatedText stagger, Hero Parallax spring physics
+   RABAGAS SUITES — Motion System (Phase 8)
 
-   CSS-only for zero JS overhead.
-   IntersectionObserver triggers via data-reveal.
-   Respects prefers-reduced-motion.
+   Token-driven (durations + eases live in src/styles/global.css @theme).
+   IntersectionObserver triggers reveals via the [data-reveal] attribute
+   from BaseLayout.astro. Per-section variants are listed below; scoped
+   per-component <style> blocks may layer on top of `.is-visible` for
+   bespoke choreography (see OriginStory, BrandStatement, SuitesPreview,
+   StayExperience, WhyRabagas, Amenities, Testimonials, FinalCTA).
+
+   Reduced-motion: surgical neutralization at the bottom of this file.
+   Component-specific reduced-motion overrides live next to their styles.
    ========================================= */
 
-/* --- Reveal System --- */
+/* --- Reveal System: default (fade up) ----------------------------- */
 [data-reveal] {
   opacity: 0;
   transform: translateY(24px);
   transition:
-    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity var(--motion-deliberate) var(--ease-considered),
+    transform var(--motion-deliberate) var(--ease-considered);
 }
 
 [data-reveal].is-visible {
@@ -22,129 +26,241 @@
   transform: translateY(0);
 }
 
-/* Stagger delays for children */
-[data-reveal-stagger] > * { opacity: 0; transform: translateY(16px); transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-[data-reveal-stagger].is-visible > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: translateY(0); }
-[data-reveal-stagger].is-visible > *:nth-child(2) { transition-delay: 80ms; opacity: 1; transform: translateY(0); }
-[data-reveal-stagger].is-visible > *:nth-child(3) { transition-delay: 160ms; opacity: 1; transform: translateY(0); }
-[data-reveal-stagger].is-visible > *:nth-child(4) { transition-delay: 240ms; opacity: 1; transform: translateY(0); }
-[data-reveal-stagger].is-visible > *:nth-child(5) { transition-delay: 320ms; opacity: 1; transform: translateY(0); }
-[data-reveal-stagger].is-visible > *:nth-child(6) { transition-delay: 400ms; opacity: 1; transform: translateY(0); }
-[data-reveal-stagger].is-visible > *:nth-child(7) { transition-delay: 480ms; opacity: 1; transform: translateY(0); }
-[data-reveal-stagger].is-visible > *:nth-child(8) { transition-delay: 560ms; opacity: 1; transform: translateY(0); }
+/* --- Stagger system: children at default cadence ------------------ */
+[data-reveal-stagger] > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--motion-considered) var(--ease-considered),
+    transform var(--motion-considered) var(--ease-considered);
+}
+[data-reveal-stagger].is-visible > *:nth-child(1) { transition-delay: 0ms;   opacity: 1; transform: translateY(0); }
+[data-reveal-stagger].is-visible > *:nth-child(2) { transition-delay: calc(var(--motion-stagger-default) * 1); opacity: 1; transform: translateY(0); }
+[data-reveal-stagger].is-visible > *:nth-child(3) { transition-delay: calc(var(--motion-stagger-default) * 2); opacity: 1; transform: translateY(0); }
+[data-reveal-stagger].is-visible > *:nth-child(4) { transition-delay: calc(var(--motion-stagger-default) * 3); opacity: 1; transform: translateY(0); }
+[data-reveal-stagger].is-visible > *:nth-child(5) { transition-delay: calc(var(--motion-stagger-default) * 4); opacity: 1; transform: translateY(0); }
+[data-reveal-stagger].is-visible > *:nth-child(6) { transition-delay: calc(var(--motion-stagger-default) * 5); opacity: 1; transform: translateY(0); }
+[data-reveal-stagger].is-visible > *:nth-child(7) { transition-delay: calc(var(--motion-stagger-default) * 6); opacity: 1; transform: translateY(0); }
+[data-reveal-stagger].is-visible > *:nth-child(8) { transition-delay: calc(var(--motion-stagger-default) * 7); opacity: 1; transform: translateY(0); }
 
-/* Editorial reveal — slower, gentler, for brand sections */
+/* --- Reveal variants ---------------------------------------------- */
 [data-reveal="editorial"] {
   transform: translateY(32px);
-  transition-duration: 1.2s;
+  transition-duration: var(--motion-cinematic);
 }
 
-/* Reveal from left */
-[data-reveal="left"] {
-  transform: translateX(-32px);
-}
-[data-reveal="left"].is-visible {
-  transform: translateX(0);
+[data-reveal="left"]  { transform: translateX(-32px); }
+[data-reveal="left"].is-visible  { transform: translateX(0); }
+[data-reveal="right"] { transform: translateX(32px); }
+[data-reveal="right"].is-visible { transform: translateX(0); }
+
+[data-reveal="scale"] { transform: scale(0.95); }
+[data-reveal="scale"].is-visible { transform: scale(1); }
+
+[data-reveal="slow"] { transition-duration: var(--motion-cinematic); }
+
+/* --- Phase 8 section variants (per-section authorship) ------------
+   Each section gets a distinct reveal character so the homepage doesn't
+   read as a single uniform fade-up cascade. Variants below are *triggers*
+   only — exact choreography (delays, child sequencing) lives in each
+   component's scoped <style>. The variant attribute pre-stages the
+   children invisibly so first-paint is correct.
+------------------------------------------------------------------- */
+
+/* "in-row" — featured item reveals first (cinematic), then the secondary
+   grid as a single unit (considered). Used by SuitesPreview. */
+[data-reveal="in-row"] {
+  transform: translateY(20px);
+  transition-duration: var(--motion-considered);
 }
 
-/* Reveal from right */
-[data-reveal="right"] {
-  transform: translateX(32px);
+/* "cross-fade" — used by StayExperience. Image fades in (considered),
+   text follows after a small delay. The delay/order is set by the
+   component's scoped style on `.is-visible .stay-image` /
+   `.is-visible .stay-text`. */
+[data-reveal="cross-fade"] {
+  transform: none;
+  opacity: 0;
+  transition: opacity var(--motion-considered) var(--ease-considered);
 }
-[data-reveal="right"].is-visible {
-  transform: translateX(0);
-}
+[data-reveal="cross-fade"].is-visible { opacity: 1; }
 
-/* Reveal scale */
-[data-reveal="scale"] {
-  transform: scale(0.95);
+/* "settle" — Amenities icons. Each child slides up from below with its
+   own quick tight stagger (60ms × N). Looks like icons "settling into
+   place" rather than swimming up together. */
+[data-reveal="settle"] > * {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--motion-considered) var(--ease-considered),
+    transform var(--motion-considered) var(--ease-cinematic);
 }
-[data-reveal="scale"].is-visible {
-  transform: scale(1);
-}
+[data-reveal="settle"].is-visible > *:nth-child(1)  { transition-delay: 0ms;                                   opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(2)  { transition-delay: calc(var(--motion-stagger-tight) * 1);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(3)  { transition-delay: calc(var(--motion-stagger-tight) * 2);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(4)  { transition-delay: calc(var(--motion-stagger-tight) * 3);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(5)  { transition-delay: calc(var(--motion-stagger-tight) * 4);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(6)  { transition-delay: calc(var(--motion-stagger-tight) * 5);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(7)  { transition-delay: calc(var(--motion-stagger-tight) * 6);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(8)  { transition-delay: calc(var(--motion-stagger-tight) * 7);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(9)  { transition-delay: calc(var(--motion-stagger-tight) * 8);  opacity: 1; transform: translateY(0); }
+[data-reveal="settle"].is-visible > *:nth-child(10) { transition-delay: calc(var(--motion-stagger-tight) * 9);  opacity: 1; transform: translateY(0); }
 
-/* Slow reveal for images */
-[data-reveal="slow"] {
-  transition-duration: 1.2s;
+/* "pairs" — Testimonials. Children reveal two at a time, not staggered
+   one-by-one. Pair 1 (children 1+2) at 0ms, pair 2 (3+4) at 280ms.
+   No translate, just opacity so the cards don't bob. */
+[data-reveal="pairs"] > * {
+  opacity: 0;
+  transition: opacity var(--motion-considered) var(--ease-considered);
 }
+[data-reveal="pairs"].is-visible > *:nth-child(1),
+[data-reveal="pairs"].is-visible > *:nth-child(2) { transition-delay: 0ms;                                       opacity: 1; }
+[data-reveal="pairs"].is-visible > *:nth-child(3),
+[data-reveal="pairs"].is-visible > *:nth-child(4) { transition-delay: var(--motion-stagger-deliberate);          opacity: 1; }
+[data-reveal="pairs"].is-visible > *:nth-child(5),
+[data-reveal="pairs"].is-visible > *:nth-child(6) { transition-delay: calc(var(--motion-stagger-deliberate) * 2); opacity: 1; }
 
-/* --- Hero Entrance Choreography --- */
-.hero-enter > * {
+/* "groups-2-3-1" — WhyRabagas. Six cards reveal in three batches:
+   first 2 together, then next 3 together, then the last alone. */
+[data-reveal="groups-2-3-1"] > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--motion-considered) var(--ease-considered),
+    transform var(--motion-considered) var(--ease-considered);
+}
+[data-reveal="groups-2-3-1"].is-visible > *:nth-child(1),
+[data-reveal="groups-2-3-1"].is-visible > *:nth-child(2) { transition-delay: 0ms;                                          opacity: 1; transform: translateY(0); }
+[data-reveal="groups-2-3-1"].is-visible > *:nth-child(3),
+[data-reveal="groups-2-3-1"].is-visible > *:nth-child(4),
+[data-reveal="groups-2-3-1"].is-visible > *:nth-child(5) { transition-delay: var(--motion-stagger-deliberate);              opacity: 1; transform: translateY(0); }
+[data-reveal="groups-2-3-1"].is-visible > *:nth-child(6) { transition-delay: calc(var(--motion-stagger-deliberate) * 2);    opacity: 1; transform: translateY(0); }
+
+/* "deliberate-chain" — FinalCTA. Children reveal in sequence at the
+   loose 140ms cadence: kicker, headline, body, CTA group, quote.
+   No rush; cinematic ease. */
+[data-reveal="deliberate-chain"] > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--motion-deliberate) var(--ease-cinematic),
+    transform var(--motion-deliberate) var(--ease-cinematic);
+}
+[data-reveal="deliberate-chain"].is-visible > *:nth-child(1) { transition-delay: 0ms;                                opacity: 1; transform: translateY(0); }
+[data-reveal="deliberate-chain"].is-visible > *:nth-child(2) { transition-delay: calc(var(--motion-stagger-loose) * 1); opacity: 1; transform: translateY(0); }
+[data-reveal="deliberate-chain"].is-visible > *:nth-child(3) { transition-delay: calc(var(--motion-stagger-loose) * 2); opacity: 1; transform: translateY(0); }
+[data-reveal="deliberate-chain"].is-visible > *:nth-child(4) { transition-delay: calc(var(--motion-stagger-loose) * 3); opacity: 1; transform: translateY(0); }
+[data-reveal="deliberate-chain"].is-visible > *:nth-child(5) { transition-delay: calc(var(--motion-stagger-loose) * 4); opacity: 1; transform: translateY(0); }
+
+/* --- Page-load entrance choreography (Hero + similar) ------------- */
+.page-enter > * {
   opacity: 0;
   transform: translateY(20px);
-  animation: heroEnter 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pageEnter var(--motion-deliberate) var(--ease-considered) forwards;
 }
+.page-enter > *:nth-child(1) { animation-delay: 300ms; }
+.page-enter > *:nth-child(2) { animation-delay: 440ms; }  /* 300 + loose */
+.page-enter > *:nth-child(3) { animation-delay: 580ms; }
+.page-enter > *:nth-child(4) { animation-delay: 720ms; }
+.page-enter > *:nth-child(5) { animation-delay: 860ms; }
 
-.hero-enter > *:nth-child(1) { animation-delay: 0.3s; }
-.hero-enter > *:nth-child(2) { animation-delay: 0.5s; }
-.hero-enter > *:nth-child(3) { animation-delay: 0.7s; }
-.hero-enter > *:nth-child(4) { animation-delay: 0.9s; }
-.hero-enter > *:nth-child(5) { animation-delay: 1.1s; }
+@keyframes pageEnter { to { opacity: 1; transform: translateY(0); } }
 
-@keyframes heroEnter {
-  to { opacity: 1; transform: translateY(0); }
-}
+/* Backwards-compat alias — Hero.astro still uses .hero-enter today.
+   Both names resolve to the same choreography until Phase 9 tidy-up. */
+.hero-enter > * { opacity: 0; transform: translateY(20px); animation: pageEnter var(--motion-deliberate) var(--ease-considered) forwards; }
+.hero-enter > *:nth-child(1) { animation-delay: 300ms; }
+.hero-enter > *:nth-child(2) { animation-delay: 440ms; }
+.hero-enter > *:nth-child(3) { animation-delay: 580ms; }
+.hero-enter > *:nth-child(4) { animation-delay: 720ms; }
+.hero-enter > *:nth-child(5) { animation-delay: 860ms; }
 
-/* --- Hero Image Ken Burns --- */
-@keyframes kenBurns {
-  0% { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
+/* --- Hero Image Ken Burns ----------------------------------------- */
+@keyframes kenBurns { 0% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.hero-image-animate { animation: kenBurns 12s var(--ease-considered) forwards; }
 
-.hero-image-animate {
-  animation: kenBurns 12s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+/* --- Image hover zoom (used by SuiteCard, Gallery thumbnails) ----- */
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform var(--motion-deliberate) var(--ease-considered); }
+.img-zoom:hover img { transform: scale(1.04); }
 
-/* --- Image Hover Zoom --- */
-.img-zoom {
-  overflow: hidden;
-}
-.img-zoom img {
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.img-zoom:hover img {
-  transform: scale(1.04);
-}
-
-/* --- Line Grow Animation --- */
-.line-grow {
-  width: 0;
-  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
+/* --- Line grow (decorative hairlines under headings) -------------- */
+.line-grow { width: 0; transition: width var(--motion-deliberate) var(--ease-considered); }
 .is-visible .line-grow,
-[data-reveal].is-visible .line-grow {
-  width: 3rem;
+[data-reveal].is-visible .line-grow { width: 3rem; }
+
+/* --- Primary CTA ink-fill on hover/focus --------------------------
+   Used by the "Hold Your Dates" CTAs in Hero and FinalCTA. Instead of a
+   generic background-color transition, a pseudo-element fills from left
+   to right inside the button — like ink running across the surface.
+   The button text inverts color as the fill arrives. Quick duration so
+   it doesn't feel sticky on touch devices.
+   Apply with `cta-ink` AND a contrasting `cta-ink--charcoal` modifier
+   for buttons that need a charcoal fill on a light background.
+------------------------------------------------------------------- */
+.cta-ink {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: color var(--motion-quick) var(--ease-quick);
+}
+.cta-ink::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-charcoal);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-considered) var(--ease-cinematic);
+  z-index: -1;
+}
+.cta-ink--invert::before { background: var(--color-cream); }
+.cta-ink:hover::before,
+.cta-ink:focus-visible::before { transform: scaleX(1); }
+.cta-ink:hover, .cta-ink:focus-visible { color: var(--color-cream); }
+.cta-ink--invert:hover, .cta-ink--invert:focus-visible { color: var(--color-charcoal); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-ink::before { transition: none !important; }
+  .cta-ink:hover::before, .cta-ink:focus-visible::before { transform: scaleX(1) !important; }
 }
 
-/* --- Premium Link Underline --- */
-.link-premium {
-  position: relative;
-}
+/* --- Premium link underline --------------------------------------- */
+.link-premium { position: relative; }
 .link-premium::after {
   content: '';
   position: absolute;
   bottom: -2px;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 1px;
   background: currentColor;
-  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width var(--motion-considered) var(--ease-considered);
 }
-.link-premium:hover::after {
-  width: 100%;
-}
+.link-premium:hover::after,
+.link-premium:focus-visible::after { width: 100%; }
 
-/* --- Reduced Motion --- */
+/* --- Reduced motion ----------------------------------------------
+   Surgical: kill the reveal/page-load motion, leave hover/focus-state
+   transitions alone (those are user-initiated, not autoplaying narrative).
+   Component-level @media (prefers-reduced-motion: reduce) blocks neutralize
+   their own scoped overrides (see OriginStory for the pattern).
+------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
   [data-reveal-stagger] > *,
+  [data-reveal="settle"] > *,
+  [data-reveal="pairs"] > *,
+  [data-reveal="groups-2-3-1"] > *,
+  [data-reveal="deliberate-chain"] > *,
+  .page-enter > *,
   .hero-enter > * {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
     transition: none !important;
+    transition-delay: 0ms !important;
   }
-  .hero-image-animate {
-    animation: none !important;
-  }
+  .hero-image-animate { animation: none !important; }
 }

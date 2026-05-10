@@ -49,10 +49,47 @@
   --shadow-elevated: 0 8px 32px rgba(30, 27, 24, 0.08);
   --shadow-hero: 0 16px 48px rgba(30, 27, 24, 0.12);
 
-  /* --- Animations --- */
-  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-fade-up: fade-up 0.6s var(--ease-premium) both;
-  --animate-fade-in: fade-in 0.5s ease both;
+  /* --- Motion Tokens (Phase 8) ----------------------------------------
+     Durations and eases that any component can pull via `var(--motion-*)`
+     in scoped <style> blocks or arbitrary Tailwind values like
+     `duration-[var(--motion-quick)]`. These are NOT design tokens in the
+     Tailwind theme() sense — we just colocate them here so the import
+     order matches the rest of the design system.
+
+     Naming intent (matches the Phase 8 brief):
+       --motion-instant       0ms      reduced-motion overrides, focus rings
+       --motion-quick       180ms      micro-interactions: button hovers, arrow nudges
+       --motion-considered   360ms      reveals, normal interactions, lightbox cross-fade
+       --motion-deliberate   700ms      editorial moments, line-grow, brand statement words
+       --motion-cinematic   1400ms      signature moments: hairline scaleY, Ken Burns
+
+     Stagger cadences for [data-reveal-stagger] children. The default 80ms
+     handles most card grids; loose is for editorial sequences that need
+     room to breathe; deliberate matches OriginStory's per-beat pace.
+  ------------------------------------------------------------------- */
+  --motion-instant: 0ms;
+  --motion-quick: 180ms;
+  --motion-considered: 360ms;
+  --motion-deliberate: 700ms;
+  --motion-cinematic: 1400ms;
+
+  --motion-stagger-tight: 60ms;
+  --motion-stagger-default: 80ms;
+  --motion-stagger-loose: 140ms;
+  --motion-stagger-deliberate: 280ms;
+
+  /* --- Easing curves -------------------------------------------------
+     `--ease-premium` is kept as an alias so any third-party-style class
+     that referenced it during Phases 1–7 still resolves. New code should
+     use --ease-considered.
+  ------------------------------------------------------------------- */
+  --ease-quick: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-considered: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-premium: var(--ease-considered); /* legacy alias */
+
+  --animate-fade-up: fade-up var(--motion-considered) var(--ease-considered) both;
+  --animate-fade-in: fade-in var(--motion-considered) ease both;
 }
 
 @keyframes fade-up {

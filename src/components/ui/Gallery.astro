@@ -69,7 +69,7 @@ const lightboxPayload = images.map((img) => ({
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             loading="lazy"
             quality={75}
-            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            class="h-full w-full object-cover transition-transform duration-[var(--motion-considered)] ease-[var(--ease-considered)] group-hover:scale-[1.06] group-focus-visible:scale-[1.06]"
           />
         </button>
       </li>
@@ -81,16 +81,26 @@ const lightboxPayload = images.map((img) => ({
 </div>
 
 <script>
-  // Inline (component-scoped). Wires every <button> in this Gallery to the
+  // Component-scoped. Wires every <button> in this Gallery to the
   // 'rabagas:lightbox-open' event the Lightbox island listens for.
-  document.querySelectorAll<HTMLButtonElement>('button[data-lightbox-id]').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const id = btn.dataset.lightboxId!;
-      const index = Number(btn.dataset.index ?? 0);
-      window.dispatchEvent(
-        new CustomEvent('rabagas:lightbox-open', { detail: { id, index } }),
-      );
-    });
-  });
+  // Phase 8: re-binds on every view-transition page-load so new gallery
+  // thumbnails on the destination page are wired up. Idempotency guard
+  // via a data attribute so the same button never gets two listeners.
+  function bindGalleryButtons() {
+    document
+      .querySelectorAll<HTMLButtonElement>('button[data-lightbox-id]:not([data-lb-bound])')
+      .forEach((btn) => {
+        btn.dataset.lbBound = 'true';
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = btn.dataset.lightboxId!;
+          const index = Number(btn.dataset.index ?? 0);
+          window.dispatchEvent(
+            new CustomEvent('rabagas:lightbox-open', { detail: { id, index } }),
+          );
+        });
+      });
+  }
+  bindGalleryButtons();
+  document.addEventListener('astro:page-load', bindGalleryButtons);
 </script>

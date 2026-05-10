@@ -26,7 +26,11 @@ const { locale } = Astro.props;
     <div class="absolute inset-0 bg-charcoal/60 backdrop-blur-[2px]"></div>
   </div>
 
-  <div class="relative z-10 mx-auto max-w-2xl px-6 text-center" data-reveal>
+  <!-- Phase 8 section authorship: deliberate-chain. Children reveal in
+       sequence with a 140ms loose cadence and cinematic ease — kicker,
+       headline, body, CTA group. No rush. The longest, slowest reveal on
+       the homepage; reads as "we have all the time in the world." -->
+  <div class="relative z-10 mx-auto max-w-2xl px-6 text-center" data-reveal="deliberate-chain">
     <span class="label-uppercase mb-5 block text-white/40">Rabagas Suites</span>
     <h2 class="font-heading text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.05] text-white">
       {t('cta.final.title', locale)}
@@ -37,11 +41,11 @@ const { locale } = Astro.props;
     <div class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
       <a
         href={getLocalizedPath('/contact', locale) + '#booking'}
-        class="group inline-flex h-14 items-center gap-2 rounded-none bg-white px-10 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-charcoal transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] sm:h-12"
+        class="cta-ink group inline-flex h-14 items-center gap-2 rounded-none bg-white px-10 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-charcoal hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] sm:h-12"
         style="text-decoration: none;"
       >
         {t('hero.cta.book', locale)}
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-[var(--motion-quick)] ease-[var(--ease-quick)] group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
       <a
         href={getLocalizedPath('/suites', locale)}
