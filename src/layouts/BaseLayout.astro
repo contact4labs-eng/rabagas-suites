@@ -2,6 +2,7 @@
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import MobileBookingBar from '../components/layout/MobileBookingBar.astro';
+import Lightbox from '../components/ui/Lightbox.astro';
 import type { Locale } from '../lib/i18n';
 import { getAlternates, getLocalizedPath, stripLocale } from '../lib/i18n';
 
@@ -136,6 +137,9 @@ const skipLinkText: Record<Locale, string> = {
 
     <Footer locale={locale} />
     <MobileBookingBar locale={locale} />
+
+    <!-- Lightbox: single instance per page; activates only when a Gallery dispatches its event -->
+    <Lightbox locale={locale} />
 
     <!-- Reveal Observer — triggers motion system -->
     <script>

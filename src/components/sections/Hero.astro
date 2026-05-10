@@ -14,7 +14,7 @@
 import { Image } from 'astro:assets';
 import type { Locale } from '../../lib/i18n';
 import { t, getLocalizedPath } from '../../lib/i18n';
-import { propertyImages } from '../../data/images';
+import { propertyImages, heroVideo } from '../../data/images';
 
 interface Props {
   locale: Locale;
@@ -24,9 +24,25 @@ const { locale } = Astro.props;
 ---
 
 <section class="relative min-h-svh w-full overflow-hidden" aria-label={t('aria.welcome', locale)}>
-  <!-- Background with Ken Burns -->
+  <!-- Background. CSS gates the video to desktop (>= 1024px) AND prefers-reduced-motion: no-preference.
+       Mobile + reduced-motion users get the still image with Ken Burns; the video <source>s
+       use preload="none" so they're not downloaded when not displayed.
+       Logic in /src/styles/global.css (.hero-video / .hero-poster). -->
   <div class="absolute inset-0 z-0">
-    <div class="hero-image-animate h-full w-full">
+    <video
+      class="hero-video h-full w-full object-cover object-center"
+      poster={propertyImages.hero.src}
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-hidden="true"
+    >
+      <source src={heroVideo.av1} type="video/webm; codecs=av01.0.05M.08" />
+      <source src={heroVideo.mp4} type="video/mp4" />
+    </video>
+    <div class="hero-poster hero-image-animate h-full w-full">
       <Image
         src={propertyImages.hero}
         alt="Rabagas Suites terrace overlooking Apollonia, Sifnos"

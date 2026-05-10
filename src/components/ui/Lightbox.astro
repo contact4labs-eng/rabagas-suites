@@ -1,0 +1,236 @@
+---
+/**
+ * LIGHTBOX (single island per page)
+ * Mounted once in BaseLayout via `client:visible`.
+ * Discovers Gallery payloads at runtime by reading <template data-images-for>.
+ * Listens for 'rabagas:lightbox-open' (from Gallery.astro buttons) to open.
+ *
+ * Features:
+ *   - Esc to close, ←/→ to navigate, focus trap, scroll lock
+ *   - Touch swipe (left/right) on mobile
+ *   - Adjacent images preloaded (current ± 1)
+ *   - Counter shows "{n} / {total}"
+ *   - Respects prefers-reduced-motion (no transitions when reduce)
+ *   - Vanilla TS, ~5KB minified+gzip target
+ */
+import type { Locale } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const labels = {
+  close:   t('lightbox.close', locale),
+  prev:    t('lightbox.prev', locale),
+  next:    t('lightbox.next', locale),
+  region:  t('lightbox.label', locale),
+  counter: t('lightbox.counter', locale),
+};
+---
+
+<dialog
+  id="rabagas-lightbox"
+  class="fixed inset-0 m-0 hidden h-full max-h-none w-full max-w-none border-none bg-black/95 p-0 text-white backdrop:bg-transparent"
+  aria-modal="true"
+  aria-label={labels.region}
+  role="dialog"
+>
+  <div class="flex h-full w-full flex-col">
+    <!-- Top bar -->
+    <div class="flex items-center justify-between px-4 py-4 sm:px-6">
+      <span id="lb-counter" class="text-xs font-medium tracking-[0.15em] text-white/70" aria-live="polite"></span>
+      <button
+        type="button"
+        id="lb-close"
+        class="flex h-12 w-12 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+        aria-label={labels.close}
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Image stage -->
+    <div class="relative flex flex-1 items-center justify-center overflow-hidden px-2 sm:px-12" id="lb-stage">
+      <button
+        type="button"
+        id="lb-prev"
+        class="absolute left-2 z-10 hidden h-12 w-12 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:left-4 md:flex"
+        aria-label={labels.prev}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <img id="lb-img" alt="" class="max-h-full max-w-full object-contain transition-opacity duration-150 lb-loading:opacity-50" />
+
+      <button
+        type="button"
+        id="lb-next"
+        class="absolute right-2 z-10 hidden h-12 w-12 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:right-4 md:flex"
+        aria-label={labels.next}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <!-- Mobile bottom controls -->
+    <div class="flex items-center justify-center gap-6 py-4 md:hidden">
+      <button type="button" data-lb-mobile="prev" class="flex h-12 w-12 items-center justify-center rounded-full text-white/80 hover:bg-white/10" aria-label={labels.prev}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button type="button" data-lb-mobile="next" class="flex h-12 w-12 items-center justify-center rounded-full text-white/80 hover:bg-white/10" aria-label={labels.next}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script is:inline define:vars={{ counterTemplate: labels.counter }}>
+  // Vanilla TS-ish runtime. Uses native <dialog>.
+  const dialog = document.getElementById('rabagas-lightbox');
+  const img = document.getElementById('lb-img');
+  const counter = document.getElementById('lb-counter');
+  const btnClose = document.getElementById('lb-close');
+  const btnPrev = document.getElementById('lb-prev');
+  const btnNext = document.getElementById('lb-next');
+  const stage = document.getElementById('lb-stage');
+  const mobilePrev = document.querySelector('[data-lb-mobile="prev"]');
+  const mobileNext = document.querySelector('[data-lb-mobile="next"]');
+
+  /** @type {Map<string, {src:string,width:number,height:number}[]>} */
+  const registry = new Map();
+  /** @type {string|null} */
+  let activeId = null;
+  /** @type {number} */
+  let index = 0;
+  /** @type {HTMLElement|null} */
+  let returnFocusTo = null;
+
+  // Discover all gallery payloads on the page.
+  function rebuildRegistry() {
+    registry.clear();
+    document.querySelectorAll('template[data-images-for]').forEach((tpl) => {
+      const id = tpl.getAttribute('data-images-for');
+      if (!id) return;
+      try {
+        const data = JSON.parse(tpl.innerHTML);
+        if (Array.isArray(data)) registry.set(id, data);
+      } catch { /* skip malformed */ }
+    });
+  }
+  rebuildRegistry();
+
+  function preload(src) { if (src) { const i = new Image(); i.src = src; } }
+
+  function render() {
+    if (!activeId) return;
+    const items = registry.get(activeId);
+    if (!items || !items.length) return;
+    const total = items.length;
+    index = ((index % total) + total) % total; // wrap
+    const item = items[index];
+    img.classList.add('lb-loading');
+    img.src = item.src;
+    img.width = item.width || 1600;
+    img.height = item.height || 900;
+    img.onload = () => img.classList.remove('lb-loading');
+    counter.textContent = counterTemplate
+      .replace('{n}', String(index + 1))
+      .replace('{total}', String(total));
+    // Preload neighbours
+    if (items[index + 1]) preload(items[index + 1].src);
+    if (items[index - 1]) preload(items[index - 1].src);
+    // Hide next/prev for single-image galleries
+    const single = total <= 1;
+    btnPrev.style.visibility = btnNext.style.visibility = single ? 'hidden' : '';
+    if (mobilePrev) mobilePrev.style.visibility = single ? 'hidden' : '';
+    if (mobileNext) mobileNext.style.visibility = single ? 'hidden' : '';
+  }
+
+  function open(id, startIndex) {
+    rebuildRegistry();
+    if (!registry.has(id)) return;
+    activeId = id;
+    index = startIndex || 0;
+    returnFocusTo = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialog.classList.remove('hidden');
+    document.documentElement.style.overflow = 'hidden';
+    if (typeof dialog.showModal === 'function') {
+      try { dialog.showModal(); } catch { dialog.setAttribute('open', ''); }
+    } else {
+      dialog.setAttribute('open', '');
+    }
+    render();
+    btnClose.focus();
+  }
+
+  function close() {
+    activeId = null;
+    if (typeof dialog.close === 'function') {
+      try { dialog.close(); } catch { dialog.removeAttribute('open'); }
+    } else {
+      dialog.removeAttribute('open');
+    }
+    dialog.classList.add('hidden');
+    document.documentElement.style.overflow = '';
+    if (returnFocusTo) { returnFocusTo.focus(); returnFocusTo = null; }
+  }
+
+  function nav(delta) { index += delta; render(); }
+
+  // Event wiring
+  window.addEventListener('rabagas:lightbox-open', (e) => {
+    const detail = e.detail || {};
+    if (detail.id) open(detail.id, detail.index || 0);
+  });
+
+  btnClose.addEventListener('click', close);
+  btnPrev.addEventListener('click', () => nav(-1));
+  btnNext.addEventListener('click', () => nav(+1));
+  if (mobilePrev) mobilePrev.addEventListener('click', () => nav(-1));
+  if (mobileNext) mobileNext.addEventListener('click', () => nav(+1));
+
+  // Keyboard
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); nav(-1); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); nav(+1); return; }
+    if (e.key === 'Tab') {
+      // Focus trap: cycle within the dialog only.
+      const focusables = dialog.querySelectorAll('button:not([disabled])');
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  // Click on backdrop closes (but not on dialog inner content)
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) close();
+  });
+
+  // Touch swipe
+  let touchStartX = 0; let touchStartY = 0;
+  stage.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  stage.addEventListener('touchend', (e) => {
+    const dx = (e.changedTouches[0].clientX - touchStartX);
+    const dy = (e.changedTouches[0].clientY - touchStartY);
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      nav(dx < 0 ? +1 : -1);
+    }
+  }, { passive: true });
+
+  // Native dialog `cancel` (ESC at top level)
+  dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+</script>
+
+<style>
+  .lb-loading { opacity: 0.5; }
+  @media (prefers-reduced-motion: reduce) {
+    #lb-img { transition: none !important; }
+    #rabagas-lightbox * { animation: none !important; transition: none !important; }
+  }
+</style>

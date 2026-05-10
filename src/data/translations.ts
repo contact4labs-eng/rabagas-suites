@@ -176,7 +176,7 @@ export const t: Translations = {
 
   // Phase 5 — component i18n cleanup additions
   'hero.location': { en: 'Sifnos, Greece', el: 'Σίφνος, Ελλάδα', fr: 'Sifnos, Grèce' },
-  'brand.statement': { en: 'Six restored residences. One quiet corner of Apollonia. A place where the Cyclades feel like home.', el: 'Έξι αναστηλωμένες κατοικίες. Μια ήσυχη γωνιά της Απολλωνίας. Ένα μέρος όπου οι Κυκλάδες μοιάζουν με σπίτι.', fr: 'Six demeures restaurées. Un coin tranquille d’Apollonia. Un endroit où les Cyclades se sentent comme à la maison.' },
+  'brand.statement': { en: 'Six restored residences. One quiet corner of Apollonia. A place where the Cyclades feel like home.', el: 'Έξι αναστηλωμένες κατοικίες. Μια ήσυχη γωνιά της Απολλωνίας. Ένα μέρος όπου οι Κυκλάδες μοιάζουν με σπίτι.', fr: 'Six demeures restaurées. Un coin tranquille d’Apollonia. Un endroit où les Cyclades deviennent un chez-soi.' },
   'arrival.location': { en: 'Apollonia, Sifnos', el: 'Απολλωνία, Σίφνος', fr: 'Apollonia, Sifnos' },
   'arrival.heading': { en: 'Where the island keeps its secrets', el: 'Εκεί που το νησί κρατά τα μυστικά του', fr: 'Là où l’île garde ses secrets' },
   'arrival.body1': { en: 'Apollonia is the quiet heart of Sifnos — a village of whitewashed lanes, candlelit tavernas, and rooftop views that stretch to Antiparos. Rabagas sits steps from its central alley, where the pace of the island dissolves into slow mornings, warm stone underfoot, and the scent of thyme carried on Aegean air.', el: 'Η Απολλωνία είναι η ήσυχη καρδιά της Σίφνου — ένα χωριό με ασβεστωμένα σοκάκια, ταβέρνες με κεριά και θέα που φτάνει ως την Αντίπαρο. Το Rabagas βρίσκεται λίγα βήματα από το κεντρικό σοκάκι, εκεί που ο ρυθμός του νησιού γίνεται αργές πρωινές ώρες, ζεστή πέτρα κάτω από τα πόδια και άρωμα θυμαριού στον αέρα του Αιγαίου.', fr: 'Apollonia est le cœur paisible de Sifnos — un village de ruelles blanchies à la chaux, de tavernes éclairées à la bougie et de toits avec vue sur Antiparos. Le Rabagas se trouve à quelques pas de l’allée centrale, là où le rythme de l’île se fond en matins lents, pierre chaude sous les pieds et parfum de thym porté par l’air égéen.' },
@@ -289,6 +289,32 @@ export const t: Translations = {
   'aria.mobileNav': { en: 'Mobile navigation', el: 'Πλοήγηση κινητού', fr: 'Navigation mobile' },
   'aria.language': { en: 'Language', el: 'Γλώσσα', fr: 'Langue' },
   'aria.menu': { en: 'Menu', el: 'Μενού', fr: 'Menu' },
+
+  // Phase 6 — footer keys
+  'footer.brandTagline': { en: 'Suites · Sifnos', el: 'Σουίτες · Σίφνος', fr: 'Suites · Sifnos' },
+  'footer.social': { en: 'Social', el: 'Κοινωνικά', fr: 'Réseaux' },
+  'footer.location': { en: 'Location', el: 'Τοποθεσία', fr: 'Adresse' },
+  'social.instagram': { en: 'Instagram', el: 'Instagram', fr: 'Instagram' },
+  'social.facebook': { en: 'Facebook', el: 'Facebook', fr: 'Facebook' },
+
+  // Phase 6 — gallery + lightbox + hosts (v1 placeholder bio — replace with owner-authored copy when provided)
+  'gallery.label': { en: 'Gallery', el: 'Γκαλερί', fr: 'Galerie' },
+  'gallery.heading': { en: 'Moments from the settlement', el: 'Στιγμές από το οικισμό', fr: 'Instants au village' },
+  'gallery.suite.heading': { en: 'Suite gallery', el: 'Φωτογραφίες σουίτας', fr: 'Galerie de la suite' },
+  'gallery.viewLarger': { en: 'View larger', el: 'Δείτε σε μεγέθυνση', fr: 'Voir en grand' },
+  'gallery.imageAlt': { en: 'Photo {n} of {total}', el: 'Φωτογραφία {n} από {total}', fr: 'Photo {n} sur {total}' },
+  'lightbox.label': { en: 'Image gallery', el: 'Γκαλερί φωτογραφιών', fr: 'Galerie d’images' },
+  'lightbox.close': { en: 'Close gallery', el: 'Κλείσιμο γκαλερί', fr: 'Fermer la galerie' },
+  'lightbox.prev': { en: 'Previous image', el: 'Προηγούμενη εικόνα', fr: 'Image précédente' },
+  'lightbox.next': { en: 'Next image', el: 'Επόμενη εικόνα', fr: 'Image suivante' },
+  'lightbox.counter': { en: '{n} / {total}', el: '{n} / {total}', fr: '{n} / {total}' },
+  'hosts.title': { en: 'Meet George & Didi', el: 'Γνωρίστε τον Γιώργο και τη Ντίντι', fr: 'Rencontrez George et Didi' },
+  'hosts.kicker': { en: 'Your hosts', el: 'Οι οικοδεσπότες σας', fr: 'Vos hôtes' },
+  'hosts.bio.p1': { en: 'George and Didi are the hosts at Rabagas. They live a short walk from the suites in Apollonia, and personally welcome each guest on arrival.', el: 'Ο Γιώργος και η Ντίντι είναι οι οικοδεσπότες του Rabagas. Μένουν λίγα λεπτά με τα πόδια από τις σουίτες, στην Απολλωνία, και υποδέχονται κάθε επισκέπτη προσωπικά κατά την άφιξη.', fr: 'George et Didi sont les hôtes de Rabagas. Ils habitent à quelques minutes à pied des suites, à Apollonia, et accueillent personnellement chaque visiteur à son arrivée.' },
+  'hosts.bio.p2': { en: 'From restaurant recommendations to last-minute ferry tickets, they\'re the reason guests return.', el: 'Από προτάσεις εστιατορίων μέχρι εισιτήρια πλοίου την τελευταία στιγμή — είναι ο λόγος που οι επισκέπτες μας επιστρέφουν.', fr: 'Des recommandations de restaurants aux billets de ferry de dernière minute, ce sont eux qui font revenir les hôtes.' },
+  'hosts.initials': { en: 'G&D', el: 'Γ&Ν', fr: 'G&D' },
+  'hosts.signature': { en: 'With love from Apollonia.', el: 'Με αγάπη από την Απολλωνία.', fr: 'Avec amour, depuis Apollonia.' },
+  'hosts.imageAlt': { en: 'Portrait of George & Didi', el: 'Πορτρέτο των Γιώργου και Ντίντι', fr: 'Portrait de George et Didi' },
 };
 
 export function translate(key: string, locale: Locale): string {

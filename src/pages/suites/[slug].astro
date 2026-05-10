@@ -6,7 +6,8 @@ import BookingInquiry from '../../components/ui/BookingInquiry.astro';
 import { getAllSuites, getSuiteBySlug } from '../../data/suites';
 import { t } from '../../lib/i18n';
 import type { Locale } from '../../lib/i18n';
-import { suiteHeroImages } from '../../data/images';
+import { suiteHeroImages, suiteGalleries } from '../../data/images';
+import Gallery from '../../components/ui/Gallery.astro';
 
 export function getStaticPaths() {
   return getAllSuites().map((suite) => ({ params: { slug: suite.slug } }));
@@ -92,6 +93,21 @@ const focalClass = focalMap[suite.id] || 'object-center';
     </div>
   </section>
 
+
+  <!-- Suite Gallery -->
+  <section class="px-5 py-16 md:py-20 lg:px-8">
+    <div class="mx-auto max-w-6xl" data-reveal>
+      <h2 class="label-uppercase mb-6 text-[0.6rem] text-stone-400">{t('gallery.suite.heading', locale)}</h2>
+      {suiteGalleries[suite.id as keyof typeof suiteGalleries] && (
+        <Gallery
+          id={`suite-${suite.id}`}
+          images={suiteGalleries[suite.id as keyof typeof suiteGalleries].gallery}
+          locale={locale}
+          columns={3}
+        />
+      )}
+    </div>
+  </section>
   <section class="bg-sand-50 px-5 py-20 lg:px-8">
     <div class="mx-auto max-w-6xl">
       <h2 class="mb-10 font-heading text-2xl font-light text-ink">{t('suite.related', locale)}</h2>

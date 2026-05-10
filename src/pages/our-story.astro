@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FinalCTA from '../components/sections/FinalCTA.astro';
+import HostsModule from '../components/sections/HostsModule.astro';
 import { t } from '../lib/i18n';
 import type { Locale } from '../lib/i18n';
 import { propertyImages } from '../data/images';
@@ -96,6 +97,8 @@ const locale: Locale = 'el';
       </blockquote>
     </div>
   </section>
+
+  <HostsModule locale={locale} />
 
   <FinalCTA locale={locale} />
 </BaseLayout>

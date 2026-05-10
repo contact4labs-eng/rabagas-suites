@@ -10,6 +10,8 @@ import WhyRabagas from '../../components/sections/WhyRabagas.astro';
 import Testimonials from '../../components/sections/Testimonials.astro';
 import BookingInquiry from '../../components/ui/BookingInquiry.astro';
 import FinalCTA from '../../components/sections/FinalCTA.astro';
+import Gallery from '../../components/ui/Gallery.astro';
+import { propertyGallery } from '../../data/images';
 
 const locale = 'fr';
 ---
@@ -35,6 +37,18 @@ const locale = 'fr';
   <StayExperience locale={locale} />
 
   <!-- 5. Heritage / Identity -->
+  <!-- Property Gallery — between lifestyle and trust pivot -->
+  <section class="bg-sand-50 px-5 py-20 md:py-28 lg:px-8">
+    <div class="mx-auto max-w-7xl" data-reveal>
+      <div class="mb-10 text-center">
+        <span class="label-uppercase mb-3 block text-stone-400">{t('gallery.label', locale)}</span>
+        <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">{t('gallery.heading', locale)}</h2>
+      </div>
+      <Gallery id="home" images={propertyGallery} locale={locale} columns={4} />
+    </div>
+  </section>
+
+  <!-- Property Gallery -->
   <WhyRabagas locale={locale} />
 
   <!-- 6. Trust / Social Proof -->
