@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { t } from '../../lib/i18n';
 import Hero from '../../components/sections/Hero.astro';
 import BrandStatement from '../../components/sections/BrandStatement.astro';
+import OriginStory from '../../components/sections/OriginStory.astro';
 import ArrivalNarrative from '../../components/sections/ArrivalNarrative.astro';
 import SuitesPreview from '../../components/sections/SuitesPreview.astro';
 import StayExperience from '../../components/sections/StayExperience.astro';
@@ -26,6 +27,9 @@ const locale = 'en';
 
   <!-- 2. Signature moment — scroll-linked word reveal -->
   <BrandStatement locale={locale} />
+
+  <!-- Signature moment: origin story (between BrandStatement and SuitesPreview) -->
+  <OriginStory locale={locale} />
 
   <!-- 3. Destination / Positioning -->
   <ArrivalNarrative locale={locale} />

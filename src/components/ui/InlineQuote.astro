@@ -1,0 +1,43 @@
+---
+/**
+ * INLINE QUOTE — lightweight editorial pull-quote.
+ * Used inside SuitesPreview (Daniel) and FinalCTA (Corrado) to interleave
+ * social proof at decision points. NOT a TestimonialCard — that pattern lives
+ * inside the Testimonials section. The visual goal here is variation in
+ * page rhythm: italic blockquote + small-caps attribution, no border, no
+ * background tint, just typography.
+ *
+ * Pulls testimonial data by id from src/data/testimonials.ts.
+ * Quotes the locale-specific text via testimonial.text[locale].
+ */
+import type { Locale } from '../../lib/i18n';
+import { testimonials, type Testimonial } from '../../data/testimonials';
+
+interface Props {
+  /** Testimonial id (matches the `id` field in testimonials.ts; falls back to name). */
+  testimonialName: string;
+  locale: Locale;
+  /** "light" (on cream/white) or "dark" (on charcoal/ink). Defaults to light. */
+  variant?: 'light' | 'dark';
+}
+
+const { testimonialName, locale, variant = 'light' } = Astro.props;
+const item: Testimonial | undefined = testimonials.find((t) => t.name === testimonialName);
+
+const text = item?.text[locale] ?? '';
+const attribution = item ? [item.name, item.location, item.date].filter(Boolean).join(' · ') : '';
+
+const quoteClass = variant === 'dark' ? 'text-white/80' : 'text-stone-600';
+const attrClass = variant === 'dark' ? 'text-white/40' : 'text-stone-400';
+---
+
+{item && (
+  <figure class="mx-auto max-w-2xl py-2 text-center" data-reveal>
+    <blockquote class:list={['font-heading text-xl font-light italic leading-[1.6] md:text-2xl', quoteClass]}>
+      <span aria-hidden="true" class="select-none opacity-50">“</span>{text}<span aria-hidden="true" class="select-none opacity-50">”</span>
+    </blockquote>
+    <figcaption class:list={['mt-4 text-[0.6rem] font-semibold uppercase tracking-[0.18em]', attrClass]}>
+      {attribution}
+    </figcaption>
+  </figure>
+)}

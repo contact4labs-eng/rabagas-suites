@@ -8,6 +8,15 @@ import type { Locale } from '../lib/i18n';
 import { propertyImages } from '../data/images';
 
 const locale: Locale = 'el';
+
+// Five subsections of the essay. Each one is { kicker, body } from translation keys.
+const essaySections = [
+  { kicker: 'story.essay.neighbourhood.kicker', body: 'story.essay.neighbourhood.body' },
+  { kicker: 'story.essay.poet.kicker',          body: 'story.essay.poet.body' },
+  { kicker: 'story.essay.nickname.kicker',      body: 'story.essay.nickname.body' },
+  { kicker: 'story.essay.venue.kicker',         body: 'story.essay.venue.body' },
+  { kicker: 'story.essay.suites.kicker',        body: 'story.essay.suites.body' },
+];
 ---
 
 <BaseLayout
@@ -30,73 +39,20 @@ const locale: Locale = 'el';
     </div>
   </section>
 
-  <!-- Lead — large serif statement -->
-  <section class="px-5 py-24 md:py-32 lg:px-8">
-    <div class="mx-auto max-w-3xl" data-reveal>
-      <p class="font-heading text-[clamp(1.5rem,3vw,2.25rem)] font-light leading-[1.4] text-ink">
-        {t('story.lead', locale)}
-      </p>
+  <!-- Essay — five editorial subsections (replaces former lead/name/restoration/hosts blocks).
+       Each subsection has a small label-uppercase kicker, an h2 in Cormorant, and a single
+       narrow-measure body paragraph. Generous vertical rhythm between subsections. -->
+  <article class="px-5 py-24 md:py-32 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      {essaySections.map((s, i) => (
+        <section class:list={['story-essay-subsection', i === 0 ? 'mt-0' : 'mt-20 md:mt-28']} data-reveal>
+          <span class="label-uppercase mb-4 block text-stone-400">{t(s.kicker, locale)}</span>
+          <div class="mt-6 h-px w-10 bg-stone-300"></div>
+          <p class="mt-8 text-lg font-light leading-[1.85] text-stone-600 md:text-xl">{t(s.body, locale)}</p>
+        </section>
+      ))}
     </div>
-  </section>
-
-  <!-- The Name — split editorial -->
-  <section class="bg-white px-5 py-24 md:py-32 lg:px-8">
-    <div class="mx-auto max-w-5xl">
-      <div class="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start md:gap-20">
-        <div data-reveal="left">
-          <Image src={propertyImages.detail1} alt={t('story.detailImageAlt', locale)} class="aspect-[3/4] w-full rounded-sm object-cover" widths={[400, 640, 800]} sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" quality={75} />
-        </div>
-        <div class="md:pt-16" data-reveal="right">
-          <span class="label-uppercase mb-4 block text-stone-400">{t('story.name.kicker', locale)}</span>
-          <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">{t('story.name.h2', locale)}</h2>
-          <div class="mt-4 h-px w-10 bg-stone-300"></div>
-          <div class="mt-8 space-y-5 text-base leading-[1.8] text-stone-500">
-            <p set:html={t('story.name.body1', locale)}></p>
-            <p>{t('story.name.body2', locale)}</p>
-            <p>{t('story.name.body3', locale)}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- The Restoration — reversed split -->
-  <section class="px-5 py-24 md:py-32 lg:px-8">
-    <div class="mx-auto max-w-5xl">
-      <div class="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start md:gap-20">
-        <div class="order-2 md:order-1 md:pt-16" data-reveal="left">
-          <span class="label-uppercase mb-4 block text-stone-400">{t('story.restoration.kicker', locale)}</span>
-          <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">{t('story.restoration.h2', locale)}</h2>
-          <div class="mt-4 h-px w-10 bg-stone-300"></div>
-          <div class="mt-8 space-y-5 text-base leading-[1.8] text-stone-500">
-            <p>{t('story.restoration.body1', locale)}</p>
-            <p>{t('story.restoration.body2', locale)}</p>
-          </div>
-        </div>
-        <div class="order-1 md:order-2" data-reveal="right">
-          <Image src={propertyImages.detail2} alt={t('story.hosts.imageAlt', locale)} class="aspect-[3/4] w-full rounded-sm object-cover" widths={[400, 640, 800]} sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" quality={75} />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- The Hosts — centered intimate section -->
-  <section class="bg-charcoal px-5 py-24 text-white md:py-32 lg:px-8">
-    <div class="mx-auto max-w-2xl text-center" data-reveal>
-      <span class="label-uppercase mb-4 block text-stone-500">{t('story.hosts.kicker', locale)}</span>
-      <h2 class="font-heading text-3xl font-light text-white md:text-4xl">{t('story.hosts.h2', locale)}</h2>
-      <div class="mx-auto mt-4 h-px w-10 bg-white/15"></div>
-      <div class="mt-8 space-y-5 text-base leading-[1.8] text-stone-300">
-        <p>{t('story.hosts.body1', locale)}</p>
-        <p>{t('story.hosts.body2', locale)}</p>
-      </div>
-      <blockquote class="mt-12 border-t border-white/10 pt-10">
-        <p class="font-heading text-[clamp(1.5rem,3vw,2.25rem)] font-light italic text-white/80">
-          {t('story.hosts.pullquote', locale)}
-        </p>
-      </blockquote>
-    </div>
-  </section>
+  </article>
 
   <HostsModule locale={locale} />
 

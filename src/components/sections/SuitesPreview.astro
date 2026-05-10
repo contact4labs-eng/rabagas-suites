@@ -9,6 +9,7 @@ import type { Locale } from '../../lib/i18n';
 import { t, getLocalizedPath, getSuiteUrl } from '../../lib/i18n';
 import { getAllSuites } from '../../data/suites';
 import SuiteCard from '../ui/SuiteCard.astro';
+import InlineQuote from '../ui/InlineQuote.astro';
 import { suiteCardImages } from '../../data/images';
 
 interface Props {
@@ -69,6 +70,14 @@ const featuredImg = suiteCardImages[featured.id];
           </div>
         </div>
       </a>
+    </div>
+
+    <!-- Editorial pull-quote: Daniel's testimonial as social proof at the
+         decision point between the featured suite and the secondary grid.
+         Italic blockquote, no border, no tint — typographic variation in the
+         page rhythm rather than another card surface. -->
+    <div class="my-16 md:my-24">
+      <InlineQuote testimonialName="Daniel" locale={locale} />
     </div>
 
     <!-- Secondary suites grid -->

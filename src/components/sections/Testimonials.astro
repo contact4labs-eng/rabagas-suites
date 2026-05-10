@@ -9,6 +9,13 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+
+// Daniel and Corrado are surfaced as inline editorial quotes in SuitesPreview
+// (Daniel) and FinalCTA (Corrado) — exclude them from this card grid so they
+// don't double-render. The remaining four (Dylan, Jasleen, Simon, Joram) fill
+// a balanced 2x2 layout on desktop, 1-up on mobile.
+const inlineNames = new Set(['Daniel', 'Corrado']);
+const gridTestimonials = testimonials.filter((item) => !inlineNames.has(item.name));
 ---
 
 <section class="bg-charcoal px-5 py-24 text-white md:py-32 lg:px-8" aria-labelledby="testimonials-heading">
@@ -24,7 +31,7 @@ const { locale } = Astro.props;
     </div>
 
     <div class="grid grid-cols-1 gap-5 md:grid-cols-2" data-reveal-stagger>
-      {testimonials.slice(0, 4).map((item) => (
+      {gridTestimonials.map((item) => (
         <TestimonialCard testimonial={item} locale={locale} />
       ))}
     </div>

@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import type { Locale } from '../../lib/i18n';
 import { t, getLocalizedPath } from '../../lib/i18n';
 import { propertyImages } from '../../data/images';
+import InlineQuote from '../ui/InlineQuote.astro';
 
 interface Props {
   locale: Locale;
@@ -49,6 +50,14 @@ const { locale } = Astro.props;
       >
         {t('hero.cta.explore', locale)}
       </a>
+    </div>
+
+    <!-- Editorial pull-quote: Corrado's testimonial directly beneath the CTA.
+         Dark variant matches the charcoal/imagery backdrop. The line "stop
+         searching and stay here" closes the page on guest voice rather than
+         brand voice — final reassurance at the booking decision point. -->
+    <div class="mt-16 md:mt-20">
+      <InlineQuote testimonialName="Corrado" locale={locale} variant="dark" />
     </div>
   </div>
 </section>
