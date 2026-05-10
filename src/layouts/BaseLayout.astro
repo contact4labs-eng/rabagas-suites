@@ -1,0 +1,150 @@
+---
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import MobileBookingBar from '../components/layout/MobileBookingBar.astro';
+import type { Locale } from '../lib/i18n';
+import { getAlternateLocale, getLocalizedPath } from '../lib/i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+  ogImage?: string;
+  canonicalPath?: string;
+}
+
+const { title, description, locale, ogImage, canonicalPath } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const altLocale = getAlternateLocale(locale);
+const altPath = getLocalizedPath(
+  currentPath.replace(/^\/el/, '') || '/',
+  altLocale
+);
+const canonical = canonicalPath
+  ? `https://rabagas-suites.com${canonicalPath}`
+  : `https://rabagas-suites.com${currentPath}`;
+const altUrl = `https://rabagas-suites.com${altPath}`;
+const og = ogImage || '/og-image.webp';
+---
+
+<!doctype html>
+<html lang={locale === 'el' ? 'el' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+
+    <!-- Google Tag Manager -->
+    <script is:inline>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PM6PBJQW');
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=GT-PZZMTZ9M"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GT-PZZMTZ9M');
+    </script>
+
+    <title>{title}</title>
+
+    <!-- Canonical & Alternates -->
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={locale === 'en' ? canonical : altUrl} />
+    <link rel="alternate" hreflang="el" href={locale === 'el' ? canonical : altUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonical.replace('/el/', '/')} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={og} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === 'el' ? 'el_GR' : 'en_US'} />
+    <meta property="og:site_name" content="Rabagas Suites" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={og} />
+
+    <!-- Fonts — preconnect + display=swap for fast LCP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": "Rabagas Suites",
+      "description": "Heritage luxury suites in the heart of Apollonia, Sifnos, Greece",
+      "url": "https://rabagas-suites.com",
+      "telephone": "+302117159002",
+      "email": "info@rabagas-suites.gr",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Apollonia",
+        "addressLocality": "Sifnos",
+        "postalCode": "84003",
+        "addressCountry": "GR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.972574,
+        "longitude": 24.72438
+      },
+      "priceRange": "$$$"
+    })} />
+  </head>
+  <body>
+    <!-- GTM noscript -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PM6PBJQW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <!-- Skip to content — accessibility -->
+    <a href="#main-content" class="fixed left-4 top-4 z-[999] -translate-y-20 rounded-sm bg-charcoal px-4 py-2 text-sm text-white transition-transform focus:translate-y-0" style="text-decoration:none;">
+      {locale === 'en' ? 'Skip to content' : '\u039C\u03B5\u03C4\u03AC\u03B2\u03B1\u03C3\u03B7 \u03C3\u03C4\u03BF \u03C0\u03B5\u03C1\u03B9\u03B5\u03C7\u03CC\u03BC\u03B5\u03BD\u03BF'}
+    </a>
+
+    <Header locale={locale} currentPath={currentPath} />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <Footer locale={locale} />
+    <MobileBookingBar locale={locale} />
+
+    <!-- Reveal Observer — triggers motion system -->
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      );
+      document.querySelectorAll('[data-reveal], [data-reveal-stagger]').forEach((el) => observer.observe(el));
+    </script>
+
+    <style>
+      @import '../styles/global.css';
+    </style>
+  </body>
+</html>

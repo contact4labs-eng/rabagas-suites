@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import BrandStatement from '../components/sections/BrandStatement.astro';
+import ArrivalNarrative from '../components/sections/ArrivalNarrative.astro';
+import SuitesPreview from '../components/sections/SuitesPreview.astro';
+import StayExperience from '../components/sections/StayExperience.astro';
+import WhyRabagas from '../components/sections/WhyRabagas.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import BookingInquiry from '../components/ui/BookingInquiry.astro';
+import FinalCTA from '../components/sections/FinalCTA.astro';
+
+const locale = 'en';
+---
+
+<BaseLayout
+  title="Rabagas Suites — Heritage Luxury in Apollonia, Sifnos"
+  description="Six restored Cycladic suites in the heart of Apollonia, Sifnos. Discreet luxury, Aegean views, and personal hospitality. Book direct for the best experience."
+  locale={locale}
+>
+  <!-- 1. Arrival / Mood -->
+  <Hero locale={locale} />
+
+  <!-- 2. Signature moment — scroll-linked word reveal -->
+  <BrandStatement locale={locale} />
+
+  <!-- 3. Destination / Positioning -->
+  <ArrivalNarrative locale={locale} />
+
+  <!-- 3. Suite Discovery -->
+  <SuitesPreview locale={locale} />
+
+  <!-- 4. Lifestyle / Experience -->
+  <StayExperience locale={locale} />
+
+  <!-- 5. Heritage / Identity -->
+  <WhyRabagas locale={locale} />
+
+  <!-- 6. Trust / Social Proof -->
+  <Testimonials locale={locale} />
+
+  <!-- 7. Conversion -->
+  <BookingInquiry locale={locale} />
+
+  <!-- 8. Emotional Close -->
+  <FinalCTA locale={locale} />
+</BaseLayout>

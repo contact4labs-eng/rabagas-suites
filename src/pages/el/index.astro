@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/sections/Hero.astro';
+import BrandStatement from '../../components/sections/BrandStatement.astro';
+import ArrivalNarrative from '../../components/sections/ArrivalNarrative.astro';
+import SuitesPreview from '../../components/sections/SuitesPreview.astro';
+import StayExperience from '../../components/sections/StayExperience.astro';
+import WhyRabagas from '../../components/sections/WhyRabagas.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import BookingInquiry from '../../components/ui/BookingInquiry.astro';
+import FinalCTA from '../../components/sections/FinalCTA.astro';
+
+const locale = 'el';
+---
+
+<BaseLayout
+  title="Rabagas Suites — \u03A0\u03BF\u03BB\u03C5\u03C4\u03B5\u03BB\u03B5\u03AF\u03C2 \u03A3\u03BF\u03C5\u03AF\u03C4\u03B5\u03C2 \u03C3\u03C4\u03B7\u03BD \u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1, \u03A3\u03AF\u03C6\u03BD\u03BF\u03C2"
+  description="\u0388\u03BE\u03B9 \u03B1\u03BD\u03B1\u03C3\u03C4\u03B7\u03BB\u03C9\u03BC\u03AD\u03BD\u03B5\u03C2 \u03BA\u03C5\u03BA\u03BB\u03B1\u03B4\u03AF\u03C4\u03B9\u03BA\u03B5\u03C2 \u03C3\u03BF\u03C5\u03AF\u03C4\u03B5\u03C2 \u03C3\u03C4\u03B7\u03BD \u03BA\u03B1\u03C1\u03B4\u03B9\u03AC \u03C4\u03B7\u03C2 \u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1\u03C2. \u0394\u03B9\u03B1\u03BA\u03C1\u03B9\u03C4\u03B9\u03BA\u03AE \u03C0\u03BF\u03BB\u03C5\u03C4\u03AD\u03BB\u03B5\u03B9\u03B1 \u03BA\u03B1\u03B9 \u03C0\u03C1\u03BF\u03C3\u03C9\u03C0\u03B9\u03BA\u03AE \u03C6\u03B9\u03BB\u03BF\u03BE\u03B5\u03BD\u03AF\u03B1."
+  locale={locale}
+>
+  <Hero locale={locale} />
+  <BrandStatement locale={locale} />
+  <ArrivalNarrative locale={locale} />
+  <SuitesPreview locale={locale} />
+  <StayExperience locale={locale} />
+  <WhyRabagas locale={locale} />
+  <Testimonials locale={locale} />
+  <BookingInquiry locale={locale} />
+  <FinalCTA locale={locale} />
+</BaseLayout>

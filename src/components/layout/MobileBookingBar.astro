@@ -1,0 +1,43 @@
+---
+/**
+ * STICKY MOBILE BOOKING BAR
+ * Adapted from 21st.dev: axorax/cta-card-1 button patterns
+ * - Fixed bottom positioning with safe-area-inset
+ * - Glass morphism (backdrop-blur, border-top)
+ * - Appears after scroll threshold
+ * - Large tap target (min-h-11, min-w-28)
+ * - Hidden on desktop where sidebar CTA is visible
+ */
+import type { Locale } from '../../lib/i18n';
+import { t, getLocalizedPath } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<div class="fixed inset-x-0 bottom-0 z-50 translate-y-full border-t border-sand-200/50 bg-white/95 backdrop-blur-lg transition-transform duration-300 md:hidden" id="mobile-booking-bar" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-5 pt-3">
+    <div class="flex flex-col">
+      <span class="font-heading text-base text-ink">Rabagas Suites</span>
+      <span class="text-[0.65rem] text-stone-400">Sifnos</span>
+    </div>
+    <a
+      href={getLocalizedPath('/contact', locale) + '#booking'}
+      class="inline-flex h-11 min-w-28 items-center justify-center rounded-sm bg-charcoal px-6 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-white transition-colors hover:bg-ink"
+    >
+      {t('nav.book', locale)}
+    </a>
+  </div>
+</div>
+
+<script>
+  const bar = document.getElementById('mobile-booking-bar');
+  if (bar) {
+    window.addEventListener('scroll', () => {
+      bar.style.transform = window.scrollY > 400 ? 'translateY(0)' : 'translateY(100%)';
+    }, { passive: true });
+  }
+</script>

@@ -1,0 +1,70 @@
+---
+/**
+ * ARRIVAL NARRATIVE — The destination story section
+ * Positioned immediately after hero.
+ * Creates emotional desire for Apollonia, Sifnos, and the Rabagas experience.
+ * Adapted from 21st.dev Content Default split-screen editorial pattern.
+ */
+import { Image } from 'astro:assets';
+import type { Locale } from '../../lib/i18n';
+import { propertyImages } from '../../data/images';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<!-- Brand positioning statement -->
+<section class="px-5 py-24 md:py-36 lg:px-8">
+  <div class="mx-auto max-w-5xl">
+    <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16 lg:gap-24" data-reveal>
+      <!-- Image -->
+      <div class="img-zoom aspect-[3/4] overflow-hidden rounded-sm md:aspect-[2/3]" data-reveal="left">
+        <Image
+          src={propertyImages.detail1}
+          alt={locale === 'en' ? 'Whitewashed Cycladic architecture in Apollonia' : '\u039A\u03C5\u03BA\u03BB\u03B1\u03B4\u03AF\u03C4\u03B9\u03BA\u03B7 \u03B1\u03C1\u03C7\u03B9\u03C4\u03B5\u03BA\u03C4\u03BF\u03BD\u03B9\u03BA\u03AE \u03C3\u03C4\u03B7\u03BD \u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1'}
+          class="h-full w-full object-cover"
+          widths={[400, 640, 800]}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          loading="lazy"
+          quality={75}
+        />
+      </div>
+
+      <!-- Editorial copy -->
+      <div data-reveal="right">
+        <span class="label-uppercase mb-5 block text-stone-400">
+          {locale === 'en' ? 'Apollonia, Sifnos' : '\u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1, \u03A3\u03AF\u03C6\u03BD\u03BF\u03C2'}
+        </span>
+        <h2 class="font-heading text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.1] text-ink">
+          {locale === 'en'
+            ? 'Where the island keeps its secrets'
+            : '\u0395\u03BA\u03B5\u03AF \u03C0\u03BF\u03C5 \u03C4\u03BF \u03BD\u03B7\u03C3\u03AF \u03BA\u03C1\u03B1\u03C4\u03AC \u03C4\u03B1 \u03BC\u03C5\u03C3\u03C4\u03B9\u03BA\u03AC \u03C4\u03BF\u03C5'}
+        </h2>
+        <div class="mt-5 h-px w-10 bg-stone-300"></div>
+        <p class="mt-6 text-base leading-[1.8] text-stone-500">
+          {locale === 'en'
+            ? 'Apollonia is the quiet heart of Sifnos \u2014 a village of whitewashed lanes, candlelit tavernas, and rooftop views that stretch to Antiparos. Rabagas sits steps from its central alley, where the pace of the island dissolves into slow mornings, warm stone underfoot, and the scent of thyme carried on Aegean air.'
+            : '\u0397 \u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1 \u03B5\u03AF\u03BD\u03B1\u03B9 \u03B7 \u03AE\u03C3\u03C5\u03C7\u03B7 \u03BA\u03B1\u03C1\u03B4\u03B9\u03AC \u03C4\u03B7\u03C2 \u03A3\u03AF\u03C6\u03BD\u03BF\u03C5 \u2014 \u03AD\u03BD\u03B1 \u03C7\u03C9\u03C1\u03B9\u03CC \u03BC\u03B5 \u03B1\u03C3\u03B2\u03B5\u03C3\u03C4\u03C9\u03BC\u03AD\u03BD\u03B1 \u03C3\u03BF\u03BA\u03AC\u03BA\u03B9\u03B1, \u03C4\u03B1\u03B2\u03AD\u03C1\u03BD\u03B5\u03C2 \u03BC\u03B5 \u03BA\u03B5\u03C1\u03B9\u03AC \u03BA\u03B1\u03B9 \u03B8\u03AD\u03B1 \u03C9\u03C2 \u03C4\u03B7\u03BD \u0391\u03BD\u03C4\u03AF\u03C0\u03B1\u03C1\u03BF.'}
+        </p>
+        <p class="mt-4 text-base leading-[1.8] text-stone-500">
+          {locale === 'en'
+            ? 'Our six suites are not rooms. They are restored pre-1910 residences \u2014 each with its own door, its own terrace, its own world. You do not check in. You arrive.'
+            : '\u039F\u03B9 \u03AD\u03BE\u03B9 \u03C3\u03BF\u03C5\u03AF\u03C4\u03B5\u03C2 \u03BC\u03B1\u03C2 \u03B4\u03B5\u03BD \u03B5\u03AF\u03BD\u03B1\u03B9 \u03B4\u03C9\u03BC\u03AC\u03C4\u03B9\u03B1. \u0395\u03AF\u03BD\u03B1\u03B9 \u03B1\u03BD\u03B1\u03C3\u03C4\u03B7\u03BB\u03C9\u03BC\u03AD\u03BD\u03B5\u03C2 \u03BA\u03B1\u03C4\u03BF\u03B9\u03BA\u03AF\u03B5\u03C2 \u03C0\u03C1\u03BF 1910. \u0394\u03B5\u03BD \u03BA\u03AC\u03BD\u03B5\u03C4\u03B5 check-in. \u03A6\u03C4\u03AC\u03BD\u03B5\u03C4\u03B5.'}
+        </p>
+
+        <!-- Press trust -->
+        <div class="mt-8 border-t border-sand-200 pt-6">
+          <span class="label-uppercase text-[0.55rem] text-stone-400">
+            {locale === 'en' ? 'Featured in' : '\u0391\u03BD\u03B1\u03C6\u03BF\u03C1\u03AD\u03C2 \u03C3\u03B5'}
+          </span>
+          <p class="mt-2 text-sm font-light italic text-stone-400">
+            Cond&eacute; Nast Traveller &middot; Athinorama &middot; In2life
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

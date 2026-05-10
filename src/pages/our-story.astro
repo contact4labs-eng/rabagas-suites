@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FinalCTA from '../components/sections/FinalCTA.astro';
+import { t } from '../lib/i18n';
+import { propertyImages } from '../data/images';
+
+const locale = 'en';
+---
+
+<BaseLayout
+  title="Our Story — Rabagas Suites Sifnos"
+  description="A restored Cycladic settlement with a poet's soul. The story of Rabagas in Apollonia, Sifnos."
+  locale={locale}
+>
+  <!-- Hero — left-aligned editorial -->
+  <section class="relative flex min-h-[70vh] items-end overflow-hidden text-white">
+    <div class="absolute inset-0 z-0">
+      <Image src={propertyImages.courtyard} widths={[640, 1024, 1440]} sizes="100vw" quality={80} alt="Rabagas Suites courtyard at night" class="h-full w-full object-cover object-bottom" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/30 to-transparent"></div>
+    </div>
+    <div class="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16 pt-40 lg:px-8">
+      <div class="max-w-lg hero-enter">
+        <span class="label-uppercase mb-4 block text-white/50">Apollonia, Sifnos</span>
+        <h1 class="font-heading text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.05] text-white">{t('story.title', locale)}</h1>
+        <p class="mt-4 text-lg font-light italic text-white/60">{t('story.subtitle', locale)}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lead — large serif statement -->
+  <section class="px-5 py-24 md:py-32 lg:px-8">
+    <div class="mx-auto max-w-3xl" data-reveal>
+      <p class="font-heading text-[clamp(1.5rem,3vw,2.25rem)] font-light leading-[1.4] text-ink">
+        In the winding lanes of Apollonia, just steps from the central pedestrian alley, stands a settlement of whitewashed buildings that have watched over the island for more than a century.
+      </p>
+    </div>
+  </section>
+
+  <!-- The Name — split editorial -->
+  <section class="bg-white px-5 py-24 md:py-32 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <div class="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start md:gap-20">
+        <div data-reveal="left">
+          <img
+            src={propertyImages.detail1}
+            alt="Traditional Cycladic architecture detail"
+            class="aspect-[3/4] w-full rounded-sm object-cover"
+            widths={[400, 640, 800]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="lazy"
+            quality={75}
+          />
+        </div>
+        <div class="md:pt-16" data-reveal="right">
+          <span class="label-uppercase mb-4 block text-stone-400">The name</span>
+          <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">The Poet's Neighborhood</h2>
+          <div class="mt-4 h-px w-10 bg-stone-300"></div>
+          <div class="mt-8 space-y-5 text-base leading-[1.8] text-stone-500">
+            <p>
+              These buildings take their name from their most famous resident: Kleanthis Triandafyllou, a poet and reporter born in the 1850s, known to the island as <em class="text-ink">Rabagas</em>.
+            </p>
+            <p>
+              The nickname came from a progressive magazine he founded in 1878, itself inspired by a French comedy that championed bold ideas and free thinking.
+            </p>
+            <p>
+              Rabagas became more than a name. It became the identity of this corner of Apollonia &mdash; a place where ideas lived, where neighbors gathered, where the spirit of Sifnos found its voice.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Restoration — reversed split -->
+  <section class="px-5 py-24 md:py-32 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <div class="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start md:gap-20">
+        <div class="order-2 md:order-1 md:pt-16" data-reveal="left">
+          <span class="label-uppercase mb-4 block text-stone-400">The restoration</span>
+          <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">From Heritage to Hospitality</h2>
+          <div class="mt-4 h-px w-10 bg-stone-300"></div>
+          <div class="mt-8 space-y-5 text-base leading-[1.8] text-stone-500">
+            <p>
+              When we began restoring these pre-1910 Cycladic buildings, we wanted to honor that spirit. Each suite preserves the original crooked plaster walls, the thick stone bones of the island, and the gentle asymmetry that makes traditional architecture so alive.
+            </p>
+            <p>
+              But heritage alone does not make a home. We layered in custom-made latex mattresses, feather pillows, handmade furniture, contemporary art, and premium linens. Private outdoor spaces, heated jacuzzis, and modern comforts &mdash; because luxury should not require sacrificing authenticity.
+            </p>
+          </div>
+        </div>
+        <div class="order-1 md:order-2" data-reveal="right">
+          <img
+            src={propertyImages.detail2}
+            alt="Interior detail of restored Rabagas suite"
+            class="aspect-[3/4] w-full rounded-sm object-cover"
+            widths={[400, 640, 800]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="lazy"
+            quality={75}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Hosts — centered intimate section -->
+  <section class="bg-charcoal px-5 py-24 text-white md:py-32 lg:px-8">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <span class="label-uppercase mb-4 block text-stone-500">Your hosts</span>
+      <h2 class="font-heading text-3xl font-light text-white md:text-4xl">George &amp; Didi</h2>
+      <div class="mx-auto mt-4 h-px w-10 bg-white/15"></div>
+      <div class="mt-8 space-y-5 text-base leading-[1.8] text-stone-300">
+        <p>
+          Rabagas is not a hotel. It is a collection of six independent residences, each with its own door, its own character, and its own outdoor world. You arrive not as a guest in a lobby, but as someone returning to their own Sifnian home.
+        </p>
+        <p>
+          We welcome you personally. We share our favorite tavernas, our secret swimming spots, and our love for this island. Because the best hospitality is not about systems and services. It is about people who care.
+        </p>
+      </div>
+      <blockquote class="mt-12 border-t border-white/10 pt-10">
+        <p class="font-heading text-[clamp(1.5rem,3vw,2.25rem)] font-light italic text-white/80">
+          Luxury can be discreet.
+        </p>
+      </blockquote>
+    </div>
+  </section>
+
+  <FinalCTA locale={locale} />
+</BaseLayout>

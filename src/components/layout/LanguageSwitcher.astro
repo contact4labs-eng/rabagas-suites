@@ -1,0 +1,25 @@
+---
+import type { Locale } from '../../lib/i18n';
+import { getAlternateLocale, getLocalizedPath } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const altLocale = getAlternateLocale(locale);
+const pathWithoutLocale = currentPath.replace(/^\/el/, '') || '/';
+const altPath = getLocalizedPath(pathWithoutLocale, altLocale);
+---
+
+<a
+  href={altPath}
+  class="inline-flex items-center gap-1 text-xs font-medium tracking-wider text-stone-400 transition-colors hover:text-ink"
+  aria-label={`Switch to ${altLocale === 'el' ? 'Greek' : 'English'}`}
+  hreflang={altLocale}
+>
+  <span class="font-semibold text-ink">{locale.toUpperCase()}</span>
+  <span class="text-stone-300">/</span>
+  <span>{altLocale.toUpperCase()}</span>
+</a>

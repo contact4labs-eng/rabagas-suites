@@ -1,0 +1,50 @@
+---
+/**
+ * TESTIMONIAL CARD
+ * Adapted from 21st.dev: preetsuthar17/testimonial-card
+ * - Star rating (fill-yellow-400 active, fill-muted inactive)
+ * - Decorative quotation mark (serif, text-6xl, muted-foreground/20)
+ * - rounded-2xl border border-primary/10
+ * - Hover shadow (hover:shadow-lg)
+ * - p-6 md:p-8 responsive padding
+ * Adapted: warm gold stars instead of yellow, serif quote mark, hospitality language
+ */
+import type { Testimonial } from '../../data/testimonials';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  testimonial: Testimonial;
+  locale: Locale;
+}
+
+const { testimonial, locale } = Astro.props;
+const text = testimonial.text[locale];
+---
+
+<blockquote class="relative overflow-hidden rounded-2xl border border-sand-200 bg-white p-6 transition-all duration-300 hover:shadow-elevated md:p-8">
+  <!-- Decorative quote (21st.dev pattern: absolute right-6 top-6 text-6xl font-serif) -->
+  <div class="absolute right-5 top-4 font-heading text-6xl leading-none text-stone-300/20 select-none" aria-hidden="true">
+    &ldquo;
+  </div>
+
+  <div class="flex h-full flex-col justify-between gap-4">
+    <!-- Quote text (21st.dev pattern: text-base text-muted-foreground) -->
+    <p class="text-pretty text-base italic leading-relaxed text-stone-600">
+      {text}
+    </p>
+
+    <!-- Author (21st.dev pattern: flex items-center gap-4) -->
+    <footer class="flex items-center gap-3">
+      <!-- Initials avatar -->
+      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-sand-100 text-xs font-semibold text-stone-500">
+        {testimonial.name[0]}
+      </div>
+      <div class="flex flex-col">
+        <cite class="not-italic text-sm font-semibold text-ink">{testimonial.name}</cite>
+        <span class="text-xs text-stone-400">
+          {testimonial.location && `${testimonial.location} · `}{testimonial.date}
+        </span>
+      </div>
+    </footer>
+  </div>
+</blockquote>

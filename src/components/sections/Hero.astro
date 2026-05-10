@@ -1,0 +1,97 @@
+---
+/**
+ * CINEMATIC HERO
+ * Adapted from 21st.dev: Modern Hero (clip-path polygon reveal + parallax)
+ * + AnimatedText (staggered word reveal)
+ *
+ * Key patterns used:
+ * - Ken Burns slow zoom on hero image
+ * - Staggered text entrance choreography (hero-enter class)
+ * - Multi-stop gradient overlay for depth and readability
+ * - Premium CTA styling with hover shadow elevation
+ * - Scroll-fade overlay at bottom edge
+ */
+import { Image } from 'astro:assets';
+import type { Locale } from '../../lib/i18n';
+import { t, getLocalizedPath } from '../../lib/i18n';
+import { propertyImages } from '../../data/images';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<section class="relative min-h-svh w-full overflow-hidden" aria-label="Welcome">
+  <!-- Background with Ken Burns -->
+  <div class="absolute inset-0 z-0">
+    <div class="hero-image-animate h-full w-full">
+      <Image
+        src={propertyImages.hero}
+        alt="Rabagas Suites terrace overlooking Apollonia, Sifnos"
+        class="h-full w-full object-cover object-center"
+        widths={[640, 1024, 1440, 1920]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        quality={80}
+      />
+    </div>
+    <!-- Cinematic gradient overlay: top darken for nav, bottom darken for text, center open for imagery -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-black/70"></div>
+    <!-- Extra bottom fade for seamless section transition -->
+    <div class="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-cream to-transparent"></div>
+  </div>
+
+  <!-- Content with staggered entrance -->
+  <div class="relative z-10 flex min-h-svh flex-col items-center justify-center px-6 text-center text-white">
+    <div class="hero-enter max-w-3xl">
+      <!-- Location pill -->
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-white/70 backdrop-blur-sm">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Sifnos, Greece
+        </span>
+      </div>
+
+      <!-- Display headline — huge, confident serif -->
+      <h1 class="mt-8 font-heading text-[clamp(2.75rem,8vw,6.5rem)] font-light leading-[0.95] tracking-tight text-white">
+        {t('hero.tagline', locale)}
+      </h1>
+
+      <!-- Subtitle — restrained, elegant -->
+      <p class="mx-auto mt-6 max-w-md text-base font-light leading-relaxed text-white/70 md:text-lg lg:max-w-lg">
+        {t('hero.subtitle', locale)}
+      </p>
+
+      <!-- CTAs — premium touch -->
+      <div class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+        <a
+          href={getLocalizedPath('/contact', locale) + '#booking'}
+          class="group inline-flex h-14 items-center justify-center gap-2 rounded-none bg-white px-10 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-charcoal transition-all duration-300 hover:bg-cream hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)] sm:h-12"
+          style="text-decoration: none;"
+        >
+          {t('hero.cta.book', locale)}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a
+          href={getLocalizedPath('/suites', locale)}
+          class="inline-flex h-14 items-center justify-center rounded-none border border-white/30 px-10 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white transition-all duration-300 hover:border-white/60 hover:bg-white/5 sm:h-12"
+          style="text-decoration: none;"
+        >
+          {t('hero.cta.explore', locale)}
+        </a>
+      </div>
+
+      <!-- Verified press — all confirmed from rabagas-suites.com/our-news/ -->
+      <div class="mt-12 flex items-center justify-center gap-4 text-[0.6rem] tracking-[0.15em] text-white/35">
+        <span>Cond&eacute; Nast Traveller</span>
+        <span class="text-white/15">&middot;</span>
+        <span>Athinorama</span>
+        <span class="text-white/15">&middot;</span>
+        <span>In2life</span>
+      </div>
+    </div>
+  </div>
+</section>

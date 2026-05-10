@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+import type { Locale } from '../../lib/i18n';
+import { t, getLocalizedPath } from '../../lib/i18n';
+import { propertyImages } from '../../data/images';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<section class="relative overflow-hidden py-32 md:py-40" aria-label="Call to action">
+  <div class="absolute inset-0 z-0">
+    <Image
+      src={propertyImages.detail2}
+      alt=""
+      class="h-full w-full object-cover"
+      widths={[640, 1024, 1440]}
+      sizes="100vw"
+      loading="lazy"
+      quality={70}
+    />
+    <div class="absolute inset-0 bg-charcoal/60 backdrop-blur-[2px]"></div>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-2xl px-6 text-center" data-reveal>
+    <span class="label-uppercase mb-5 block text-white/40">Rabagas Suites</span>
+    <h2 class="font-heading text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.05] text-white">
+      {t('cta.final.title', locale)}
+    </h2>
+    <p class="mx-auto mt-5 max-w-md text-base font-light leading-relaxed text-white/60">
+      {t('cta.final.desc', locale)}
+    </p>
+    <div class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+      <a
+        href={getLocalizedPath('/contact', locale) + '#booking'}
+        class="group inline-flex h-14 items-center gap-2 rounded-none bg-white px-10 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-charcoal transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] sm:h-12"
+        style="text-decoration: none;"
+      >
+        {t('hero.cta.book', locale)}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a
+        href={getLocalizedPath('/suites', locale)}
+        class="inline-flex h-14 items-center rounded-none border border-white/30 px-10 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white transition-all duration-300 hover:border-white/60 sm:h-12"
+        style="text-decoration: none;"
+      >
+        {t('hero.cta.explore', locale)}
+      </a>
+    </div>
+  </div>
+</section>

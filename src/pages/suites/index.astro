@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SuiteCard from '../../components/ui/SuiteCard.astro';
+import BookingInquiry from '../../components/ui/BookingInquiry.astro';
+import { getAllSuites } from '../../data/suites';
+import { t } from '../../lib/i18n';
+
+const locale = 'en';
+const suites = getAllSuites();
+---
+
+<BaseLayout
+  title="Our Suites — Rabagas Suites Sifnos"
+  description="Explore six unique heritage suites in Apollonia, Sifnos. From intimate retreats to spacious residences with private jacuzzis and Aegean views."
+  locale={locale}
+>
+  <section class="px-5 pb-16 pt-32 md:pb-20 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-14 text-center">
+        <span class="label-uppercase mb-3 block text-stone-400">{t('section.suites', locale)}</span>
+        <h1 class="font-heading text-4xl font-light text-ink md:text-5xl">Find your perfect suite</h1>
+        <p class="mx-auto mt-4 max-w-lg text-lg text-stone-500">Each residence has its own character, history, and outdoor space. All share the same commitment to comfort and craftsmanship.</p>
+        <hr class="mx-auto mt-6 w-12 border-t border-stone-300" />
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {suites.map((suite, i) => (
+          <div class:list={[i === 0 ? 'sm:col-span-2 lg:col-span-2' : '']}>
+            <SuiteCard suite={suite} locale={locale} featured={i === 0} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison table -->
+  <section class="bg-white px-5 py-16 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="mb-8 text-center font-heading text-2xl font-light text-ink">Compare at a glance</h2>
+      <div class="overflow-x-auto rounded-xl border border-sand-200">
+        <table class="w-full min-w-[36rem] text-sm">
+          <thead>
+            <tr class="bg-sand-50">
+              <th class="border-b border-sand-200 px-4 py-3 text-left label-uppercase text-[0.6rem] text-stone-400">Suite</th>
+              <th class="border-b border-sand-200 px-4 py-3 text-left label-uppercase text-[0.6rem] text-stone-400">Guests</th>
+              <th class="border-b border-sand-200 px-4 py-3 text-left label-uppercase text-[0.6rem] text-stone-400">Bedrooms</th>
+              <th class="border-b border-sand-200 px-4 py-3 text-left label-uppercase text-[0.6rem] text-stone-400">Jacuzzi</th>
+              <th class="border-b border-sand-200 px-4 py-3 text-left label-uppercase text-[0.6rem] text-stone-400">Kitchen</th>
+              <th class="border-b border-sand-200 px-4 py-3 text-left label-uppercase text-[0.6rem] text-stone-400">Best for</th>
+            </tr>
+          </thead>
+          <tbody>
+            {suites.map((suite) => (
+              <tr class="border-b border-sand-100 last:border-b-0">
+                <td class="px-4 py-3"><a href={`/suites/${suite.slug}`} class="font-semibold text-ink hover:text-aegean-600 hover:underline">{suite.name.en}</a></td>
+                <td class="px-4 py-3 text-stone-500">{suite.capacity.guests}{suite.capacity.extraGuests ? `+${suite.capacity.extraGuests}` : ''}</td>
+                <td class="px-4 py-3 text-stone-500">{suite.bedrooms}</td>
+                <td class="px-4 py-3 text-stone-500">{suite.hasJacuzzi ? 'Yes' : '\u2014'}</td>
+                <td class="px-4 py-3 text-stone-500">{suite.hasKitchen ? 'Yes' : '\u2014'}</td>
+                <td class="px-4 py-3 text-xs text-stone-400">{suite.bestFor.en.slice(0, 2).join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <BookingInquiry locale={locale} />
+</BaseLayout>

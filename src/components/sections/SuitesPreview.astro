@@ -1,0 +1,96 @@
+---
+/**
+ * SUITES DISCOVERY — Editorial featured + grid layout
+ * Adapted from 21st.dev Features with Info: col-span-full dominant item with supporting grid.
+ * Featured suite gets full-width hero treatment. Secondary suites get tight 2-col grid.
+ */
+import { Image } from 'astro:assets';
+import type { Locale } from '../../lib/i18n';
+import { t, getLocalizedPath, getSuiteUrl } from '../../lib/i18n';
+import { getAllSuites } from '../../data/suites';
+import SuiteCard from '../ui/SuiteCard.astro';
+import { suiteCardImages } from '../../data/images';
+
+interface Props {
+  locale: Locale;
+  limit?: number;
+}
+
+const { locale, limit } = Astro.props;
+const allSuites = getAllSuites();
+const suites = limit ? allSuites.slice(0, limit) : allSuites;
+const featured = suites[0];
+const secondary = suites.slice(1);
+const featuredImg = suiteCardImages[featured.id];
+---
+
+<section class="px-5 py-24 md:py-36 lg:px-8" aria-labelledby="suites-heading">
+  <div class="mx-auto max-w-7xl">
+    <!-- Editorial intro -->
+    <div class="mb-20 grid grid-cols-1 gap-6 md:grid-cols-2 md:items-end" data-reveal>
+      <div>
+        <span class="label-uppercase mb-4 block text-stone-400">{t('section.suites', locale)}</span>
+        <h2 class="font-heading text-[clamp(2rem,4.5vw,3.5rem)] font-light leading-[1.05] text-ink" id="suites-heading">
+          {t('section.suites.subtitle', locale)}
+        </h2>
+      </div>
+      <div class="md:text-right">
+        <p class="max-w-sm text-base leading-[1.8] text-stone-500 md:ml-auto">
+          {locale === 'en'
+            ? 'Restored pre-1910 Cycladic buildings, each with private outdoor spaces, premium finishes, and a character all its own.'
+            : '\u0391\u03BD\u03B1\u03C3\u03C4\u03B7\u03BB\u03C9\u03BC\u03AD\u03BD\u03B1 \u03BA\u03C5\u03BA\u03BB\u03B1\u03B4\u03AF\u03C4\u03B9\u03BA\u03B1 \u03BA\u03C4\u03AF\u03C1\u03B9\u03B1 \u03C0\u03C1\u03BF 1910.'}
+        </p>
+      </div>
+    </div>
+
+    <!-- Featured suite — full-width editorial card -->
+    <div class="mb-5" data-reveal="editorial">
+      <a href={getSuiteUrl(featured.slug, locale)} class="group relative block overflow-hidden rounded-sm" style="text-decoration:none;">
+        <div class="img-zoom aspect-[16/7] w-full overflow-hidden bg-sand-100 max-[639px]:aspect-[4/3]">
+          <Image
+            src={featuredImg}
+            alt={featured.name[locale]}
+            class="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+            widths={[640, 1024, 1440]}
+            sizes="100vw"
+            loading="lazy"
+            quality={80}
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+        </div>
+        <div class="absolute inset-x-0 bottom-0 p-6 text-white md:p-10">
+          <div class="flex flex-wrap gap-2">
+            {featured.hasJacuzzi && <span class="rounded-none bg-white/15 px-3 py-1 text-[0.6rem] uppercase tracking-wider backdrop-blur-sm">Jacuzzi</span>}
+            <span class="rounded-none bg-white/10 px-3 py-1 text-[0.6rem] uppercase tracking-wider backdrop-blur-sm">{featured.capacity.guests}{featured.capacity.extraGuests ? `+${featured.capacity.extraGuests}` : ''} {t('suite.guests', locale)}</span>
+          </div>
+          <h3 class="mt-4 font-heading text-3xl font-light text-white md:text-4xl">{featured.name[locale]}</h3>
+          <p class="mt-1 text-sm font-light italic text-white/60">{featured.moodLine[locale]}</p>
+          <div class="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-white/80 transition-all duration-300 group-hover:gap-3">
+            {t('suite.discover', locale)}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Secondary suites grid -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+      {secondary.map((suite) => (
+        <SuiteCard suite={suite} locale={locale} />
+      ))}
+    </div>
+
+    {limit && (
+      <div class="mt-14 text-center" data-reveal>
+        <a
+          href={getLocalizedPath('/suites', locale)}
+          class="group inline-flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.15em] text-ink transition-colors hover:text-aegean-600"
+          style="text-decoration:none;"
+        >
+          {t('suite.viewAll', locale)}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="transition-transform duration-300 group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    )}
+  </div>
+</section>

@@ -1,0 +1,139 @@
+@import "tailwindcss";
+@import "./motion.css";
+
+/* =========================================
+   RABAGAS SUITES — Design System
+   Adapted from 21st.dev component patterns
+   ========================================= */
+
+@theme {
+  /* --- Color Palette: Warm Cycladic Neutrals --- */
+  --color-cream: #FAF8F5;
+  --color-sand-50: #F7F3EE;
+  --color-sand-100: #F3EDE6;
+  --color-sand-200: #E8DFD3;
+  --color-sand-300: #D4C7B5;
+  --color-stone-300: #C4B5A3;
+  --color-stone-400: #9C8B78;
+  --color-stone-500: #7A6B5D;
+  --color-stone-600: #6B5D4F;
+  --color-stone-700: #524639;
+  --color-charcoal: #3A3530;
+  --color-ink: #1E1B18;
+
+  /* Accent: Aegean */
+  --color-aegean-100: #D4E5ED;
+  --color-aegean-400: #6A9BB5;
+  --color-aegean-600: #3D6F87;
+
+  /* Accent: Terracotta */
+  --color-terra-300: #E8B9A5;
+  --color-terra-500: #C4775A;
+
+  /* Accent: Olive */
+  --color-olive-300: #C5D0B0;
+  --color-olive-500: #8A9A6D;
+
+  /* --- Typography --- */
+  --font-heading: 'Cormorant Garamond', 'Georgia', serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+
+  /* --- Spacing (extends Tailwind defaults) --- */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-30: 7.5rem;
+  --spacing-36: 9rem;
+
+  /* --- Shadows --- */
+  --shadow-premium: 0 4px 24px rgba(30, 27, 24, 0.06);
+  --shadow-elevated: 0 8px 32px rgba(30, 27, 24, 0.08);
+  --shadow-hero: 0 16px 48px rgba(30, 27, 24, 0.12);
+
+  /* --- Animations --- */
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-up: fade-up 0.6s var(--ease-premium) both;
+  --animate-fade-in: fade-in 0.5s ease both;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- Base Layer --- */
+/* Link reset — outside @layer for higher specificity over UA stylesheet */
+a, a:visited, a:hover, a:active {
+  color: inherit;
+  text-decoration: none;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-sand-200);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-aegean-400);
+    outline-offset: 3px;
+    border-radius: 0.25rem;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* --- Utility Classes --- */
+@layer utilities {
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .label-uppercase {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SuiteCard from '../../../components/ui/SuiteCard.astro';
+import BookingInquiry from '../../../components/ui/BookingInquiry.astro';
+import { getAllSuites } from '../../../data/suites';
+import { t } from '../../../lib/i18n';
+
+const locale = 'el';
+const suites = getAllSuites();
+---
+
+<BaseLayout
+  title="\u039F\u03B9 \u03A3\u03BF\u03C5\u03AF\u03C4\u03B5\u03C2 \u03BC\u03B1\u03C2 — Rabagas Suites \u03A3\u03AF\u03C6\u03BD\u03BF\u03C2"
+  description="\u0395\u03BE\u03B5\u03C1\u03B5\u03C5\u03BD\u03AE\u03C3\u03C4\u03B5 \u03AD\u03BE\u03B9 \u03BC\u03BF\u03BD\u03B1\u03B4\u03B9\u03BA\u03AD\u03C2 \u03C3\u03BF\u03C5\u03AF\u03C4\u03B5\u03C2 \u03BA\u03BB\u03B7\u03C1\u03BF\u03BD\u03BF\u03BC\u03B9\u03AC\u03C2 \u03C3\u03C4\u03B7\u03BD \u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1, \u03A3\u03AF\u03C6\u03BD\u03BF\u03C2."
+  locale={locale}
+>
+  <section class="px-5 pb-16 pt-32 md:pb-20 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-14 text-center">
+        <span class="label-uppercase mb-3 block text-stone-400">{t('section.suites', locale)}</span>
+        <h1 class="font-heading text-4xl font-light text-ink md:text-5xl">{'\u0392\u03C1\u03B5\u03AF\u03C4\u03B5 \u03C4\u03B7\u03BD \u03B9\u03B4\u03B1\u03BD\u03B9\u03BA\u03AE \u03C3\u03BF\u03C5\u03AF\u03C4\u03B1'}</h1>
+        <p class="mx-auto mt-4 max-w-lg text-lg text-stone-500">{'\u039A\u03AC\u03B8\u03B5 \u03BA\u03B1\u03C4\u03BF\u03B9\u03BA\u03AF\u03B1 \u03AD\u03C7\u03B5\u03B9 \u03C4\u03BF\u03BD \u03B4\u03B9\u03BA\u03CC \u03C4\u03B7\u03C2 \u03C7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1\u03B1, \u03B9\u03C3\u03C4\u03BF\u03C1\u03AF\u03B1 \u03BA\u03B1\u03B9 \u03B5\u03BE\u03C9\u03C4\u03B5\u03C1\u03B9\u03BA\u03CC \u03C7\u03CE\u03C1\u03BF.'}</p>
+        <hr class="mx-auto mt-6 w-12 border-t border-stone-300" />
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {suites.map((suite, i) => (
+          <div class:list={[i === 0 ? 'sm:col-span-2 lg:col-span-2' : '']}>
+            <SuiteCard suite={suite} locale={locale} featured={i === 0} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <BookingInquiry locale={locale} />
+</BaseLayout>

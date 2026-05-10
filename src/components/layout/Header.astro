@@ -1,0 +1,244 @@
+---
+/**
+ * HEADER / NAVIGATION
+ * Adapted from 21st.dev: aceternity/navbar-menu
+ * - Glass morphism backdrop-blur on scroll (backdrop-blur-sm, bg-white/opacity)
+ * - Spring-like smooth transitions
+ * - Reduced-opacity borders (border-black/[0.1])
+ * - Scroll-aware state change at 50px
+ * - Mobile: full-screen overlay nav with serif links
+ * Selected over: designali-in/navbar (too flat, no language switcher pattern)
+ */
+import type { Locale } from '../../lib/i18n';
+import { t, getLocalizedPath, getAlternateLocale } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const altLocale = getAlternateLocale(locale);
+const altPath = getLocalizedPath(currentPath.replace(/^\/el/, '') || '/', altLocale);
+
+const navItems = [
+  { key: 'nav.suites', path: '/suites' },
+  { key: 'nav.story', path: '/our-story' },
+  { key: 'nav.contact', path: '/contact' },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300" id="site-header">
+  <div class="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
+    <!-- Logo -->
+    <a href={getLocalizedPath('/', locale)} class="flex flex-col leading-none no-underline" style="color: inherit; text-decoration: none;" aria-label="Rabagas Suites — Home">
+      <span class="font-heading text-2xl font-light tracking-wide text-white transition-colors duration-300 header-text">Rabagas</span>
+      <span class="label-uppercase mt-0.5 text-[0.55rem] text-white/60 transition-colors duration-300 header-text-sub">Suites</span>
+    </a>
+
+    <!-- Desktop nav (21st.dev aceternity pattern: flex justify-center space-x-4) -->
+    <nav class="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+      {navItems.map((item) => {
+        const href = getLocalizedPath(item.path, locale);
+        const isActive = currentPath === href || currentPath.startsWith(href + '/');
+        return (
+          <a
+            href={href}
+            class:list={[
+              'relative py-2 text-[0.75rem] font-medium uppercase tracking-[0.12em] transition-colors duration-200',
+              isActive
+                ? 'text-white header-link-active'
+                : 'text-white/70 hover:text-white header-link',
+            ]}
+          >
+            {t(item.key, locale)}
+            {isActive && (
+              <span class="absolute bottom-0 left-0 right-0 h-px bg-current"></span>
+            )}
+          </a>
+        );
+      })}
+    </nav>
+
+    <!-- Desktop actions -->
+    <div class="hidden items-center gap-5 md:flex">
+      <!-- Language switcher -->
+      <a
+        href={altPath}
+        class="text-[0.7rem] font-medium tracking-wider text-white/60 transition-colors duration-200 hover:text-white header-lang"
+        hreflang={altLocale}
+        aria-label={`Switch to ${altLocale === 'el' ? 'Greek' : 'English'}`}
+      >
+        <span class="font-semibold text-white/90 header-lang-current">{locale.toUpperCase()}</span>
+        <span class="mx-1 text-white/30 header-lang-sep">/</span>
+        <span class="header-lang-alt">{altLocale.toUpperCase()}</span>
+      </a>
+
+      <!-- Book CTA (21st.dev pattern: rounded-full with hover state) -->
+      <a
+        href={getLocalizedPath('/contact', locale) + '#booking'}
+        class="inline-flex h-9 items-center rounded-none border border-white/40 bg-transparent px-6 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-charcoal header-book"
+      >
+        {t('nav.book', locale)}
+      </a>
+    </div>
+
+    <!-- Mobile menu button — refined premium feel: wider bars, more spacing -->
+    <button
+      class="flex h-12 w-12 items-center justify-center rounded-full transition-colors duration-200 md:hidden"
+      aria-label="Open menu"
+      aria-expanded="false"
+      id="menu-toggle"
+    >
+      <div class="flex w-[22px] flex-col gap-[6px]" id="hamburger-icon">
+        <span class="block h-[1px] w-full origin-center bg-white transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] header-bar"></span>
+        <span class="block h-[1px] w-full origin-center bg-white transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] header-bar"></span>
+      </div>
+    </button>
+  </div>
+
+  <!-- Mobile nav overlay — premium full-screen with editorial sizing -->
+  <div class="fixed inset-0 top-18 z-40 hidden bg-cream backdrop-blur-lg md:hidden" id="mobile-nav">
+    <nav class="flex h-full flex-col px-8 pt-12" aria-label="Mobile navigation">
+      <span class="label-uppercase mb-8 text-[0.6rem] text-stone-400">Menu</span>
+      <ul class="flex flex-col">
+        <li>
+          <a href={getLocalizedPath('/', locale)} class="group flex items-center justify-between border-b border-sand-200/60 py-5" style="color: inherit; text-decoration: none;">
+            <span class="font-heading text-[2rem] font-light text-ink transition-colors group-hover:text-aegean-600">{t('nav.home', locale)}</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-stone-300 transition-transform group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </li>
+        {navItems.map((item) => (
+          <li>
+            <a href={getLocalizedPath(item.path, locale)} class="group flex items-center justify-between border-b border-sand-200/60 py-5" style="color: inherit; text-decoration: none;">
+              <span class="font-heading text-[2rem] font-light text-ink transition-colors group-hover:text-aegean-600">{t(item.key, locale)}</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-stone-300 transition-transform group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-auto flex flex-col gap-5 pb-10 pt-10">
+        <a
+          href={altPath}
+          class="label-uppercase text-[0.65rem] text-stone-400 transition-colors hover:text-ink"
+          style="color: inherit; text-decoration: none;"
+          hreflang={altLocale}
+        >
+          {altLocale === 'el' ? 'Ελληνικά' : 'English'}
+        </a>
+        <a
+          href={getLocalizedPath('/contact', locale) + '#booking'}
+          class="flex h-14 items-center justify-center rounded-sm bg-charcoal text-xs font-semibold uppercase tracking-[0.15em] text-white"
+        >
+          {t('nav.book', locale)}
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const toggle = document.getElementById('menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const icon = document.getElementById('hamburger-icon');
+  let isOpen = false;
+
+  // Mobile menu toggle
+  toggle?.addEventListener('click', () => {
+    isOpen = !isOpen;
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    mobileNav?.classList.toggle('hidden', !isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+
+    // 2-bar hamburger → X animation
+    const bars = icon?.querySelectorAll('span');
+    if (bars && isOpen) {
+      bars[0].style.transform = 'translateY(3.5px) rotate(45deg)';
+      bars[1].style.transform = 'translateY(-3.5px) rotate(-45deg)';
+    } else if (bars) {
+      bars[0].style.transform = '';
+      bars[1].style.transform = '';
+    }
+  });
+
+  mobileNav?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      isOpen = false;
+      toggle?.setAttribute('aria-expanded', 'false');
+      mobileNav.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Scroll-aware header (21st.dev pattern: state change at scroll > 50)
+  let lastScroll = 0;
+  const onScroll = () => {
+    const y = window.scrollY;
+    if (!header) return;
+
+    if (y > 50) {
+      header.classList.add('header-scrolled');
+    } else {
+      header.classList.remove('header-scrolled');
+    }
+
+    if (y > 300 && y > lastScroll && !isOpen) {
+      header.style.transform = 'translateY(-100%)';
+    } else {
+      header.style.transform = '';
+    }
+    lastScroll = y;
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style is:global>
+  /* Default state: transparent header over hero */
+  .header-scrolled {
+    background-color: rgba(250, 248, 245, 0.95) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 1px 8px rgba(30, 27, 24, 0.04);
+  }
+
+  .header-scrolled .header-text {
+    color: var(--color-ink) !important;
+  }
+  .header-scrolled .header-text-sub {
+    color: var(--color-stone-400) !important;
+  }
+  .header-scrolled .header-link,
+  .header-scrolled .header-link-active {
+    color: var(--color-stone-500) !important;
+  }
+  .header-scrolled .header-link-active {
+    color: var(--color-ink) !important;
+  }
+  .header-scrolled .header-link:hover {
+    color: var(--color-ink) !important;
+  }
+  .header-scrolled .header-bar {
+    background-color: var(--color-ink) !important;
+  }
+  .header-scrolled .header-lang-current {
+    color: var(--color-ink) !important;
+  }
+  .header-scrolled .header-lang-alt {
+    color: var(--color-stone-400) !important;
+  }
+  .header-scrolled .header-lang-sep {
+    color: var(--color-sand-300) !important;
+  }
+  .header-scrolled .header-book {
+    border-color: var(--color-charcoal) !important;
+    background-color: transparent !important;
+    color: var(--color-charcoal) !important;
+  }
+  .header-scrolled .header-book:hover {
+    background-color: var(--color-charcoal) !important;
+    color: white !important;
+  }
+</style>

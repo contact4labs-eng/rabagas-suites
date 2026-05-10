@@ -1,0 +1,220 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BookingInquiry from '../components/ui/BookingInquiry.astro';
+import { t } from '../lib/i18n';
+import { propertyImages } from '../data/images';
+
+const locale = 'en';
+---
+
+<BaseLayout
+  title="Arrive — Rabagas Suites Sifnos"
+  description="Plan your arrival to Rabagas Suites in Apollonia, Sifnos. Getting here, host support, and direct booking."
+  locale={locale}
+>
+  <!-- Dark cinematic hero -->
+  <section class="relative overflow-hidden bg-charcoal px-5 pb-20 pt-40 text-white md:pb-28 lg:px-8">
+    <div class="absolute inset-0 opacity-15">
+      <Image src={propertyImages.courtyard} alt="" class="h-full w-full object-cover" widths={[640, 1024]} sizes="100vw" quality={60} loading="eager" />
+    </div>
+    <div class="relative mx-auto max-w-3xl" data-reveal>
+      <span class="label-uppercase mb-5 block text-stone-500">Rabagas Suites</span>
+      <h1 class="font-heading text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.05] text-white">
+        Your journey<br />begins here
+      </h1>
+      <p class="mt-5 max-w-md text-base font-light leading-[1.8] text-stone-400">
+        From Athens to your private terrace in Apollonia. We will help you with every step.
+      </p>
+    </div>
+  </section>
+
+  <!-- Getting to Sifnos — editorial travel steps -->
+  <section class="px-5 py-24 md:py-32 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <div class="mb-16" data-reveal>
+        <span class="label-uppercase mb-4 block text-stone-400">Getting here</span>
+        <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">The island is closer than you think</h2>
+        <div class="mt-4 h-px w-10 bg-stone-300"></div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-sand-200 bg-sand-200 md:grid-cols-3" data-reveal-stagger>
+        <div class="bg-white p-8 md:p-10">
+          <span class="font-heading text-4xl font-light text-stone-300">01</span>
+          <h3 class="mt-4 font-heading text-xl text-ink">Reach Sifnos</h3>
+          <p class="mt-3 text-sm leading-[1.8] text-stone-500">
+            Daily ferries from Piraeus (Athens) take 2.5&ndash;5 hours depending on the line. Fast ferries run year-round. We can arrange port transfers for your arrival.
+          </p>
+        </div>
+        <div class="bg-white p-8 md:p-10">
+          <span class="font-heading text-4xl font-light text-stone-300">02</span>
+          <h3 class="mt-4 font-heading text-xl text-ink">Arrive in Apollonia</h3>
+          <p class="mt-3 text-sm leading-[1.8] text-stone-500">
+            Ferries dock in Kamares. Apollonia is a 10-minute drive up the hill &mdash; the capital village and heart of the island. We arrange your transfer so you arrive relaxed.
+          </p>
+        </div>
+        <div class="bg-white p-8 md:p-10">
+          <span class="font-heading text-4xl font-light text-stone-300">03</span>
+          <h3 class="mt-4 font-heading text-xl text-ink">Walk to your suite</h3>
+          <p class="mt-3 text-sm leading-[1.8] text-stone-500">
+            Rabagas is steps from the central pedestrian alley. George or Didi will welcome you personally, show you your private residence, and share their island.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact details — elegant asymmetric layout -->
+  <section class="bg-white px-5 py-24 md:py-32 lg:px-8">
+    <div class="mx-auto max-w-5xl">
+      <div class="grid grid-cols-1 gap-16 md:grid-cols-[1.2fr_1fr] md:items-start">
+        <!-- Left: contact info + location -->
+        <div data-reveal="left">
+          <span class="label-uppercase mb-4 block text-stone-400">Direct contact</span>
+          <h2 class="font-heading text-3xl font-light text-ink md:text-4xl">We are here for you</h2>
+          <div class="mt-4 h-px w-10 bg-stone-300"></div>
+
+          <div class="mt-10 space-y-8">
+            <div>
+              <span class="label-uppercase text-[0.55rem] text-stone-400">Phone</span>
+              <a href="tel:+302117159002" class="mt-1 block font-heading text-2xl font-light text-ink" style="text-decoration:none;">+30 211 715 9002</a>
+              <p class="mt-1 text-xs text-stone-400">Daily, 09:00 &ndash; 17:00</p>
+            </div>
+            <div>
+              <span class="label-uppercase text-[0.55rem] text-stone-400">Email</span>
+              <a href="mailto:info@rabagas-suites.gr" class="mt-1 block text-lg text-ink" style="text-decoration:none;">info@rabagas-suites.gr</a>
+              <p class="mt-1 text-xs text-stone-400">We reply within hours</p>
+            </div>
+            <div>
+              <span class="label-uppercase text-[0.55rem] text-stone-400">Address</span>
+              <p class="mt-1 text-base leading-relaxed text-ink">Apollonia, Sifnos 84003<br />Greece</p>
+              <a href="https://www.google.com/maps/search/?api=1&query=36.972574,24.72438" target="_blank" rel="noopener noreferrer" class="group mt-2 inline-flex items-center gap-1 text-sm font-medium text-aegean-600" style="text-decoration:none;">
+                View on map
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-hover:translate-x-0.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+            <div class="flex gap-6 pt-2">
+              <a href="https://www.instagram.com/rabagas.suites" target="_blank" rel="noopener noreferrer" class="link-premium text-sm text-stone-500 transition-colors hover:text-ink" style="text-decoration:none;">Instagram</a>
+              <a href="https://www.facebook.com/p/Rabagas-Suites-61558497878420" target="_blank" rel="noopener noreferrer" class="link-premium text-sm text-stone-500 transition-colors hover:text-ink" style="text-decoration:none;">Facebook</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: concierge services -->
+        <div class="rounded-xl border border-sand-200 bg-cream p-8 md:p-10" data-reveal="right">
+          <span class="label-uppercase mb-4 block text-stone-400">Concierge</span>
+          <h3 class="font-heading text-2xl font-light text-ink">How we can help</h3>
+          <div class="mt-6 space-y-5">
+            <div class="flex gap-4">
+              <span class="mt-0.5 text-stone-400">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </span>
+              <div>
+                <p class="text-sm font-medium text-ink">Port transfers</p>
+                <p class="mt-0.5 text-xs text-stone-500">From Kamares port to your suite</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="mt-0.5 text-stone-400">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </span>
+              <div>
+                <p class="text-sm font-medium text-ink">Restaurant reservations</p>
+                <p class="mt-0.5 text-xs text-stone-500">Our favourite tavernas, booked for you</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="mt-0.5 text-stone-400">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              <div>
+                <p class="text-sm font-medium text-ink">Car & bike rental</p>
+                <p class="mt-0.5 text-xs text-stone-500">Partners arranged, delivered to you</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="mt-0.5 text-stone-400">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </span>
+              <div>
+                <p class="text-sm font-medium text-ink">Boat trips & excursions</p>
+                <p class="mt-0.5 text-xs text-stone-500">Private cruises and island-hopping</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Message form — lighter treatment -->
+  <section class="bg-sand-50 px-5 py-20 md:py-24 lg:px-8">
+    <div class="mx-auto max-w-xl text-center" data-reveal>
+      <h2 class="font-heading text-2xl font-light text-ink">Send us a message</h2>
+      <p class="mt-2 text-sm text-stone-500">Questions about your stay? We reply personally.</p>
+    </div>
+    <form class="mx-auto mt-10 flex max-w-xl flex-col gap-5" id="contact-form" action="/api/inquiry" method="POST" data-reveal="slow">
+      <input type="hidden" name="form" value="contact" />
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div class="flex flex-col gap-1.5">
+          <label for="contact-name" class="text-xs font-medium text-stone-500">{t('contact.name', locale)}</label>
+          <input type="text" id="contact-name" name="name" required autocomplete="name" class="h-12 rounded-sm border border-sand-200 bg-white px-4 text-base text-ink outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="contact-email" class="text-xs font-medium text-stone-500">{t('contact.emailField', locale)}</label>
+          <input type="email" id="contact-email" name="email" required autocomplete="email" class="h-12 rounded-sm border border-sand-200 bg-white px-4 text-base text-ink outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100" />
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="contact-message" class="text-xs font-medium text-stone-500">{t('contact.message', locale)}</label>
+        <textarea id="contact-message" name="message" rows="5" required class="min-h-32 resize-y rounded-sm border border-sand-200 bg-white px-4 py-3 text-base text-ink outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100" placeholder="Tell us about your plans for Sifnos..."></textarea>
+      </div>
+      <button type="submit" class="inline-flex h-12 w-full items-center justify-center rounded-none bg-charcoal text-xs font-semibold uppercase tracking-[0.15em] text-white transition-colors hover:bg-ink sm:w-fit sm:px-12">
+        {t('contact.send', locale)}
+      </button>
+    </form>
+    <!-- Contact success -->
+    <div id="contact-success" class="mx-auto hidden max-w-xl rounded-sm bg-white p-10 text-center shadow-premium">
+      <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-olive-300/20">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-olive-500"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3 class="font-heading text-2xl font-light text-ink">
+        {locale === 'en' ? 'Message sent' : '\u03A4\u03BF \u03BC\u03AE\u03BD\u03C5\u03BC\u03B1 \u03C3\u03C4\u03AC\u03BB\u03B8\u03B7\u03BA\u03B5'}
+      </h3>
+      <p class="mt-2 text-sm text-stone-500">
+        {locale === 'en' ? 'We will reply personally within a few hours.' : '\u0398\u03B1 \u03B1\u03C0\u03B1\u03BD\u03C4\u03AE\u03C3\u03BF\u03C5\u03BC\u03B5 \u03C0\u03C1\u03BF\u03C3\u03C9\u03C0\u03B9\u03BA\u03AC \u03C3\u03B5 \u03BB\u03AF\u03B3\u03B5\u03C2 \u03CE\u03C1\u03B5\u03C2.'}
+      </p>
+    </div>
+    <!-- Contact error -->
+    <div id="contact-error" class="mx-auto mt-4 hidden max-w-xl rounded-sm border border-terra-300/30 bg-terra-300/5 p-4 text-center">
+      <p class="text-sm text-terra-500">
+        {locale === 'en' ? 'Something went wrong. Please try again.' : '\u039A\u03AC\u03C4\u03B9 \u03C0\u03AE\u03B3\u03B5 \u03C3\u03C4\u03C1\u03B1\u03B2\u03AC. \u0394\u03BF\u03BA\u03B9\u03BC\u03AC\u03C3\u03C4\u03B5 \u03BE\u03B1\u03BD\u03AC.'}
+      </p>
+    </div>
+  </section>
+
+  <script>
+    const cf = document.getElementById('contact-form') as HTMLFormElement | null;
+    const cSuccess = document.getElementById('contact-success');
+    const cError = document.getElementById('contact-error');
+    const cBtn = cf?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    const cLabel = cBtn?.textContent?.trim() || '';
+
+    if (cf) {
+      cf.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        cError?.classList.add('hidden');
+        if (!cf.checkValidity()) { cf.reportValidity(); return; }
+        if (cBtn) { cBtn.disabled = true; cBtn.textContent = '...'; }
+        try {
+          const res = await fetch(cf.action, { method: 'POST', body: new FormData(cf), headers: { 'Accept': 'application/json' } });
+          const json = await res.json();
+          if (res.ok && json.ok) { cf.style.display = 'none'; cSuccess?.classList.remove('hidden'); }
+          else { cError?.classList.remove('hidden'); if (cBtn) { cBtn.disabled = false; cBtn.textContent = cLabel; } }
+        } catch { cError?.classList.remove('hidden'); if (cBtn) { cBtn.disabled = false; cBtn.textContent = cLabel; } }
+      });
+    }
+  </script>
+
+  <BookingInquiry locale={locale} />
+</BaseLayout>

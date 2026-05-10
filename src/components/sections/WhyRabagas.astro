@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import type { Locale } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
+import { propertyImages } from '../../data/images';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const reasons = [
+  { titleKey: 'why.location.title', descKey: 'why.location.desc' },
+  { titleKey: 'why.heritage.title', descKey: 'why.heritage.desc' },
+  { titleKey: 'why.views.title', descKey: 'why.views.desc' },
+  { titleKey: 'why.comfort.title', descKey: 'why.comfort.desc' },
+  { titleKey: 'why.hospitality.title', descKey: 'why.hospitality.desc' },
+  { titleKey: 'why.privacy.title', descKey: 'why.privacy.desc' },
+];
+---
+
+<section class="bg-white px-5 py-24 md:py-32 lg:px-8" aria-labelledby="why-heading">
+  <div class="mx-auto max-w-6xl">
+    <!-- Cinematic intro with image -->
+    <div class="mb-20 grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center">
+      <div data-reveal="left">
+        <div class="img-zoom aspect-[4/5] overflow-hidden rounded-xl md:aspect-[3/4]">
+          <Image
+            src={propertyImages.courtyard}
+            alt="Rabagas Suites interior detail"
+            class="h-full w-full object-cover"
+            widths={[400, 640, 800]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="lazy"
+            quality={75}
+          />
+        </div>
+      </div>
+      <div data-reveal="right">
+        <span class="label-uppercase mb-4 block text-stone-400">{t('section.why', locale)}</span>
+        <h2 class="font-heading text-4xl font-light leading-[1.05] text-ink md:text-5xl" id="why-heading">
+          {locale === 'en' ? 'A different kind\nof luxury' : '\u0388\u03BD\u03B1 \u03B4\u03B9\u03B1\u03C6\u03BF\u03C1\u03B5\u03C4\u03B9\u03BA\u03CC \u03B5\u03AF\u03B4\u03BF\u03C2\n\u03C0\u03BF\u03BB\u03C5\u03C4\u03AD\u03BB\u03B5\u03B9\u03B1\u03C2'}
+        </h2>
+        <div class="mt-4 h-px w-12 bg-stone-300"></div>
+        <p class="mt-6 text-base leading-relaxed text-stone-500">
+          {locale === 'en'
+            ? 'Not a hotel. Not a rental. A restored settlement of independent residences where Cycladic heritage meets contemporary comfort, personal hospitality, and Aegean light.'
+            : '\u039F\u03CD\u03C4\u03B5 \u03BE\u03B5\u03BD\u03BF\u03B4\u03BF\u03C7\u03B5\u03AF\u03BF. \u039F\u03CD\u03C4\u03B5 \u03B5\u03BD\u03BF\u03B9\u03BA\u03AF\u03B1\u03C3\u03B7. \u0388\u03BD\u03B1\u03C2 \u03B1\u03BD\u03B1\u03C3\u03C4\u03B7\u03BB\u03C9\u03BC\u03AD\u03BD\u03BF\u03C2 \u03BF\u03B9\u03BA\u03B9\u03C3\u03BC\u03CC\u03C2 \u03B1\u03BD\u03B5\u03BE\u03AC\u03C1\u03C4\u03B7\u03C4\u03C9\u03BD \u03BA\u03B1\u03C4\u03BF\u03B9\u03BA\u03B9\u03CE\u03BD.'}
+        </p>
+      </div>
+    </div>
+
+    <!-- Reasons grid with staggered reveal -->
+    <div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-sand-200 bg-sand-200 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+      {reasons.map((reason) => (
+        <div class="flex flex-col bg-white p-8 transition-colors duration-300 hover:bg-cream">
+          <h3 class="font-heading text-xl text-ink">{t(reason.titleKey, locale)}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-stone-500">{t(reason.descKey, locale)}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

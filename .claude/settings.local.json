@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx astro:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(netstat -ano)",
+      "mcp__mcp-registry__search_mcp_registry",
+      "WebSearch",
+      "WebFetch(domain:21st.dev)",
+      "WebFetch(domain:rabagas-suites.com)",
+      "mcp__mcp-registry__suggest_connectors",
+      "Bash(claude mcp:*)",
+      "Bash(where claude:*)",
+      "Bash(wc -l /c/Users/Tassos/Desktop/rabagas/.claude/skills/elite-web-build/*.md)"
+    ]
+  }
+}
