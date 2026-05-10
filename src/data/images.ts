@@ -24,8 +24,8 @@ import boutiqueImg from '../assets/images/suites/boutique.webp';
 import apolloniaImg from '../assets/images/suites/apollonia.webp';
 
 // Hero video assets (static URL imports — keep filenames stable for caching)
-import heroVideoMp4 from '../assets/videos/hero.h264.mp4?url';
-import heroVideoAv1 from '../assets/videos/hero.av1.webm?url';
+import heroVideoMp4 from '../assets/property/hero.h264.mp4?url';
+import heroVideoAv1 from '../assets/property/hero.av1.webm?url';
 
 export const propertyImages = {
   hero: heroImg,
