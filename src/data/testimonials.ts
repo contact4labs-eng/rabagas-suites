@@ -5,6 +5,7 @@ export interface Testimonial {
   text: {
     en: string;
     el: string;
+    fr: string;
   };
   rating: number;
   source?: string;
@@ -18,6 +19,7 @@ export const testimonials: Testimonial[] = [
     text: {
       en: 'The location is incredible \u2014 just seconds from the best shops and restaurants in Apollonia. The suite itself was beautifully designed and felt like a true home.',
       el: '\u0397 \u03C4\u03BF\u03C0\u03BF\u03B8\u03B5\u03C3\u03AF\u03B1 \u03B5\u03AF\u03BD\u03B1\u03B9 \u03B1\u03C0\u03AF\u03C3\u03C4\u03B5\u03C5\u03C4\u03B7 \u2014 \u03B4\u03B5\u03C5\u03C4\u03B5\u03C1\u03CC\u03BB\u03B5\u03C0\u03C4\u03B1 \u03B1\u03C0\u03CC \u03C4\u03B1 \u03BA\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B1 \u03BC\u03B1\u03B3\u03B1\u03B6\u03B9\u03AC \u03BA\u03B1\u03B9 \u03B5\u03C3\u03C4\u03B9\u03B1\u03C4\u03CC\u03C1\u03B9\u03B1.',
+      fr: 'L’emplacement est incroyable — à quelques secondes des meilleures boutiques et restaurants d’Apollonia. La suite elle-même est magnifiquement conçue et donne le sentiment d’un véritable chez-soi.'
     },
     rating: 10,
     source: 'Booking.com',
@@ -29,6 +31,7 @@ export const testimonials: Testimonial[] = [
     text: {
       en: 'A perfect private compound. George and Didi are incredible hosts who go above and beyond to make your stay unforgettable.',
       el: '\u0388\u03BD\u03B1 \u03C4\u03AD\u03BB\u03B5\u03B9\u03BF \u03B9\u03B4\u03B9\u03C9\u03C4\u03B9\u03BA\u03CC \u03C3\u03C5\u03B3\u03BA\u03C1\u03CC\u03C4\u03B7\u03BC\u03B1. \u039F \u0393\u03B9\u03CE\u03C1\u03B3\u03BF\u03C2 \u03BA\u03B1\u03B9 \u03B7 \u039D\u03C4\u03AF\u03BD\u03C4\u03B9 \u03B5\u03AF\u03BD\u03B1\u03B9 \u03B5\u03BE\u03B1\u03B9\u03C1\u03B5\u03C4\u03B9\u03BA\u03BF\u03AF \u03BF\u03B9\u03BA\u03BF\u03B4\u03B5\u03C3\u03C0\u03CC\u03C4\u03B5\u03C2.',
+      fr: 'Un parfait domaine privé. George et Didi sont des hôtes incroyables qui se mettent en quatre pour rendre votre séjour inoubliable.'
     },
     rating: 10,
   },
@@ -39,6 +42,7 @@ export const testimonials: Testimonial[] = [
     text: {
       en: 'One of the best stays in Greece. The team is super communicative and the suites are even more beautiful in person.',
       el: '\u039C\u03AF\u03B1 \u03B1\u03C0\u03CC \u03C4\u03B9\u03C2 \u03BA\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B5\u03C2 \u03B4\u03B9\u03B1\u03BC\u03BF\u03BD\u03AD\u03C2 \u03C3\u03C4\u03B7\u03BD \u0395\u03BB\u03BB\u03AC\u03B4\u03B1.',
+      fr: 'L’un des meilleurs séjours en Grèce. L’équipe est extrêmement disponible et les suites sont encore plus belles en personne.'
     },
     rating: 10,
   },
@@ -49,6 +53,7 @@ export const testimonials: Testimonial[] = [
     text: {
       en: 'A lovely, spacious, airy property full of character. The attention to detail is remarkable \u2014 you can feel the care that has gone into every corner.',
       el: '\u0388\u03BD\u03B1 \u03C5\u03C0\u03AD\u03C1\u03BF\u03C7\u03BF, \u03B5\u03C5\u03C1\u03CD\u03C7\u03C9\u03C1\u03BF, \u03B1\u03B5\u03C1\u03AC\u03C4\u03BF \u03BA\u03B1\u03C4\u03AC\u03BB\u03C5\u03BC\u03B1 \u03B3\u03B5\u03BC\u03AC\u03C4\u03BF \u03C7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1\u03B1.',
+      fr: 'Une propriété charmante, spacieuse et lumineuse, pleine de caractère. L’attention au détail est remarquable — on sent le soin apporté à chaque coin.'
     },
     rating: 10,
   },
@@ -59,6 +64,7 @@ export const testimonials: Testimonial[] = [
     text: {
       en: 'Location beyond perfect, tastefully decorated with genuine Cycladic charm. The outdoor spaces are a dream.',
       el: '\u03A4\u03BF\u03C0\u03BF\u03B8\u03B5\u03C3\u03AF\u03B1 \u03C0\u03AD\u03C1\u03B1 \u03B1\u03C0\u03CC \u03C4\u03AD\u03BB\u03B5\u03B9\u03B1, \u03BC\u03B5 \u03B3\u03BF\u03CD\u03C3\u03C4\u03BF \u03BA\u03C5\u03BA\u03BB\u03B1\u03B4\u03AF\u03C4\u03B9\u03BA\u03B7\u03C2 \u03B3\u03BF\u03B7\u03C4\u03B5\u03AF\u03B1\u03C2.',
+      fr: 'Un emplacement au-delà du parfait, décoré avec goût et un véritable charme cycladique. Les espaces extérieurs sont un rêve.'
     },
     rating: 10,
   },
@@ -69,6 +75,7 @@ export const testimonials: Testimonial[] = [
     text: {
       en: 'Stop searching and stay here. Absolutely one of the best properties we have ever stayed at. The compound is magical.',
       el: '\u03A3\u03C4\u03B1\u03BC\u03B1\u03C4\u03AE\u03C3\u03C4\u03B5 \u03BD\u03B1 \u03C8\u03AC\u03C7\u03BD\u03B5\u03C4\u03B5 \u03BA\u03B1\u03B9 \u03BC\u03B5\u03AF\u03BD\u03B5\u03C4\u03B5 \u03B5\u03B4\u03CE. \u0388\u03BD\u03B1 \u03B1\u03C0\u03CC \u03C4\u03B1 \u03BA\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B1 \u03BA\u03B1\u03C4\u03B1\u03BB\u03CD\u03BC\u03B1\u03C4\u03B1.',
+      fr: 'Cessez de chercher et restez ici. Sans aucun doute l’une des meilleures propriétés où nous ayons séjourné. Le domaine est magique.'
     },
     rating: 10,
   },

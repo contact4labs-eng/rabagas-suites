@@ -1,25 +1,65 @@
 ---
+/**
+ * LanguageSwitcher — three-locale display (EL · EN · FR).
+ * Shows all three; the current locale is visually distinct and inert.
+ * The other two link to the equivalent canonical page in their locale.
+ */
 import type { Locale } from '../../lib/i18n';
-import { getAlternateLocale, getLocalizedPath } from '../../lib/i18n';
+import { locales, getLocalizedPath, stripLocale, t } from '../../lib/i18n';
 
 interface Props {
   locale: Locale;
   currentPath: string;
+  /** "header" (compact, light-on-dark over hero) or "footer" (compact, dim-on-dark) */
+  variant?: 'header' | 'footer';
 }
 
-const { locale, currentPath } = Astro.props;
-const altLocale = getAlternateLocale(locale);
-const pathWithoutLocale = currentPath.replace(/^\/el/, '') || '/';
-const altPath = getLocalizedPath(pathWithoutLocale, altLocale);
+const { locale, currentPath, variant = 'header' } = Astro.props;
+const canonical = stripLocale(currentPath);
+
+const display: Record<Locale, string> = {
+  el: 'EL',
+  en: 'EN',
+  fr: 'FR',
+};
+
+const ariaLabels: Record<Locale, string> = {
+  el: t('lang.el', locale),
+  en: t('lang.en', locale),
+  fr: t('lang.fr', locale),
+};
+
+const baseClass =
+  variant === 'header'
+    ? 'text-[0.7rem] font-medium tracking-wider'
+    : 'text-xs font-medium tracking-wider';
+const inactiveClass =
+  variant === 'header'
+    ? 'text-white/60 transition-colors hover:text-white'
+    : 'text-stone-500 transition-colors hover:text-ink';
+const activeClass =
+  variant === 'header'
+    ? 'text-white font-semibold'
+    : 'text-ink font-semibold';
+const sepClass = variant === 'header' ? 'text-white/30' : 'text-stone-300';
 ---
 
-<a
-  href={altPath}
-  class="inline-flex items-center gap-1 text-xs font-medium tracking-wider text-stone-400 transition-colors hover:text-ink"
-  aria-label={`Switch to ${altLocale === 'el' ? 'Greek' : 'English'}`}
-  hreflang={altLocale}
->
-  <span class="font-semibold text-ink">{locale.toUpperCase()}</span>
-  <span class="text-stone-300">/</span>
-  <span>{altLocale.toUpperCase()}</span>
-</a>
+<div class:list={['inline-flex items-center gap-1', baseClass]} aria-label={t('aria.language', locale)}>
+  {locales.map((loc, i) => (
+    <>
+      {i > 0 && <span class:list={['mx-1', sepClass]}>·</span>}
+      {loc === locale ? (
+        <span class:list={[activeClass]} aria-current="true">{display[loc]}</span>
+      ) : (
+        <a
+          href={getLocalizedPath(canonical, loc)}
+          class:list={[inactiveClass]}
+          hreflang={loc}
+          aria-label={ariaLabels[loc]}
+        >
+          {display[loc]}
+        </a>
+      )}
+    </>
+  ))}
+</div>

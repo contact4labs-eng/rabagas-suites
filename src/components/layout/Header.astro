@@ -10,7 +10,8 @@
  * Selected over: designali-in/navbar (too flat, no language switcher pattern)
  */
 import type { Locale } from '../../lib/i18n';
-import { t, getLocalizedPath, getAlternateLocale } from '../../lib/i18n';
+import { t, getLocalizedPath } from '../../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
   locale: Locale;
@@ -18,8 +19,6 @@ interface Props {
 }
 
 const { locale, currentPath } = Astro.props;
-const altLocale = getAlternateLocale(locale);
-const altPath = getLocalizedPath(currentPath.replace(/^\/el/, '') || '/', altLocale);
 
 const navItems = [
   { key: 'nav.suites', path: '/suites' },
@@ -31,13 +30,13 @@ const navItems = [
 <header class="fixed inset-x-0 top-0 z-50 transition-all duration-300" id="site-header">
   <div class="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
     <!-- Logo -->
-    <a href={getLocalizedPath('/', locale)} class="flex flex-col leading-none no-underline" style="color: inherit; text-decoration: none;" aria-label="Rabagas Suites — Home">
+    <a href={getLocalizedPath('/', locale)} class="flex flex-col leading-none no-underline" style="color: inherit; text-decoration: none;" aria-label={t('aria.homeLogo', locale)}>
       <span class="font-heading text-2xl font-light tracking-wide text-white transition-colors duration-300 header-text">Rabagas</span>
       <span class="label-uppercase mt-0.5 text-[0.55rem] text-white/60 transition-colors duration-300 header-text-sub">Suites</span>
     </a>
 
     <!-- Desktop nav (21st.dev aceternity pattern: flex justify-center space-x-4) -->
-    <nav class="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+    <nav class="hidden items-center gap-8 md:flex" aria-label={t('aria.mainNav', locale)}>
       {navItems.map((item) => {
         const href = getLocalizedPath(item.path, locale);
         const isActive = currentPath === href || currentPath.startsWith(href + '/');
@@ -62,17 +61,10 @@ const navItems = [
 
     <!-- Desktop actions -->
     <div class="hidden items-center gap-5 md:flex">
-      <!-- Language switcher -->
-      <a
-        href={altPath}
-        class="text-[0.7rem] font-medium tracking-wider text-white/60 transition-colors duration-200 hover:text-white header-lang"
-        hreflang={altLocale}
-        aria-label={`Switch to ${altLocale === 'el' ? 'Greek' : 'English'}`}
-      >
-        <span class="font-semibold text-white/90 header-lang-current">{locale.toUpperCase()}</span>
-        <span class="mx-1 text-white/30 header-lang-sep">/</span>
-        <span class="header-lang-alt">{altLocale.toUpperCase()}</span>
-      </a>
+      <!-- Language switcher: EL · EN · FR -->
+      <div class="header-lang">
+        <LanguageSwitcher locale={locale} currentPath={currentPath} variant="header" />
+      </div>
 
       <!-- Book CTA (21st.dev pattern: rounded-full with hover state) -->
       <a
@@ -86,7 +78,7 @@ const navItems = [
     <!-- Mobile menu button — refined premium feel: wider bars, more spacing -->
     <button
       class="flex h-12 w-12 items-center justify-center rounded-full transition-colors duration-200 md:hidden"
-      aria-label="Open menu"
+      aria-label={t('aria.openMenu', locale)}
       aria-expanded="false"
       id="menu-toggle"
     >
@@ -99,8 +91,8 @@ const navItems = [
 
   <!-- Mobile nav overlay — premium full-screen with editorial sizing -->
   <div class="fixed inset-0 top-18 z-40 hidden bg-cream backdrop-blur-lg md:hidden" id="mobile-nav">
-    <nav class="flex h-full flex-col px-8 pt-12" aria-label="Mobile navigation">
-      <span class="label-uppercase mb-8 text-[0.6rem] text-stone-400">Menu</span>
+    <nav class="flex h-full flex-col px-8 pt-12" aria-label={t('aria.mobileNav', locale)}>
+      <span class="label-uppercase mb-8 text-[0.6rem] text-stone-400">{t('aria.menu', locale)}</span>
       <ul class="flex flex-col">
         <li>
           <a href={getLocalizedPath('/', locale)} class="group flex items-center justify-between border-b border-sand-200/60 py-5" style="color: inherit; text-decoration: none;">
@@ -119,14 +111,9 @@ const navItems = [
       </ul>
 
       <div class="mt-auto flex flex-col gap-5 pb-10 pt-10">
-        <a
-          href={altPath}
-          class="label-uppercase text-[0.65rem] text-stone-400 transition-colors hover:text-ink"
-          style="color: inherit; text-decoration: none;"
-          hreflang={altLocale}
-        >
-          {altLocale === 'el' ? 'Ελληνικά' : 'English'}
-        </a>
+        <div class="label-uppercase text-[0.65rem] text-stone-400">
+          <LanguageSwitcher locale={locale} currentPath={currentPath} variant="footer" />
+        </div>
         <a
           href={getLocalizedPath('/contact', locale) + '#booking'}
           class="flex h-14 items-center justify-center rounded-sm bg-charcoal text-xs font-semibold uppercase tracking-[0.15em] text-white"

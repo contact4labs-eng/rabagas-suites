@@ -72,6 +72,13 @@ a, a:visited, a:hover, a:active {
   text-decoration: none;
 }
 
+/* List-marker reset — avoid UA bullets bleeding through Tailwind v4's base layer */
+nav ul, nav ol, footer ul, footer ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;

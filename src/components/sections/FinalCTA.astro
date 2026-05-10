@@ -11,7 +11,7 @@ interface Props {
 const { locale } = Astro.props;
 ---
 
-<section class="relative overflow-hidden py-32 md:py-40" aria-label="Call to action">
+<section class="relative overflow-hidden py-32 md:py-40" aria-label={t('aria.callToAction', locale)}>
   <div class="absolute inset-0 z-0">
     <Image
       src={propertyImages.detail2}

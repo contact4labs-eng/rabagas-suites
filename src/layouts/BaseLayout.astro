@@ -3,7 +3,7 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import MobileBookingBar from '../components/layout/MobileBookingBar.astro';
 import type { Locale } from '../lib/i18n';
-import { getAlternateLocale, getLocalizedPath } from '../lib/i18n';
+import { getAlternates, getLocalizedPath, stripLocale } from '../lib/i18n';
 
 interface Props {
   title: string;
@@ -16,20 +16,28 @@ interface Props {
 const { title, description, locale, ogImage, canonicalPath } = Astro.props;
 
 const currentPath = Astro.url.pathname;
-const altLocale = getAlternateLocale(locale);
-const altPath = getLocalizedPath(
-  currentPath.replace(/^\/el/, '') || '/',
-  altLocale
-);
 const canonical = canonicalPath
   ? `https://rabagas-suites.com${canonicalPath}`
   : `https://rabagas-suites.com${currentPath}`;
-const altUrl = `https://rabagas-suites.com${altPath}`;
+const alternates = getAlternates(currentPath);
+const xDefaultUrl = `https://rabagas-suites.com${getLocalizedPath(stripLocale(currentPath), 'el')}`;
 const og = ogImage || '/og-image.webp';
+
+const ogLocaleMap: Record<Locale, string> = {
+  el: 'el_GR',
+  en: 'en_US',
+  fr: 'fr_FR',
+};
+
+const skipLinkText: Record<Locale, string> = {
+  el: 'Μετάβαση στο περιεχόμενο',
+  en: 'Skip to content',
+  fr: 'Aller au contenu',
+};
 ---
 
 <!doctype html>
-<html lang={locale === 'el' ? 'el' : 'en'}>
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -56,9 +64,10 @@ const og = ogImage || '/og-image.webp';
 
     <!-- Canonical & Alternates -->
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="en" href={locale === 'en' ? canonical : altUrl} />
-    <link rel="alternate" hreflang="el" href={locale === 'el' ? canonical : altUrl} />
-    <link rel="alternate" hreflang="x-default" href={canonical.replace('/el/', '/')} />
+    {alternates.map(({ locale: loc, url }) => (
+      <link rel="alternate" hreflang={loc} href={url} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -66,7 +75,7 @@ const og = ogImage || '/og-image.webp';
     <meta property="og:description" content={description} />
     <meta property="og:image" content={og} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content={locale === 'el' ? 'el_GR' : 'en_US'} />
+    <meta property="og:locale" content={ogLocaleMap[locale]} />
     <meta property="og:site_name" content="Rabagas Suites" />
 
     <!-- Twitter -->
@@ -116,7 +125,7 @@ const og = ogImage || '/og-image.webp';
 
     <!-- Skip to content — accessibility -->
     <a href="#main-content" class="fixed left-4 top-4 z-[999] -translate-y-20 rounded-sm bg-charcoal px-4 py-2 text-sm text-white transition-transform focus:translate-y-0" style="text-decoration:none;">
-      {locale === 'en' ? 'Skip to content' : '\u039C\u03B5\u03C4\u03AC\u03B2\u03B1\u03C3\u03B7 \u03C3\u03C4\u03BF \u03C0\u03B5\u03C1\u03B9\u03B5\u03C7\u03CC\u03BC\u03B5\u03BD\u03BF'}
+      {skipLinkText[locale]}
     </a>
 
     <Header locale={locale} currentPath={currentPath} />
@@ -143,7 +152,7 @@ const og = ogImage || '/og-image.webp';
       document.querySelectorAll('[data-reveal], [data-reveal-stagger]').forEach((el) => observer.observe(el));
     </script>
 
-    <style>
+    <style is:global>
       @import '../styles/global.css';
     </style>
   </body>

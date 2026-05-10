@@ -11,8 +11,8 @@ export default defineConfig({
   // output: 'static' is default — API routes use prerender = false
 
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en', 'el'],
+    defaultLocale: 'el',
+    locales: ['el', 'en', 'fr'],
     routing: {
       prefixDefaultLocale: false,
     },

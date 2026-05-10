@@ -23,15 +23,13 @@ const suites = getAllSuites();
     <!-- Header -->
     <div class="mb-10 text-center">
       <span class="label-uppercase mb-4 block text-stone-500">
-        {locale === 'en' ? 'Direct reservation' : '\u0386\u03BC\u03B5\u03C3\u03B7 \u03BA\u03C1\u03AC\u03C4\u03B7\u03C3\u03B7'}
+        {t('booking.kicker', locale)}
       </span>
       <h2 class="font-heading text-3xl font-light text-white md:text-4xl" id="booking-heading">
-        {locale === 'en' ? 'Reserve Your Stay' : '\u039A\u03C1\u03B1\u03C4\u03AE\u03C3\u03C4\u03B5 \u03C4\u03B7 \u0394\u03B9\u03B1\u03BC\u03BF\u03BD\u03AE \u03C3\u03B1\u03C2'}
+        {t('booking.heading', locale)}
       </h2>
       <p class="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-stone-400">
-        {locale === 'en'
-          ? 'Tell us your dates and preferences. George & Didi confirm every booking personally, usually within hours.'
-          : '\u03A0\u03B5\u03AF\u03C4\u03B5 \u03BC\u03B1\u03C2 \u03C4\u03B9\u03C2 \u03B7\u03BC\u03B5\u03C1\u03BF\u03BC\u03B7\u03BD\u03AF\u03B5\u03C2 \u03BA\u03B1\u03B9 \u03C0\u03C1\u03BF\u03C4\u03B9\u03BC\u03AE\u03C3\u03B5\u03B9\u03C2 \u03C3\u03B1\u03C2. \u039F \u0393\u03B9\u03CE\u03C1\u03B3\u03BF\u03C2 & \u03B7 \u039D\u03C4\u03AF\u03BD\u03C4\u03B9 \u03B5\u03C0\u03B9\u03B2\u03B5\u03B2\u03B1\u03B9\u03CE\u03BD\u03BF\u03C5\u03BD \u03C0\u03C1\u03BF\u03C3\u03C9\u03C0\u03B9\u03BA\u03AC.'}
+        {t('booking.intro', locale)}
       </p>
     </div>
 
@@ -46,12 +44,12 @@ const suites = getAllSuites();
       <!-- Group 1: About you -->
       <fieldset class="space-y-4">
         <legend class="label-uppercase mb-3 text-[0.55rem] text-stone-400">
-          {locale === 'en' ? 'About you' : '\u03A3\u03C7\u03B5\u03C4\u03B9\u03BA\u03AC \u03BC\u03B5 \u03B5\u03C3\u03AC\u03C2'}
+          {t('booking.group.about', locale)}
         </legend>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div class="flex flex-col gap-1.5">
             <label for="booking-name" class="text-xs font-medium text-stone-500">{t('contact.name', locale)}</label>
-            <input type="text" id="booking-name" name="name" required autocomplete="name" placeholder={locale === 'en' ? 'Your full name' : '\u039F\u03BD\u03BF\u03BC\u03B1\u03C4\u03B5\u03C0\u03CE\u03BD\u03C5\u03BC\u03BF'} class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink placeholder:text-stone-300 outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100" />
+            <input type="text" id="booking-name" name="name" required autocomplete="name" placeholder={t('booking.placeholder.name', locale)} class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink placeholder:text-stone-300 outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100" />
           </div>
           <div class="flex flex-col gap-1.5">
             <label for="booking-email" class="text-xs font-medium text-stone-500">{t('contact.emailField', locale)}</label>
@@ -66,14 +64,14 @@ const suites = getAllSuites();
       <!-- Group 2: Your stay -->
       <fieldset class="space-y-4">
         <legend class="label-uppercase mb-3 text-[0.55rem] text-stone-400">
-          {locale === 'en' ? 'Your stay' : '\u0397 \u03B4\u03B9\u03B1\u03BC\u03BF\u03BD\u03AE \u03C3\u03B1\u03C2'}
+          {t('booking.group.stay', locale)}
         </legend>
         <div class="flex flex-col gap-1.5">
           <label for="booking-suite" class="text-xs font-medium text-stone-500">
-            {locale === 'en' ? 'Preferred suite' : '\u03A0\u03C1\u03BF\u03C4\u03B9\u03BC\u03CE\u03BC\u03B5\u03BD\u03B7 \u03C3\u03BF\u03C5\u03AF\u03C4\u03B1'}
+            {t('booking.suite.label', locale)}
           </label>
           <select id="booking-suite" name="suite" class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink outline-none appearance-none transition-colors focus:border-aegean-400">
-            <option value="">{locale === 'en' ? 'Not decided yet' : '\u0394\u03B5\u03BD \u03AD\u03C7\u03C9 \u03B1\u03C0\u03BF\u03C6\u03B1\u03C3\u03AF\u03C3\u03B5\u03B9'}</option>
+            <option value="">{t('booking.suite.undecided', locale)}</option>
             {suites.map((s) => (
               <option value={s.name.en} selected={preselectedSuite === s.id}>
                 {s.name[locale]} &mdash; {s.capacity.guests}{s.capacity.extraGuests ? `+${s.capacity.extraGuests}` : ''} {t('suite.guests', locale)}
@@ -83,11 +81,11 @@ const suites = getAllSuites();
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-1.5">
-            <label for="booking-checkin" class="text-xs font-medium text-stone-500">{locale === 'en' ? 'Arrival' : '\u0386\u03C6\u03B9\u03BE\u03B7'}</label>
+            <label for="booking-checkin" class="text-xs font-medium text-stone-500">{t('booking.arrival', locale)}</label>
             <input type="date" id="booking-checkin" name="checkin" class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink outline-none transition-colors focus:border-aegean-400" />
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="booking-checkout" class="text-xs font-medium text-stone-500">{locale === 'en' ? 'Departure' : '\u0391\u03BD\u03B1\u03C7\u03CE\u03C1\u03B7\u03C3\u03B7'}</label>
+            <label for="booking-checkout" class="text-xs font-medium text-stone-500">{t('booking.departure', locale)}</label>
             <input type="date" id="booking-checkout" name="checkout" class="h-12 rounded-sm border border-sand-200 bg-cream px-4 text-base text-ink outline-none transition-colors focus:border-aegean-400" />
           </div>
         </div>
@@ -99,24 +97,19 @@ const suites = getAllSuites();
       <!-- Group 3: Anything else -->
       <fieldset class="space-y-4">
         <legend class="label-uppercase mb-3 text-[0.55rem] text-stone-400">
-          {locale === 'en' ? 'Anything else' : '\u039A\u03AC\u03C4\u03B9 \u03AC\u03BB\u03BB\u03BF'}
+          {t('booking.group.other', locale)}
         </legend>
-        <textarea id="booking-message" name="message" rows="3" placeholder={locale === 'en' ? 'Arriving by ferry? Need a transfer? Special occasion? Tell us anything that helps us prepare for you...' : '\u0388\u03C1\u03C7\u03B5\u03C3\u03C4\u03B5 \u03BC\u03B5 \u03C0\u03BB\u03BF\u03AF\u03BF; \u03A7\u03C1\u03B5\u03B9\u03AC\u03B6\u03B5\u03C3\u03C4\u03B5 \u03BC\u03B5\u03C4\u03B1\u03C6\u03BF\u03C1\u03AC; \u03A0\u03B5\u03AF\u03C4\u03B5 \u03BC\u03B1\u03C2 \u03CC,\u03C4\u03B9 \u03B8\u03B1 \u03BC\u03B1\u03C2 \u03B2\u03BF\u03B7\u03B8\u03BF\u03CD\u03C3\u03B5...'} class="min-h-24 w-full resize-y rounded-sm border border-sand-200 bg-cream px-4 py-3 text-base text-ink placeholder:text-stone-300 outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100"></textarea>
+        <textarea id="booking-message" name="message" rows="3" placeholder={t('booking.placeholder.message', locale)} class="min-h-24 w-full resize-y rounded-sm border border-sand-200 bg-cream px-4 py-3 text-base text-ink placeholder:text-stone-300 outline-none transition-colors focus:border-aegean-400 focus:ring-2 focus:ring-aegean-100"></textarea>
       </fieldset>
 
       <!-- Submit -->
       <button type="submit" class="mt-8 flex h-13 w-full items-center justify-center rounded-none bg-charcoal text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-ink hover:shadow-lg">
-        {locale === 'en' ? 'Request Availability' : '\u0395\u03BB\u03AD\u03B3\u03BE\u03C4\u03B5 \u0394\u03B9\u03B1\u03B8\u03B5\u03C3\u03B9\u03BC\u03CC\u03C4\u03B7\u03C4\u03B1'}
+        {t('booking.submit', locale)}
       </button>
 
       <!-- Direct-book benefits -->
       <div class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2">
-        {[
-          locale === 'en' ? 'Best rate' : '\u039A\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B7 \u03C4\u03B9\u03BC\u03AE',
-          locale === 'en' ? 'Flexible dates' : '\u0395\u03C5\u03AD\u03BB\u03B9\u03BA\u03C4\u03B5\u03C2 \u03B7\u03BC\u03B5\u03C1\u03BF\u03BC\u03B7\u03BD\u03AF\u03B5\u03C2',
-          locale === 'en' ? 'Welcome basket' : '\u039A\u03B1\u03BB\u03C9\u03C3\u03CC\u03C1\u03B9\u03C3\u03BC\u03B1',
-          locale === 'en' ? 'Personal concierge' : '\u03A0\u03C1\u03BF\u03C3\u03C9\u03C0\u03B9\u03BA\u03CC concierge',
-        ].map((b) => (
+        {[t('booking.benefit.bestRate', locale), t('booking.benefit.flexibleDates', locale), t('booking.benefit.welcomeBasket', locale), t('booking.benefit.concierge', locale)].map((b) => (
           <span class="flex items-center gap-1.5 text-[0.6rem] text-stone-400">
             <span class="h-1 w-1 rounded-full bg-olive-500"></span>
             {b}
@@ -131,28 +124,24 @@ const suites = getAllSuites();
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-olive-500"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       <h3 class="font-heading text-2xl font-light text-ink">
-        {locale === 'en' ? 'Thank you' : '\u0395\u03C5\u03C7\u03B1\u03C1\u03B9\u03C3\u03C4\u03BF\u03CD\u03BC\u03B5'}
+        {t('booking.success.title', locale)}
       </h3>
       <p class="mt-2 text-sm text-stone-500">
-        {locale === 'en'
-          ? 'George & Didi will review your request and reply personally, usually within a few hours.'
-          : '\u039F \u0393\u03B9\u03CE\u03C1\u03B3\u03BF\u03C2 & \u03B7 \u039D\u03C4\u03AF\u03BD\u03C4\u03B9 \u03B8\u03B1 \u03B1\u03C0\u03B1\u03BD\u03C4\u03AE\u03C3\u03BF\u03C5\u03BD \u03C0\u03C1\u03BF\u03C3\u03C9\u03C0\u03B9\u03BA\u03AC.'}
+        {t('booking.success.body', locale)}
       </p>
     </div>
 
     <!-- Error state -->
     <div id="booking-error" class="hidden rounded-sm border border-terra-300/30 bg-terra-300/5 p-6 text-center">
       <p class="text-sm text-terra-500">
-        {locale === 'en'
-          ? 'Something went wrong. Please try again or contact us directly.'
-          : '\u039A\u03AC\u03C4\u03B9 \u03C0\u03AE\u03B3\u03B5 \u03C3\u03C4\u03C1\u03B1\u03B2\u03AC. \u0394\u03BF\u03BA\u03B9\u03BC\u03AC\u03C3\u03C4\u03B5 \u03BE\u03B1\u03BD\u03AC \u03AE \u03B5\u03C0\u03B9\u03BA\u03BF\u03B9\u03BD\u03C9\u03BD\u03AE\u03C3\u03C4\u03B5 \u03B1\u03C0\u03B5\u03C5\u03B8\u03B5\u03AF\u03B1\u03C2.'}
+        {t('booking.error.body', locale)}
       </p>
     </div>
 
     <!-- Fallback -->
     <div class="mt-8 text-center">
       <p class="text-sm text-stone-500">
-        {locale === 'en' ? 'Prefer a personal touch?' : '\u03A0\u03C1\u03BF\u03C4\u03B9\u03BC\u03AC\u03C4\u03B5 \u03C0\u03C1\u03BF\u03C3\u03C9\u03C0\u03B9\u03BA\u03AE \u03B5\u03C0\u03B9\u03BA\u03BF\u03B9\u03BD\u03C9\u03BD\u03AF\u03B1;'}
+        {t('booking.fallback', locale)}
       </p>
       <div class="mt-2 flex items-center justify-center gap-4 text-sm">
         <a href="tel:+302117159002" class="text-aegean-400 transition-colors hover:text-aegean-100" style="text-decoration:none;">+30 211 715 9002</a>

@@ -1,12 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import SuiteCard from '../../components/ui/SuiteCard.astro';
-import BookingInquiry from '../../components/ui/BookingInquiry.astro';
-import { getAllSuites } from '../../data/suites';
-import { t, getSuiteUrl } from '../../lib/i18n';
-import type { Locale } from '../../lib/i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SuiteCard from '../../../components/ui/SuiteCard.astro';
+import BookingInquiry from '../../../components/ui/BookingInquiry.astro';
+import { getAllSuites } from '../../../data/suites';
+import { t, getSuiteUrl } from '../../../lib/i18n';
+import type { Locale } from '../../../lib/i18n';
 
-const locale: Locale = 'el';
+const locale: Locale = 'en';
 const suites = getAllSuites();
 ---
 

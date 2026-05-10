@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { t } from '../../lib/i18n';
 import Hero from '../../components/sections/Hero.astro';
 import BrandStatement from '../../components/sections/BrandStatement.astro';
 import ArrivalNarrative from '../../components/sections/ArrivalNarrative.astro';
@@ -10,21 +11,38 @@ import Testimonials from '../../components/sections/Testimonials.astro';
 import BookingInquiry from '../../components/ui/BookingInquiry.astro';
 import FinalCTA from '../../components/sections/FinalCTA.astro';
 
-const locale = 'el';
+const locale = 'en';
 ---
 
 <BaseLayout
-  title="Rabagas Suites — \u03A0\u03BF\u03BB\u03C5\u03C4\u03B5\u03BB\u03B5\u03AF\u03C2 \u03A3\u03BF\u03C5\u03AF\u03C4\u03B5\u03C2 \u03C3\u03C4\u03B7\u03BD \u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1, \u03A3\u03AF\u03C6\u03BD\u03BF\u03C2"
-  description="\u0388\u03BE\u03B9 \u03B1\u03BD\u03B1\u03C3\u03C4\u03B7\u03BB\u03C9\u03BC\u03AD\u03BD\u03B5\u03C2 \u03BA\u03C5\u03BA\u03BB\u03B1\u03B4\u03AF\u03C4\u03B9\u03BA\u03B5\u03C2 \u03C3\u03BF\u03C5\u03AF\u03C4\u03B5\u03C2 \u03C3\u03C4\u03B7\u03BD \u03BA\u03B1\u03C1\u03B4\u03B9\u03AC \u03C4\u03B7\u03C2 \u0391\u03C0\u03BF\u03BB\u03BB\u03C9\u03BD\u03AF\u03B1\u03C2. \u0394\u03B9\u03B1\u03BA\u03C1\u03B9\u03C4\u03B9\u03BA\u03AE \u03C0\u03BF\u03BB\u03C5\u03C4\u03AD\u03BB\u03B5\u03B9\u03B1 \u03BA\u03B1\u03B9 \u03C0\u03C1\u03BF\u03C3\u03C9\u03C0\u03B9\u03BA\u03AE \u03C6\u03B9\u03BB\u03BF\u03BE\u03B5\u03BD\u03AF\u03B1."
+  title={t('meta.home.title', locale)}
+  description={t('meta.home.description', locale)}
   locale={locale}
 >
+  <!-- 1. Arrival / Mood -->
   <Hero locale={locale} />
+
+  <!-- 2. Signature moment — scroll-linked word reveal -->
   <BrandStatement locale={locale} />
+
+  <!-- 3. Destination / Positioning -->
   <ArrivalNarrative locale={locale} />
+
+  <!-- 3. Suite Discovery -->
   <SuitesPreview locale={locale} />
+
+  <!-- 4. Lifestyle / Experience -->
   <StayExperience locale={locale} />
+
+  <!-- 5. Heritage / Identity -->
   <WhyRabagas locale={locale} />
+
+  <!-- 6. Trust / Social Proof -->
   <Testimonials locale={locale} />
+
+  <!-- 7. Conversion -->
   <BookingInquiry locale={locale} />
+
+  <!-- 8. Emotional Close -->
   <FinalCTA locale={locale} />
 </BaseLayout>

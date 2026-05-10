@@ -23,7 +23,7 @@ interface Props {
 const { locale } = Astro.props;
 ---
 
-<section class="relative min-h-svh w-full overflow-hidden" aria-label="Welcome">
+<section class="relative min-h-svh w-full overflow-hidden" aria-label={t('aria.welcome', locale)}>
   <!-- Background with Ken Burns -->
   <div class="absolute inset-0 z-0">
     <div class="hero-image-animate h-full w-full">
@@ -51,7 +51,7 @@ const { locale } = Astro.props;
       <div>
         <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-white/70 backdrop-blur-sm">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Sifnos, Greece
+          {t('hero.location', locale)}
         </span>
       </div>
 
