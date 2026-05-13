@@ -3,6 +3,7 @@ import { getImage } from 'astro:assets';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import MobileBookingBar from '../components/layout/MobileBookingBar.astro';
+import CookieConsent from '../components/layout/CookieConsent.astro';
 import Lightbox from '../components/ui/Lightbox.astro';
 import type { Locale } from '../lib/i18n';
 import { getAlternates, getLocalizedPath, stripLocale, locales } from '../lib/i18n';
@@ -22,6 +23,13 @@ interface Props {
    *  BaseLayout emits the property-level Hotel block universally; pages
    *  pass their own schema objects in this array to be rendered alongside. */
   pageSchemas?: Array<Record<string, unknown>>;
+  /** Override the auto-derived hreflang trio. Required for routes whose
+   *  slug differs per locale (e.g. /journal/[slug] — every translation
+   *  has its own slug, so the auto-derivation from `currentPath` can't
+   *  guess them). Each entry's `url` must be an absolute URL. Omitting
+   *  a locale removes that alternate (e.g. a post that exists only in
+   *  EN should pass `[{ locale: 'en', url: ... }]`). */
+  customAlternates?: Array<{ locale: Locale; url: string }>;
 }
 
 const {
@@ -32,14 +40,21 @@ const {
   canonicalPath,
   ogType = 'website',
   pageSchemas = [],
+  customAlternates,
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 const canonical = canonicalPath
   ? `https://rabagas-suites.com${canonicalPath}`
   : `https://rabagas-suites.com${currentPath}`;
-const alternates = getAlternates(currentPath);
-const xDefaultUrl = `https://rabagas-suites.com${getLocalizedPath(stripLocale(currentPath), 'el')}`;
+const alternates = customAlternates ?? getAlternates(currentPath);
+// x-default points to the EL variant if it exists in customAlternates,
+// otherwise the auto-derived EL URL (for normal pages).
+const xDefaultUrl = customAlternates
+  ? (customAlternates.find((a) => a.locale === 'el')?.url
+      ?? customAlternates[0]?.url
+      ?? `https://rabagas-suites.com${currentPath}`)
+  : `https://rabagas-suites.com${getLocalizedPath(stripLocale(currentPath), 'el')}`;
 const og = ogImage || '/og-image.webp';
 
 // OG locale codes (underscore-separated, used by Open Graph). BCP-47 variants
@@ -96,24 +111,30 @@ const heroPreloadSrcset = isHomepage
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
 
-    <!-- Analytics (Phase 9): bootstrap is deferred until 1.5s after the
-         `load` event so GTM/GA's ~640KB JS does NOT compete with the LCP
-         frame. The dataLayer is initialised synchronously so any pre-load
-         events queued by the page (e.g. Lightbox open) are captured; the
-         actual container injection is delayed.
+    <!-- Analytics (Phase 12): bootstrap is GATED behind cookie consent.
+         The dataLayer is initialised synchronously so any pre-consent
+         events queued by the page (e.g. Lightbox open) are captured —
+         these stay in the buffer until/unless the user grants consent.
 
-         Conversion attribution: GTM's pageview hit fires on container
-         init, not on document parse — a 2–3s offset is invisible to
-         GA4/Ads reporting (both bucket to date). First-paint queue stays
-         intact via the synchronous `gtag('js', new Date())` call which
-         records a timestamp the eventual hit will reference. -->
+         Consent flow:
+         - localStorage `rabagas-consent` === 'granted'  → boot immediately
+           (deferred 1.5s after the `load` event so analytics JS doesn't
+           compete with LCP).
+         - 'denied' or absent → analytics never load. The CookieConsent
+           banner asks the user; on Accept it calls
+           window.__bootRabagasAnalytics() to load GTM/gtag at that point.
+         - The function is exposed globally so the cookie banner module
+           (and a "Cookie preferences" footer link) can re-bootstrap. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){ dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'GT-PZZMTZ9M');
 
+      let __rabagasBooted = false;
       function bootRabagasAnalytics() {
+        if (__rabagasBooted) return;
+        __rabagasBooted = true;
         // GTM container
         (function(w,d,s,l,i){
           var f=d.getElementsByTagName(s)[0],
@@ -128,13 +149,24 @@ const heroPreloadSrcset = isHomepage
         s.src = 'https://www.googletagmanager.com/gtag/js?id=GT-PZZMTZ9M';
         document.head.appendChild(s);
       }
+      // Exposed so the cookie banner can boot post-consent.
+      window.__bootRabagasAnalytics = bootRabagasAnalytics;
 
-      if (document.readyState === 'complete') {
-        setTimeout(bootRabagasAnalytics, 1500);
-      } else {
-        window.addEventListener('load', function(){
-          setTimeout(bootRabagasAnalytics, 1500);
-        }, { once: true });
+      // Auto-boot only if consent already granted.
+      try {
+        var consent = localStorage.getItem('rabagas-consent');
+        if (consent === 'granted') {
+          if (document.readyState === 'complete') {
+            setTimeout(bootRabagasAnalytics, 1500);
+          } else {
+            window.addEventListener('load', function(){
+              setTimeout(bootRabagasAnalytics, 1500);
+            }, { once: true });
+          }
+        }
+      } catch (e) {
+        // localStorage blocked (private mode, etc.) — silently treat as
+        // declined; analytics never load.
       }
     </script>
 
@@ -331,6 +363,10 @@ const heroPreloadSrcset = isHomepage
 
     <!-- Lightbox: single instance per page; activates only when a Gallery dispatches its event -->
     <Lightbox locale={locale} />
+
+    <!-- GDPR cookie consent (Phase 12). Gates the analytics bootstrap
+         in the inline head script above. -->
+    <CookieConsent locale={locale} />
 
     <!-- Reveal Observer — triggers the motion system. Phase 9: simplified
          after ClientRouter removal — full page reloads mean the observer

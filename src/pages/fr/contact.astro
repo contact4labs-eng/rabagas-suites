@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BookingInquiry from '../../components/ui/BookingInquiry.astro';
+import Concierge from '../../components/sections/Concierge.astro';
 import { t } from '../../lib/i18n';
 import type { Locale } from '../../lib/i18n';
 import { propertyImages } from '../../data/images';
@@ -105,54 +106,41 @@ const pageSchemas = [
           </div>
         </div>
 
+        <!-- Right card: distilled "we can arrange" callout. The full verified
+             partner directory lives in the <Concierge /> section that follows
+             this block, so we keep this card focused on the human side. -->
         <div class="rounded-xl border border-sand-200 bg-cream p-8 md:p-10" data-reveal="right">
           <span class="label-uppercase mb-4 block text-stone-500">{t('contact.concierge.kicker', locale)}</span>
           <h3 class="font-heading text-2xl font-light text-ink">{t('contact.concierge.h3', locale)}</h3>
-          <div class="mt-6 space-y-5">
-            <div class="flex gap-4">
-              <span class="mt-0.5 text-stone-400">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              </span>
-              <div>
-                <p class="text-sm font-medium text-ink">{t('contact.concierge.transfers.title', locale)}</p>
-                <p class="mt-0.5 text-xs text-stone-500">{t('contact.concierge.transfers.desc', locale)}</p>
-              </div>
-            </div>
-            <div class="flex gap-4">
-              <span class="mt-0.5 text-stone-400">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </span>
-              <div>
-                <p class="text-sm font-medium text-ink">{t('contact.concierge.reservations.title', locale)}</p>
-                <p class="mt-0.5 text-xs text-stone-500">{t('contact.concierge.reservations.desc', locale)}</p>
-              </div>
-            </div>
-            <div class="flex gap-4">
-              <span class="mt-0.5 text-stone-400">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              </span>
-              <div>
-                <p class="text-sm font-medium text-ink">{t('contact.concierge.car.title', locale)}</p>
-                <p class="mt-0.5 text-xs text-stone-500">{t('contact.concierge.car.desc', locale)}</p>
-              </div>
-            </div>
-            <div class="flex gap-4">
-              <span class="mt-0.5 text-stone-400">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              </span>
-              <div>
-                <p class="text-sm font-medium text-ink">{t('contact.concierge.boat.title', locale)}</p>
-                <p class="mt-0.5 text-xs text-stone-500">{t('contact.concierge.boat.desc', locale)}</p>
-              </div>
-            </div>
-          </div>
+          <ul class="mt-6 flex flex-col gap-3 text-sm text-stone-600">
+            <li class="flex items-start gap-3">
+              <span class="mt-2 inline-block h-px w-3 flex-none bg-stone-300"></span>
+              <span>{t('contact.concierge.transfers.title', locale)} — {t('contact.concierge.transfers.desc', locale)}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-2 inline-block h-px w-3 flex-none bg-stone-300"></span>
+              <span>{t('contact.concierge.reservations.title', locale)} — {t('contact.concierge.reservations.desc', locale)}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-2 inline-block h-px w-3 flex-none bg-stone-300"></span>
+              <span>{t('contact.concierge.car.title', locale)} — {t('contact.concierge.car.desc', locale)}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-2 inline-block h-px w-3 flex-none bg-stone-300"></span>
+              <span>{t('contact.concierge.boat.title', locale)} — {t('contact.concierge.boat.desc', locale)}</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Verified concierge partners (Phase 12). Replaces the old WordPress
+       footer-junk dump with a categorised, premium list. -->
+  <Concierge locale={locale} surface="sand" />
+
   <!-- Message form -->
-  <section class="bg-sand-50 px-5 py-20 md:py-24 lg:px-8">
+  <section class="bg-white px-5 py-20 md:py-24 lg:px-8">
     <div class="mx-auto max-w-xl text-center" data-reveal>
       <h2 class="font-heading text-2xl font-light text-ink">{t('contact.message.h2', locale)}</h2>
       <p class="mt-2 text-sm text-stone-500">{t('contact.message.intro', locale)}</p>

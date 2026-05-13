@@ -38,6 +38,8 @@ export const SCHEMA_IDS = {
   hotel: `${SITE}/#hotel`,
   suite: (slug: string) => `${SITE}/suites/${slug}#suite`,
   article: (path: string) => `${SITE}${path}#article`,
+  /** Journal posts share one @id per canonical key across locales. */
+  journalPost: (canonical: string) => `${SITE}/journal/${canonical}#post`,
 } as const;
 
 /** OG image URL absolute. */
@@ -216,6 +218,59 @@ export function buildBreadcrumbSchema(crumbs: Crumb[], locale: Locale) {
  * became the brand) and the property. Author = the Hotel itself
  * (Organization-as-author, no fabricated person).
  */
+/**
+ * Article schema for a Journal post. Used by /journal/[slug] detail page.
+ * `kind` is 'guide' for travel guides (own original content) or 'press'
+ * for press features (still uses Article so Google understands editorial
+ * intent — the external publication's URL is exposed via `isBasedOn`
+ * which is the canonical signal for "this content references this URL").
+ */
+export interface JournalSchemaInput {
+  title: string;
+  description: string;
+  canonical: string;
+  postSlug: string;
+  publishedAt: Date;
+  updatedAt?: Date;
+  kind: 'guide' | 'press';
+  externalUrl?: string;
+  externalSource?: string;
+  image?: string;
+}
+
+export function buildJournalArticleSchema(
+  post: JournalSchemaInput,
+  locale: Locale,
+) {
+  const url = `${SITE}${getLocalizedPath(`/journal/${post.postSlug}`, locale)}/`.replace('//journal', '/journal');
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': SCHEMA_IDS.journalPost(post.canonical),
+    headline: post.title,
+    description: post.description,
+    inLanguage: BCP47[locale],
+    image: post.image ? `${SITE}${post.image}` : OG_IMAGE,
+    author: { '@id': SCHEMA_IDS.hotel },
+    publisher: { '@id': SCHEMA_IDS.hotel },
+    datePublished: post.publishedAt.toISOString().slice(0, 10),
+    dateModified: (post.updatedAt ?? post.publishedAt).toISOString().slice(0, 10),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    url,
+  };
+  if (post.kind === 'press' && post.externalUrl) {
+    schema.isBasedOn = post.externalUrl;
+    if (post.externalSource) {
+      schema.citation = {
+        '@type': 'CreativeWork',
+        name: post.externalSource,
+        url: post.externalUrl,
+      };
+    }
+  }
+  return schema;
+}
+
 export function buildArticleSchema(locale: Locale) {
   const path = getLocalizedPath('/our-story', locale);
   const url = `${SITE}${path}`;

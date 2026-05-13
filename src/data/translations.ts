@@ -332,6 +332,55 @@ export const t: Translations = {
   'story.essay.venue.body': { en: 'For a decade and a half, beginning in the mid-2000s and ending in 2021, the buildings now operating as Rabagas Suites housed Kikladonxoros — “the Cycladic place” — a multipurpose venue that hosted exhibitions, music, food, and the kind of evenings that hold a small island’s cultural life together. Locals remember the Rambagas Café and Rambagas Restaurant from those years. The name was not new to the buildings; the buildings remembered.', el: 'Για δεκαπέντε χρόνια, από τα μέσα της δεκαετίας του 2000 ως το 2021, τα κτίρια που σήμερα στεγάζουν τις σουίτες λειτούργησαν ως Κυκλάδων Χορός — ένας πολυχώρος με εκθέσεις, μουσική, γεύσεις, βραδιές που κρατούν μαζί την πολιτιστική ζωή ενός μικρού νησιού. Οι ντόπιοι θυμούνται ακόμα το Rambagas Café και το Rambagas Restaurant. Το όνομα δεν ήταν καινούργιο για τα κτίρια· τα κτίρια το θυμούνταν.', fr: 'Pendant une quinzaine d’années, du milieu des années 2000 à 2021, les bâtiments qui abritent aujourd’hui les suites ont tenu lieu de Kikladonxoros — « la place cycladique » — un espace polyvalent qui accueillait expositions, musique, repas, et le genre de soirées qui tiennent ensemble la vie culturelle d’une petite île. Les habitants se souviennent encore du Rambagas Café et du Rambagas Restaurant. Le nom n’était pas nouveau pour les bâtiments ; les bâtiments s’en souvenaient.' },
   'story.essay.suites.kicker': { en: 'The suites', el: 'Οι σουίτες', fr: 'Les suites' },
   'story.essay.suites.body': { en: 'We restored what was here. Six pre-1910 Cycladic residences, each with its own door and its own outdoor world. We kept the crooked plaster walls, added custom mattresses and feather pillows, and stopped doing anything we couldn’t do well. George and Didi welcome guests on arrival. The square outside still bears Triantafyllou’s nickname. We borrowed the rest.', el: 'Αναπαλαιώσαμε αυτό που υπήρχε ήδη εδώ. Έξι κυκλαδίτικες κατοικίες προ του 1910, η καθεμιά με τη δική της πόρτα και τον δικό της εξωτερικό κόσμο. Κρατήσαμε τους καμπυλωτούς σοβάδες, προσθέσαμε κατά παραγγελία στρώματα και πουπουλένια μαξιλάρια, και σταματήσαμε να κάνουμε ό,τι δεν μπορούσαμε να κάνουμε σωστά. Ο Γιώργος και η Ντίντι υποδέχονται προσωπικά τους επισκέπτες. Η πλατεία απέναντι κρατά ακόμα το παρατσούκλι του Τριαντάφυλλου. Δανειστήκαμε τα υπόλοιπα.', fr: 'Nous avons restauré ce qui était déjà là. Six demeures cycladiques d’avant 1910, chacune avec sa propre porte et son propre monde extérieur. Nous avons gardé les murs en plâtre tordu, ajouté des matelas sur mesure et des oreillers en plumes, et cessé de faire ce que nous ne pouvions pas bien faire. George et Didi accueillent personnellement chaque hôte à l’arrivée. La place d’en face porte encore le surnom de Triantafyllou. Nous avons emprunté le reste.' },
+
+  // Phase 12 — Journal
+  'nav.journal': { en: 'Journal', el: 'Ημερολόγιο', fr: 'Journal' },
+  'journal.kicker': { en: 'Journal', el: 'Ημερολόγιο', fr: 'Journal' },
+  'journal.heading': { en: 'Notes from the island', el: 'Σημειώσεις από το νησί', fr: 'Notes depuis l’île' },
+  'journal.subheading': { en: 'A travel companion for Sifnos — practical guides, slow reading, and the press features that keep finding us.', el: 'Ένας ταξιδιωτικός σύντροφος για τη Σίφνο — πρακτικοί οδηγοί, ήσυχη ανάγνωση και οι αναφορές του Τύπου που μας ψάχνουν.', fr: 'Un compagnon de voyage pour Sifnos — guides pratiques, lectures lentes et les hommages de la presse qui nous trouvent.' },
+  'journal.filter.all': { en: 'All', el: 'Όλα', fr: 'Tout' },
+  'journal.filter.guides': { en: 'Guides', el: 'Οδηγοί', fr: 'Guides' },
+  'journal.filter.press': { en: 'Press', el: 'Τύπος', fr: 'Presse' },
+  'journal.read': { en: 'Read', el: 'Διαβάστε', fr: 'Lire' },
+  'journal.readMore': { en: 'Read the full piece', el: 'Διαβάστε ολόκληρο', fr: 'Lire l’article complet' },
+  'journal.minRead': { en: '{n} min read', el: '{n} λεπτά ανάγνωσης', fr: '{n} min de lecture' },
+  'journal.empty': { en: 'New writing is on its way.', el: 'Νέα κείμενα έρχονται.', fr: 'De nouveaux articles arrivent bientôt.' },
+  'journal.kind.guide': { en: 'Guide', el: 'Οδηγός', fr: 'Guide' },
+  'journal.kind.press': { en: 'Press', el: 'Τύπος', fr: 'Presse' },
+  'journal.featuredIn': { en: 'Featured in', el: 'Αναφορά σε', fr: 'Cité par' },
+  'journal.viewSource': { en: 'View the original', el: 'Δείτε την πηγή', fr: 'Voir l’original' },
+  'journal.related': { en: 'You may also like', el: 'Μπορεί να σας αρέσει', fr: 'Vous aimerez aussi' },
+  'journal.backToIndex': { en: 'Back to the Journal', el: 'Επιστροφή στο Ημερολόγιο', fr: 'Retour au Journal' },
+  'journal.publishedOn': { en: 'Published', el: 'Δημοσιεύθηκε', fr: 'Publié le' },
+  'meta.journal.title': { en: 'Journal — Rabagas Suites Sifnos', el: 'Ημερολόγιο — Rabagas Suites Σίφνος', fr: 'Journal — Rabagas Suites Sifnos' },
+  'meta.journal.description': { en: 'Field notes, travel guides for Sifnos, and the press features that keep finding Rabagas Suites in Apollonia.', el: 'Σημειώσεις από το νησί, ταξιδιωτικοί οδηγοί για τη Σίφνο και οι αναφορές του Τύπου για τις Rabagas Suites στην Απολλωνία.', fr: 'Carnet de bord, guides de voyage pour Sifnos et hommages de la presse aux Rabagas Suites d’Apollonia.' },
+
+  // Phase 12 — Concierge / Getting around
+  'concierge.kicker': { en: 'Concierge', el: 'Concierge', fr: 'Conciergerie' },
+  'concierge.heading': { en: 'Getting around Sifnos, the easy way', el: 'Μετακινήσεις στη Σίφνο, με ευκολία', fr: 'Se déplacer à Sifnos, en toute simplicité' },
+  'concierge.intro': { en: 'A short, verified list of partners we trust — for transfers, rentals, ferries and small private boats. We arrange the details if you would prefer not to call ourselves.', el: 'Μια σύντομη, επαληθευμένη λίστα συνεργατών εμπιστοσύνης — για μεταφορές, ενοικιάσεις, πλοία και μικρά ιδιωτικά σκάφη. Αναλαμβάνουμε τις λεπτομέρειες αν προτιμάτε να μην επικοινωνήσετε εσείς.', fr: 'Une courte liste, vérifiée, de partenaires de confiance — pour les transferts, locations, ferries et petits bateaux privés. Nous nous occupons des détails si vous préférez nous laisser appeler.' },
+  'concierge.cat.transfers': { en: 'Cars & transfers', el: 'Αυτοκίνητα & μεταφορές', fr: 'Voitures & transferts' },
+  'concierge.cat.boats': { en: 'Boats & cruises', el: 'Σκάφη & κρουαζιέρες', fr: 'Bateaux & croisières' },
+  'concierge.cat.ferries': { en: 'Ferries & air', el: 'Πλοία & αέρας', fr: 'Ferries & avion' },
+  'concierge.askUs': { en: 'Have us arrange it', el: 'Αναλαμβάνουμε εμείς', fr: 'Demandez-nous d’organiser' },
+  'concierge.partnerNote': { en: 'Independent partners — we don’t take commissions.', el: 'Ανεξάρτητοι συνεργάτες — δεν λαμβάνουμε προμήθεια.', fr: 'Partenaires indépendants — nous ne percevons aucune commission.' },
+
+  // Phase 12 — Cookie consent (GDPR)
+  'consent.title': { en: 'A small note on cookies', el: 'Μια μικρή σημείωση για τα cookies', fr: 'Une petite note sur les cookies' },
+  'consent.body': { en: 'We use essential cookies to make the site work. With your permission we also load analytics so we can understand which pages are useful.', el: 'Χρησιμοποιούμε απαραίτητα cookies για να λειτουργεί ο ιστότοπος. Με την άδειά σας φορτώνουμε επίσης analytics για να καταλάβουμε ποιες σελίδες είναι χρήσιμες.', fr: 'Nous utilisons des cookies essentiels au fonctionnement du site. Avec votre permission, nous chargeons aussi des outils d’analyse pour comprendre quelles pages vous servent.' },
+  'consent.accept': { en: 'Accept analytics', el: 'Αποδοχή analytics', fr: 'Accepter l’analyse' },
+  'consent.decline': { en: 'Essential only', el: 'Μόνο τα απαραίτητα', fr: 'Essentiels uniquement' },
+  'consent.learnMore': { en: 'Learn more', el: 'Μάθετε περισσότερα', fr: 'En savoir plus' },
+  'consent.manage': { en: 'Cookie preferences', el: 'Προτιμήσεις cookies', fr: 'Préférences de cookies' },
+
+  // Phase 12 — Direct booking benefit (replacement for old WP discount popup)
+  'offer.label': { en: 'Direct booking benefit', el: 'Όφελος άμεσης κράτησης', fr: 'Avantage en réservation directe' },
+  'offer.body': { en: 'Reserve directly with us and George & Didi extend a 10% courtesy on your stay. No popups. No fine print. Mention this page when you write.', el: 'Κρατήστε απευθείας μαζί μας και ο Γιώργος & η Ντίντι σας παρέχουν 10% έκπτωση. Χωρίς popups. Χωρίς ψιλά γράμματα. Αναφέρετε αυτή τη σελίδα στο μήνυμά σας.', fr: 'Réservez directement avec nous et George & Didi vous offrent 10% sur votre séjour. Sans popup, sans petits caractères. Mentionnez cette page dans votre message.' },
+  'offer.cta': { en: 'Write to us', el: 'Επικοινωνία', fr: 'Nous écrire' },
+
+  // Phase 12 — Footer additions
+  'footer.journal': { en: 'Journal', el: 'Ημερολόγιο', fr: 'Journal' },
+  'footer.consent': { en: 'Cookie preferences', el: 'Προτιμήσεις cookies', fr: 'Préférences de cookies' },
 };
 
 export function translate(key: string, locale: Locale): string {

@@ -1,0 +1,113 @@
+---
+/**
+ * COOKIE CONSENT — premium GDPR banner.
+ *
+ * 21st.dev exploration round 3:
+ * - shadcnblockscom/cookie-bottom-strip — full-width footer strip. Heavy
+ *   and harsh on mobile. Rejected.
+ * - aceternity/floating-toast-bottom-left — close, but the floating
+ *   shadow was too SaaS-y. Adapted to a flat cream card.
+ * - Final choice: a bottom-left fixed card on desktop, a full-bleed
+ *   bottom drawer on mobile. Cream background, warm border, two
+ *   buttons (accept analytics / essential only), plus a "manage"
+ *   reopener link emitted in the footer for return visitors.
+ *
+ * Behaviour:
+ * - Hidden by default; the inline script in BaseLayout decides whether
+ *   to show it based on `localStorage.rabagas-consent`.
+ * - Three states stored: 'granted', 'denied', or absent (= banner shown).
+ * - On 'granted', the BaseLayout analytics bootstrap (GTM + gtag) runs.
+ * - On 'denied' or absent, analytics never load.
+ * - Re-opening: clicking the footer "Cookie preferences" link clears
+ *   the stored value and reloads, which re-shows the banner. The
+ *   analytics-load is gated again on the next visit.
+ *
+ * No dark patterns: the two choices are visually equivalent (same size,
+ * same weight). "Decline" is *not* hidden in a hamburger.
+ *
+ * Localized labels via t().
+ */
+import type { Locale } from '../../lib/i18n';
+import { t } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<div
+  id="cookie-consent"
+  role="dialog"
+  aria-label={t('consent.title', locale)}
+  aria-live="polite"
+  class="fixed inset-x-3 bottom-3 z-[110] hidden max-w-md rounded-xl border border-sand-200 bg-cream/95 p-5 shadow-premium backdrop-blur-md sm:bottom-5 sm:left-5 sm:right-auto sm:p-6"
+>
+  <h2 class="font-heading text-lg font-light text-ink">
+    {t('consent.title', locale)}
+  </h2>
+  <p class="mt-2 text-sm leading-relaxed text-stone-500">
+    {t('consent.body', locale)}
+  </p>
+  <div class="mt-5 flex flex-col gap-2 sm:flex-row">
+    <button
+      type="button"
+      id="cookie-accept"
+      class="inline-flex h-10 flex-1 items-center justify-center rounded-none bg-ink px-5 text-[0.7rem] font-semibold uppercase tracking-[0.15em] text-cream transition-colors hover:bg-charcoal"
+    >
+      {t('consent.accept', locale)}
+    </button>
+    <button
+      type="button"
+      id="cookie-decline"
+      class="inline-flex h-10 flex-1 items-center justify-center rounded-none border border-ink bg-transparent px-5 text-[0.7rem] font-semibold uppercase tracking-[0.15em] text-ink transition-colors hover:bg-ink/5"
+    >
+      {t('consent.decline', locale)}
+    </button>
+  </div>
+</div>
+
+<script>
+  // Show the banner if no decision exists yet. The analytics-gating
+  // decision is made by BaseLayout's inline boot script, which reads
+  // the same localStorage key BEFORE this module runs.
+  const KEY = 'rabagas-consent';
+  const banner = document.getElementById('cookie-consent');
+  const accept = document.getElementById('cookie-accept');
+  const decline = document.getElementById('cookie-decline');
+
+  function show() { banner?.classList.remove('hidden'); }
+  function hide() { banner?.classList.add('hidden'); }
+
+  // Defer-show: avoid showing on the very first paint to keep LCP clean.
+  // We give the page 800ms to settle.
+  const stored = localStorage.getItem(KEY);
+  if (!stored) {
+    window.setTimeout(show, 800);
+  }
+
+  accept?.addEventListener('click', () => {
+    localStorage.setItem(KEY, 'granted');
+    hide();
+    // Lazy-load analytics that BaseLayout left dormant.
+    if (typeof (window as any).__bootRabagasAnalytics === 'function') {
+      (window as any).__bootRabagasAnalytics();
+    }
+  });
+
+  decline?.addEventListener('click', () => {
+    localStorage.setItem(KEY, 'denied');
+    hide();
+  });
+
+  // Allow the footer "Cookie preferences" link to re-open the banner.
+  // It carries href="#cookie-preferences" and we intercept the click.
+  document.querySelectorAll<HTMLAnchorElement>('a[data-cookie-prefs]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem(KEY);
+      show();
+    });
+  });
+</script>

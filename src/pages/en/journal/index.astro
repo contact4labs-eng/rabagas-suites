@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import JournalCard from '../../../components/ui/JournalCard.astro';
+import { t } from '../../../lib/i18n';
+import type { Locale } from '../../../lib/i18n';
+import { getJournalPosts } from '../../../lib/journal';
+import { buildBreadcrumbSchema } from '../../../lib/schema';
+
+const locale: Locale = 'en';
+const posts = await getJournalPosts(locale);
+const [featured, ...rest] = posts;
+
+const pageSchemas = [
+  buildBreadcrumbSchema(
+    [
+      { labelKey: 'nav.home', canonicalPath: '/' },
+      { labelKey: 'nav.journal', canonicalPath: '/journal' },
+    ],
+    locale,
+  ),
+];
+---
+
+<BaseLayout
+  title={t('meta.journal.title', locale)}
+  description={t('meta.journal.description', locale)}
+  locale={locale}
+  pageSchemas={pageSchemas}
+>
+  <!-- Editorial hero — title + intro, generous breathing room -->
+  <section class="px-5 pt-40 pb-12 md:pt-44 md:pb-16 lg:px-8">
+    <div class="mx-auto max-w-4xl" data-reveal>
+      <span class="label-uppercase mb-5 block text-stone-500">{t('journal.kicker', locale)}</span>
+      <h1 class="font-heading text-[clamp(2.5rem,6vw,4.25rem)] font-light leading-[1.05] text-ink">
+        {t('journal.heading', locale)}
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg font-light leading-[1.7] text-stone-500 md:text-xl">
+        {t('journal.subheading', locale)}
+      </p>
+    </div>
+  </section>
+
+  <!-- Filter chips — pure CSS, no JS — using :has() + data-kind selectors -->
+  <section class="px-5 pb-6 lg:px-8">
+    <div class="mx-auto max-w-5xl" data-journal-filters>
+      <div class="flex flex-wrap items-center gap-2 border-b border-sand-200 pb-5">
+        <button type="button" data-filter="all" class="journal-filter is-active" aria-pressed="true">
+          {t('journal.filter.all', locale)}
+        </button>
+        <button type="button" data-filter="guide" class="journal-filter">
+          {t('journal.filter.guides', locale)}
+        </button>
+        <button type="button" data-filter="press" class="journal-filter">
+          {t('journal.filter.press', locale)}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  {posts.length === 0 ? (
+    <section class="px-5 py-24 text-center lg:px-8">
+      <p class="text-lg italic text-stone-400">{t('journal.empty', locale)}</p>
+    </section>
+  ) : (
+    <>
+      {/* Featured (newest) post — full-width editorial */}
+      {featured && (
+        <section class="px-5 pb-14 lg:px-8" data-journal-list>
+          <div class="mx-auto max-w-5xl">
+            <JournalCard locale={locale} post={featured.data} featured={true} />
+          </div>
+        </section>
+      )}
+
+      {/* Rest of the posts — 2-col on tablet, 3-col on desktop */}
+      {rest.length > 0 && (
+        <section class="px-5 pb-28 lg:px-8">
+          <div class="mx-auto max-w-5xl">
+            <div class="grid grid-cols-1 gap-x-10 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+              {rest.map((p) => (
+                <JournalCard locale={locale} post={p.data} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </>
+  )}
+
+  <!-- Filter behaviour: toggle .is-active button, then hide cards whose
+       [data-kind] doesn't match. Pure DOM, no framework. -->
+  <script>
+    const root = document.querySelector('[data-journal-filters]');
+    if (root) {
+      const buttons = root.querySelectorAll<HTMLButtonElement>('.journal-filter');
+      const cards = document.querySelectorAll<HTMLElement>('[data-journal-card]');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const filter = btn.dataset.filter;
+          buttons.forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-pressed', String(active));
+          });
+          cards.forEach((c) => {
+            const show = filter === 'all' || c.dataset.kind === filter;
+            c.style.display = show ? '' : 'none';
+          });
+        });
+      });
+    }
+  </script>
+
+  <style>
+    .journal-filter {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      color: var(--color-stone-500);
+      background-color: transparent;
+      border: 1px solid var(--color-sand-200);
+      cursor: pointer;
+      transition: color 200ms, background-color 200ms, border-color 200ms;
+    }
+    .journal-filter:hover {
+      color: var(--color-ink);
+      border-color: var(--color-stone-300);
+    }
+    .journal-filter.is-active {
+      color: white;
+      background-color: var(--color-ink);
+      border-color: var(--color-ink);
+    }
+  </style>
+</BaseLayout>

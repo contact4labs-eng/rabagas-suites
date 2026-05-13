@@ -90,3 +90,22 @@ export function t(key: string, locale: Locale): string {
 export function getSuiteUrl(slug: string, locale: Locale): string {
   return getLocalizedPath(`/suites/${slug}`, locale);
 }
+
+/**
+ * Journal helpers. `/journal/` is *not* translated as a path segment (FR
+ * uses the same word natively), so a journal URL is just locale-prefix +
+ * `/journal/` + the locale-specific slug. Cross-locale alternates are
+ * resolved through the post's `canonical` frontmatter key — see
+ * `getJournalAlternates` below.
+ */
+export function getJournalIndexUrl(locale: Locale): string {
+  if (locale === 'el') return '/journal/';
+  if (locale === 'fr') return '/fr/journal/';
+  return '/en/journal/';
+}
+
+export function getJournalPostUrl(slug: string, locale: Locale): string {
+  if (locale === 'el') return `/journal/${slug}/`;
+  if (locale === 'fr') return `/fr/journal/${slug}/`;
+  return `/en/journal/${slug}/`;
+}

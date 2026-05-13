@@ -1,0 +1,60 @@
+---
+/**
+ * BOOKING OFFER — replaces the old WordPress "10% OFF popup".
+ *
+ * Premium treatment: a quiet inline ribbon, not an interrupt. Mounts
+ * above BookingInquiry (on home + contact) when the env flag is set:
+ *
+ *   PUBLIC_OFFER_CODE=RABAGAS2026    → ribbon renders w/ that code
+ *   (unset)                          → ribbon does NOT render
+ *
+ * The component reads `import.meta.env.PUBLIC_OFFER_CODE` at build
+ * time. The PUBLIC_ prefix makes the value available to client bundles
+ * (Astro convention). No popup, no overlay, no countdown.
+ *
+ * 21st.dev exploration round 4:
+ * - shadcnblockscom/promo-banner-top: full-bleed top strip. Loud and
+ *   anti-premium. Rejected.
+ * - aceternity/floating-ribbon: shimmer. Rejected.
+ * - daysui/badge-pill: tasteful inline chip. Adapted as a horizontal
+ *   "kicker + body + CTA" rule that sits above the booking form.
+ *
+ * If the owner has not confirmed a current offer, leave the env unset
+ * and the section is effectively dead code — premium fallback by absence.
+ */
+import type { Locale } from '../../lib/i18n';
+import { t, getLocalizedPath } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+// Pulled at build time. If unset → don't render the section at all.
+const offerCode = import.meta.env.PUBLIC_OFFER_CODE as string | undefined;
+if (!offerCode) return null;
+---
+
+<aside
+  class="border-y border-sand-200 bg-cream px-5 py-7 lg:px-8"
+  aria-label={t('offer.label', locale)}
+>
+  <div class="mx-auto flex max-w-5xl flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8" data-reveal>
+    <div class="flex-1">
+      <span class="label-uppercase mb-1.5 block text-[0.6rem] text-stone-500">{t('offer.label', locale)}</span>
+      <p class="text-sm leading-[1.7] text-stone-700 md:text-base">
+        {t('offer.body', locale)}
+        <span class="ml-1 inline-flex items-baseline rounded-sm bg-ink/5 px-2 py-0.5 font-mono text-[0.7rem] text-ink">
+          {offerCode}
+        </span>
+      </p>
+    </div>
+    <a
+      href={getLocalizedPath('/contact', locale) + '#contact-form'}
+      class="inline-flex h-11 shrink-0 items-center rounded-none border border-ink bg-ink px-6 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-cream transition-colors hover:bg-charcoal"
+      style="text-decoration:none;"
+    >
+      {t('offer.cta', locale)}
+    </a>
+  </div>
+</aside>

@@ -30,6 +30,7 @@ const year = new Date().getFullYear();
         <ul class="flex flex-col gap-2.5">
           <li><a href={getLocalizedPath('/suites', locale)} class="link-premium text-sm text-stone-400 transition-colors hover:text-white" style="text-decoration:none;">{t('nav.suites', locale)}</a></li>
           <li><a href={getLocalizedPath('/our-story', locale)} class="link-premium text-sm text-stone-400 transition-colors hover:text-white" style="text-decoration:none;">{t('nav.story', locale)}</a></li>
+          <li><a href={getLocalizedPath('/journal', locale)} class="link-premium text-sm text-stone-400 transition-colors hover:text-white" style="text-decoration:none;">{t('nav.journal', locale)}</a></li>
           <li><a href={getLocalizedPath('/contact', locale)} class="link-premium text-sm text-stone-400 transition-colors hover:text-white" style="text-decoration:none;">{t('nav.contact', locale)}</a></li>
         </ul>
       </div>
@@ -55,7 +56,12 @@ const year = new Date().getFullYear();
 
     <!-- Bottom bar -->
     <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 sm:flex-row">
-      <p class="text-[0.65rem] text-stone-300">&copy; {year} Rabagas Suites. {t('footer.rights', locale)}</p>
+      <div class="flex flex-col items-center gap-2 sm:flex-row sm:gap-5">
+        <p class="text-[0.65rem] text-stone-300">&copy; {year} Rabagas Suites. {t('footer.rights', locale)}</p>
+        <a href="#cookie-preferences" data-cookie-prefs class="text-[0.65rem] text-stone-400 underline-offset-2 transition-colors hover:text-stone-200 hover:underline">
+          {t('footer.consent', locale)}
+        </a>
+      </div>
       <p class="text-[0.65rem] italic text-stone-300">{t('hero.tagline', locale)}</p>
     </div>
   </div>

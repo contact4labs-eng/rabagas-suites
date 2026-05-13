@@ -1,0 +1,117 @@
+---
+/**
+ * CONCIERGE / GETTING AROUND SIFNOS
+ *
+ * 21st.dev exploration round 2:
+ * - shadcnblockscom/feature-section-stacked: 3 stacked cards w/ icons.
+ *   Closest to a hotel concierge surface but felt SaaS-y. Rejected.
+ * - daysui/teamGrid: avatar grid — wrong semantic.
+ * - aceternity/feature-grid w/ subtle hover lift: clean, premium,
+ *   trusts the eye to scan partner names. Adapted here w/ Astro-native
+ *   anchor cards + a category column header above each cluster.
+ *
+ * Premium replacement for the old WordPress footer dump of partner
+ * links. Three columns (transfers / boats / ferries), each lists the
+ * verified partners with a one-line blurb and a discreet "→" affordance
+ * for the outbound link. A small print at the bottom says we don't
+ * take commissions — kept simple and honest.
+ */
+import type { Locale } from '../../lib/i18n';
+import { t, getLocalizedPath } from '../../lib/i18n';
+import {
+  getConciergePartners,
+  getConciergeBlurb,
+  type ConciergeCategory,
+} from '../../data/concierge';
+
+interface Props {
+  locale: Locale;
+  /** Optional darker variant if the section needs to sit on cream/white. */
+  surface?: 'sand' | 'white';
+}
+
+const { locale, surface = 'sand' } = Astro.props;
+const partners = getConciergePartners();
+const byCategory = (cat: ConciergeCategory) => partners.filter((p) => p.category === cat);
+
+const categories: Array<{ key: ConciergeCategory; labelKey: string }> = [
+  { key: 'transfers', labelKey: 'concierge.cat.transfers' },
+  { key: 'boats', labelKey: 'concierge.cat.boats' },
+  { key: 'ferries', labelKey: 'concierge.cat.ferries' },
+];
+---
+
+<section
+  class:list={[
+    'px-5 py-20 md:py-28 lg:px-8',
+    surface === 'white' ? 'bg-white' : 'bg-sand-50',
+  ]}
+  aria-label={t('concierge.heading', locale)}
+>
+  <div class="mx-auto max-w-6xl">
+    <header class="mb-14 max-w-3xl" data-reveal>
+      <span class="label-uppercase mb-4 block text-stone-500">{t('concierge.kicker', locale)}</span>
+      <h2 class="font-heading text-3xl font-light leading-[1.1] text-ink md:text-4xl">
+        {t('concierge.heading', locale)}
+      </h2>
+      <div class="mt-5 h-px w-10 bg-stone-300"></div>
+      <p class="mt-6 text-base leading-[1.8] text-stone-500 md:text-lg">
+        {t('concierge.intro', locale)}
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-x-12 md:gap-y-14" data-reveal-stagger>
+      {categories.map((cat) => {
+        const cluster = byCategory(cat.key);
+        if (cluster.length === 0) return null;
+        return (
+          <div>
+            <h3 class="label-uppercase mb-5 text-[0.65rem] text-ink">{t(cat.labelKey, locale)}</h3>
+            <ul class="flex flex-col">
+              {cluster.map((p) => (
+                <li class="group border-t border-sand-200 first:border-t-0">
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-start justify-between gap-4 py-4 transition-colors"
+                    style="text-decoration: none; color: inherit;"
+                  >
+                    <div class="flex-1">
+                      <span class="block font-heading text-lg font-light text-ink transition-colors group-hover:text-aegean-700">
+                        {p.name}
+                      </span>
+                      <span class="mt-1 block text-sm leading-[1.6] text-stone-500">
+                        {getConciergeBlurb(p, locale)}
+                      </span>
+                    </div>
+                    <span class="mt-2 text-stone-300 transition-all duration-300 group-hover:translate-x-1 group-hover:text-stone-500">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M7 17L17 7" />
+                        <polyline points="7 7 17 7 17 17" />
+                      </svg>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Honest disclosure + "have us arrange it" CTA -->
+    <div class="mt-14 flex flex-col items-start justify-between gap-5 border-t border-sand-200 pt-8 sm:flex-row sm:items-center">
+      <p class="text-xs italic text-stone-400">
+        {t('concierge.partnerNote', locale)}
+      </p>
+      <a
+        href={getLocalizedPath('/contact', locale) + '#contact-form'}
+        class="inline-flex h-11 items-center rounded-none border border-ink bg-ink px-6 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-cream transition-colors hover:bg-charcoal"
+        style="text-decoration:none;"
+      >
+        {t('concierge.askUs', locale)}
+      </a>
+    </div>
+  </div>
+</section>

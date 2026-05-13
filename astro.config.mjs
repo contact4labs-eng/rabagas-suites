@@ -60,6 +60,7 @@ export default defineConfig({
             ['/fr/les-suites', '/suites'],
             ['/fr/notre-histoire', '/our-story'],
             ['/fr/contact', '/contact'],
+            ['/fr/journal', '/journal'],
             ['/fr', '/'],
           ];
           for (const [from, to] of FR_SEGMENT_MAP) {
@@ -80,7 +81,7 @@ export default defineConfig({
           }
           // fr — translated segments
           if (canonical === '/') return '/fr/';
-          const FR = [['/suites', '/les-suites'], ['/our-story', '/notre-histoire'], ['/contact', '/contact']];
+          const FR = [['/suites', '/les-suites'], ['/our-story', '/notre-histoire'], ['/contact', '/contact'], ['/journal', '/journal']];
           for (const [from, to] of FR) {
             if (canonical === from) return '/fr' + to + '/';
             if (canonical.startsWith(from + '/')) return '/fr' + to + canonical.slice(from.length) + '/';
@@ -90,6 +91,19 @@ export default defineConfig({
         const canonical = stripLocale(item.url);
         // Skip non-content paths (404, API, etc.)
         if (canonical.startsWith('/api/') || canonical === '/404') return undefined;
+        // Journal *post* detail pages have locale-specific slugs, so the
+        // generic `localize()` above would emit a slug that does not
+        // exist in the other locale. Their hreflang alternates are
+        // emitted by the page template itself via BaseLayout's
+        // `canonicalPath` + manual <link rel="alternate"> overrides
+        // injected in the page (rendered before BaseLayout's defaults
+        // are reached) — so for these URLs we skip the auto-pair entirely.
+        const looksLikeJournalPost = /^\/journal\/[^/]+$/.test(canonical);
+        if (looksLikeJournalPost) {
+          // emit the URL without auto-alternates; the per-page <head>
+          // emits the correct trio (or omits where no translation exists)
+          return item;
+        }
         item.links = [
           { url: SITE + localize(canonical, 'el'), lang: 'el-GR' },
           { url: SITE + localize(canonical, 'en'), lang: 'en-US' },

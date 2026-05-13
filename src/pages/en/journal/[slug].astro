@@ -1,0 +1,171 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import JournalCard from '../../../components/ui/JournalCard.astro';
+import { t, getJournalIndexUrl } from '../../../lib/i18n';
+import type { Locale } from '../../../lib/i18n';
+import { getJournalAlternates, getRelatedPosts } from '../../../lib/journal';
+import { buildBreadcrumbSchema, buildJournalArticleSchema } from '../../../lib/schema';
+
+const locale: Locale = 'en';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('journal-en');
+  return posts
+    .filter((p) => !p.data.draft)
+    .map((post) => ({ params: { slug: post.data.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const alternates = await getJournalAlternates(post.data.canonical);
+const related = await getRelatedPosts(post, locale);
+
+const dateLocale: Record<Locale, string> = { el: 'el-GR', en: 'en-US', fr: 'fr-FR' };
+const formattedDate = new Intl.DateTimeFormat(dateLocale[locale], {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(post.data.publishedAt);
+
+const pageSchemas = [
+  buildJournalArticleSchema(
+    {
+      title: post.data.title,
+      description: post.data.description,
+      canonical: post.data.canonical,
+      postSlug: post.data.slug,
+      publishedAt: post.data.publishedAt,
+      updatedAt: post.data.updatedAt,
+      kind: post.data.kind,
+      externalUrl: post.data.externalUrl,
+      externalSource: post.data.externalSource,
+    },
+    locale,
+  ),
+  buildBreadcrumbSchema(
+    [
+      { labelKey: 'nav.home', canonicalPath: '/' },
+      { labelKey: 'nav.journal', canonicalPath: '/journal' },
+      { label: post.data.title, canonicalPath: `/journal/${post.data.slug}` },
+    ],
+    locale,
+  ),
+];
+---
+
+<BaseLayout
+  title={`${post.data.title} — Rabagas Suites`}
+  description={post.data.description}
+  locale={locale}
+  ogType="article"
+  pageSchemas={pageSchemas}
+  customAlternates={alternates}
+>
+  <article class="px-5 pt-36 pb-20 md:pt-40 lg:px-8">
+    <!-- Back link -->
+    <div class="mx-auto mb-10 max-w-3xl">
+      <a
+        href={getJournalIndexUrl(locale)}
+        class="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.15em] text-stone-500 transition-colors hover:text-ink"
+        style="text-decoration:none;"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+        {t('journal.backToIndex', locale)}
+      </a>
+    </div>
+
+    <header class="mx-auto max-w-3xl text-center" data-reveal>
+      <div class="mb-6 flex items-center justify-center gap-3 text-[0.6rem] uppercase tracking-[0.18em]">
+        <span
+          class:list={[
+            'rounded-full px-2.5 py-1 font-medium',
+            post.data.kind === 'press' ? 'bg-ink text-cream' : 'bg-sand-100 text-stone-500',
+          ]}
+        >
+          {post.data.kind === 'press' ? t('journal.kind.press', locale) : t('journal.kind.guide', locale)}
+        </span>
+        <time datetime={post.data.publishedAt.toISOString().slice(0, 10)} class="text-stone-400">{formattedDate}</time>
+        {post.data.readingMinutes && (
+          <span class="text-stone-300">·</span>
+          <span class="text-stone-400">
+            {t('journal.minRead', locale).replace('{n}', String(post.data.readingMinutes))}
+          </span>
+        )}
+      </div>
+      <h1 class="font-heading text-[clamp(2.25rem,5.5vw,3.75rem)] font-light leading-[1.1] text-ink">
+        {post.data.title}
+      </h1>
+      <p class="mt-6 text-lg font-light leading-[1.7] text-stone-500 md:text-xl">
+        {post.data.description}
+      </p>
+      {post.data.kind === 'press' && post.data.externalSource && (
+        <div class="mt-8 inline-flex items-center gap-3 rounded-full border border-sand-200 bg-cream/60 px-5 py-2 text-xs">
+          <span class="italic text-stone-500">{t('journal.featuredIn', locale)}</span>
+          <span class="font-medium text-ink">{post.data.externalSource}</span>
+        </div>
+      )}
+    </header>
+
+    <!-- Body: narrow measure for reading comfort -->
+    <div class="prose-journal mx-auto mt-16 max-w-2xl text-stone-700">
+      <Content />
+    </div>
+
+    <!-- Press: visible link out to the original publication -->
+    {post.data.kind === 'press' && post.data.externalUrl && (
+      <div class="mx-auto mt-12 max-w-2xl text-center" data-reveal>
+        <a
+          href={post.data.externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex h-12 items-center gap-2 rounded-none border border-ink bg-ink px-8 text-xs font-semibold uppercase tracking-[0.15em] text-cream transition-colors hover:bg-charcoal"
+          style="text-decoration:none;"
+        >
+          {t('journal.viewSource', locale)}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+        </a>
+      </div>
+    )}
+  </article>
+
+  {related.length > 0 && (
+    <section class="border-t border-sand-200 bg-sand-50 px-5 py-20 md:py-24 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <span class="label-uppercase mb-2 block text-stone-500">{t('journal.related', locale)}</span>
+        <hr class="mb-12 w-12 border-t border-stone-300" />
+        <div class="grid grid-cols-1 gap-x-10 gap-y-14 md:grid-cols-3">
+          {related.map((p) => <JournalCard locale={locale} post={p.data} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style is:global>
+  /* Local typography for journal markdown — keeps prose tight, premium,
+     and aligned with the editorial body voice. */
+  .prose-journal { font-family: var(--font-body, 'Inter', sans-serif); }
+  .prose-journal p { font-size: 1.075rem; line-height: 1.85; margin-block: 1.25rem; color: var(--color-stone-600); }
+  .prose-journal h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.8rem; line-height: 1.2; margin-top: 3rem; margin-bottom: 1rem; color: var(--color-ink); }
+  .prose-journal h3 { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 1.35rem; line-height: 1.25; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--color-ink); }
+  .prose-journal ul { list-style: none; padding-left: 0; margin-block: 1.5rem; }
+  .prose-journal ul li { position: relative; padding-left: 1.25rem; margin-block: 0.65rem; line-height: 1.75; color: var(--color-stone-600); }
+  .prose-journal ul li::before { content: ""; position: absolute; left: 0; top: 0.85em; width: 0.5rem; height: 1px; background: var(--color-stone-300); }
+  .prose-journal strong { color: var(--color-ink); font-weight: 500; }
+  .prose-journal em { font-style: italic; color: var(--color-stone-700); }
+  .prose-journal a { color: var(--color-aegean-700, #1f4e69); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color 200ms; }
+  .prose-journal a:hover { color: var(--color-aegean-900, #0f2a39); }
+  @media (min-width: 768px) {
+    .prose-journal p { font-size: 1.125rem; }
+    .prose-journal h2 { font-size: 2.1rem; margin-top: 3.5rem; }
+  }
+</style>
