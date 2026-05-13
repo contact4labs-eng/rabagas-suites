@@ -25,3 +25,15 @@ pnpm-debug.log*
 /extraction/
 .dev.vars
 .wrangler/
+
+# Per-machine Claude Code skill symlinks (created by `npx skills add ...`).
+# The real skill files live in `.agents/skills/` and ARE tracked. After
+# cloning, run `npm run skills:link` (or the npx skills command in CLAUDE.md)
+# to recreate the symlinks for your local Claude Code agent.
+.claude/skills/impeccable
+.claude/skills/frontend-design
+
+# The skill CLI keeps install metadata in .agents/ alongside skills — the
+# skills themselves we DO track (lean: impeccable + frontend-design).
+.agents/.skills-cache/
+.agents/installed.json

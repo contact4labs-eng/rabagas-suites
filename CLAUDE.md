@@ -9,6 +9,16 @@ This file is project memory — read it at session start and follow the rules be
 - **Three locales:** EL (default at root), EN at `/en/`, FR at `/fr/`. FR translates path segments (`/fr/les-suites`, `/fr/notre-histoire`).
 - **Authoritative docs:** [BUILD_PLAYBOOK.md](BUILD_PLAYBOOK.md) and [ELITE_WEB_BUILD_SYSTEM.md](ELITE_WEB_BUILD_SYSTEM.md). The `elite-web-build` skill bundles both.
 - **Live-site extraction archive:** `extraction/` (gitignored) — site-map, copy/*.json, images, voice notes from Phase 2.
+- **Installed skills (Phase 12+).** Source of truth is still `elite-web-build`. Supporting skills vendored in `.agents/skills/`:
+  - **`impeccable`** (Apache 2.0, pbakaus/impeccable) — design critique, polish, anti-slop. Invoke `/impeccable audit`, `/impeccable polish`, `/impeccable critique`, etc.
+  - **`frontend-design`** (Anthropic) — distinctive production-grade UI guidance. Complements `elite-web-build`; never overrides the approved Rabagas direction.
+  - **Figma (`figma-implement-design`)** — **intentionally not installed.** No Figma URL, no Figma MCP, and the rebuild is driven by the old live site + custom premium design. Revisit only if a Figma source enters the workflow.
+- **Re-link skills after a fresh clone.** The `.claude/skills/{impeccable,frontend-design}` symlinks are per-machine and gitignored — restore them with:
+  ```sh
+  npx -y skills add pbakaus/impeccable
+  npx -y skills add anthropics/skills    # bulk install — prune all except frontend-design
+  ```
+- **Skill priority order (top → bottom):** Rabagas project requirements + old-site functionality → `elite-web-build` master playbook → `impeccable` (critique / polish / anti-slop) → `frontend-design` (distinctive UI guidance) → Figma skill (only if Figma joins the workflow).
 
 ## Workflow protocol
 
