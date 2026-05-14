@@ -1,5 +1,14 @@
 # Launch checklist — owner confirmation
 
+> **For owner sign-off, use [OWNER_SIGNOFF.md](OWNER_SIGNOFF.md) — it's
+> the formal yes/no form for the 10 launch decisions.** This file is
+> the engineering ↔ PM blocker tracker; OWNER_SIGNOFF is what the
+> owner actually fills in. The two are deliberately separate.
+>
+> See also: [DEPLOYMENT_HANDOFF.md](DEPLOYMENT_HANDOFF.md) for the
+> deploy procedure, [CONTENT_STATUS.md](CONTENT_STATUS.md) for what's
+> live / draft / deferred.
+
 Short, practical list. Each item is either ✅ done by engineering, or
 🟡 needs an owner decision before the site goes public.
 
