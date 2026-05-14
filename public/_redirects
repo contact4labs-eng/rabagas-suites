@@ -1,12 +1,12 @@
 # Cloudflare _redirects — Rabagas Suites
-# Phase 12.3: 301s for the legacy WordPress slug structure so the old
-# domain's SEO equity routes to the new Astro site after DNS cut-over.
+# 301s for legacy WordPress slugs so the old domain's SEO equity routes
+# to the new Astro site after DNS cut-over.
 #
 # Syntax: `<from> <to> <status>`  one rule per line, most-specific-first.
 # Pages reads this file from /public/_redirects; Workers Static Assets
 # honors it from the assets directory.
 
-# ─── Suite detail pages: /hotel-room/<slug>/ → /en/suites/<slug>/ ────
+# ─── Suite detail pages: /hotel-room/<slug>/ → /en/suites/<slug>/ ─────
 # The old site used /hotel-room/ as the CPT slug. International audience
 # is the dominant referrer for the old WP URLs, so redirect to /en/.
 /hotel-room/boutique-suite     /en/suites/boutique-suite/      301
@@ -17,20 +17,51 @@
 /hotel-room/apollonia-suite    /en/suites/apollonia-suite/     301
 /hotel-room/*                  /en/suites/                     301
 
-# ─── Press features: old /blog/<slug>/ → new /<locale>/journal/<slug>/ ─
-# Press posts are LIVE in the new Journal. Guide posts are still drafts
-# (Phase 12.2) — those 301 to the journal index rather than 404.
-/blog/were-featured-on-conde-nast-traveller    /en/journal/featured-in-conde-nast-traveller/    301
-/blog/tribute-to-rabagas-suites-on-athinorama-gr  /en/journal/tribute-on-athinorama/   301
-/blog/afieroma-stis-souites-rabagas-sto-athinorama-gr  /journal/afieroma-athinorama/   301
-/blog/hommage-a-rabagas-suites-sur-athinorama-gr  /fr/journal/hommage-athinorama/   301
+# ─── Press features (3 locales each) ─────────────────────────────────
+# Real published press posts in the new Journal. The old WP slugs had
+# locale-specific variants too — each maps to its locale equivalent.
+/blog/were-featured-on-conde-nast-traveller             /en/journal/featured-in-conde-nast-traveller/    301
+/blog/nous-figurons-dans-le-conde-nast-traveller        /fr/journal/cite-dans-conde-nast-traveller/      301
+/blog/mas-parousiazei-to-conde-nast-traveller           /journal/anafora-conde-nast-traveller/           301
+/blog/tribute-to-rabagas-suites-on-athinorama-gr        /en/journal/tribute-on-athinorama/               301
+/blog/afieroma-stis-souites-rabagas-sto-athinorama-gr   /journal/afieroma-athinorama/                    301
+/blog/hommage-a-rabagas-suites-sur-athinorama-gr        /fr/journal/hommage-athinorama/                  301
+/blog/afieroma-apo-to-athinorama                        /en/journal/tribute-on-athinorama/               301
+/blog/afieroma-apo-to-athinorama-2                      /journal/afieroma-athinorama/                    301
+/blog/un-hommage-dathinorama                            /fr/journal/hommage-athinorama/                  301
 
-# ─── Old news index → new journal index ─────────────────────────────
+# ─── Migrated guide articles (Phase 13) ──────────────────────────────
+# Four old WP guides have live new-site equivalents in EN. EL+FR are
+# still draft (await human translation review). Locale-specific old
+# slugs do not exist for guides — guides were EN-only on the old site.
+/blog/sifnos-holidays-complete-guide   /en/journal/sifnos-holidays-complete-guide/   301
+/blog/how-to-get-to-sifnos-travel      /en/journal/how-to-get-to-sifnos/             301
+/blog/things-to-do-in-sifnos-guide     /en/journal/things-to-do-in-sifnos/           301
+/blog/where-to-stay-in-sifnos-guide    /en/journal/where-to-stay-in-sifnos/          301
+
+# ─── Old news index → new journal index ──────────────────────────────
 /our-news     /en/journal/      301
 /our-news/    /en/journal/      301
 
-# ─── Catch-all for any remaining /blog/* (guides still draft) ───────
+# ─── Catch-all for /blog/* that doesn't have a live equivalent ───────
+# Covers the 14 un-migrated guide articles (see CONTENT_MIGRATION_PLAN.md)
+# and any other legacy WP slug we missed. Landing on the journal index
+# is better than a 404; visitors see the live content immediately.
 /blog/*       /en/journal/      301
 
 # ─── Old WP suites listing URL ──────────────────────────────────────
-/suites-in-sifnos   /en/suites/   301
+/suites-in-sifnos    /en/suites/   301
+/suites-in-sifnos/   /en/suites/   301
+
+# ─── WP backend / account residue → safe destinations ────────────────
+# The old theme exposed login / register / lost-password URLs that have
+# no equivalent on the new site. Bounce them to home; do not 404 (would
+# leak the implementation detail that we ran on WordPress).
+/wp-login.php          /     301
+/wp-admin              /     301
+/wp-admin/             /     301
+/login                 /     301
+/register              /     301
+/lost-password         /     301
+/my-account            /     301
+/my-account/           /     301
