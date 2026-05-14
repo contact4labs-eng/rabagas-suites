@@ -30,6 +30,10 @@ interface Props {
    *  a locale removes that alternate (e.g. a post that exists only in
    *  EN should pass `[{ locale: 'en', url: ... }]`). */
   customAlternates?: Array<{ locale: Locale; url: string }>;
+  /** Set to true on pages whose first section is a light (cream / white /
+   *  sand) background — Suites index, Journal index/post, 404. Forwarded
+   *  to Header so the wordmark + nav are readable from the first paint. */
+  lightTop?: boolean;
 }
 
 const {
@@ -41,6 +45,7 @@ const {
   ogType = 'website',
   pageSchemas = [],
   customAlternates,
+  lightTop = false,
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
@@ -358,7 +363,7 @@ const heroPreloadSrcset = isHomepage
       {skipLinkText[locale]}
     </a>
 
-    <Header locale={locale} currentPath={currentPath} />
+    <Header locale={locale} currentPath={currentPath} lightTop={lightTop} />
 
     <main id="main-content">
       <slot />

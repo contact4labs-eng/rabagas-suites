@@ -36,15 +36,21 @@ const baseClass =
 // Phase 8 hover authorship: link-premium applies the from-center underline
 // reveal (via .link-premium::after in motion.css). Inactives also bump from
 // regular weight to medium on hover/focus — color shift via Tailwind token.
+//
+// Phase 15+: header variant tags the elements with `header-lang-*` classes
+// so the global `.header-scrolled .header-lang-*` rules in Header.astro
+// can flip them to dark when the header is scrolled / on light-top pages.
+// Without these tags those CSS rules never matched anything (silent dead
+// styles), and the switcher rendered as low-contrast white on cream.
 const inactiveClass =
   variant === 'header'
-    ? 'link-premium text-white/60 transition-colors duration-[var(--motion-quick)] hover:text-white focus-visible:text-white'
+    ? 'header-lang-alt link-premium text-white/60 transition-colors duration-[var(--motion-quick)] hover:text-white focus-visible:text-white'
     : 'link-premium text-stone-500 transition-colors duration-[var(--motion-quick)] hover:text-ink focus-visible:text-ink';
 const activeClass =
   variant === 'header'
-    ? 'text-white font-semibold'
+    ? 'header-lang-current text-white font-semibold'
     : 'text-ink font-semibold';
-const sepClass = variant === 'header' ? 'text-white/30' : 'text-stone-300';
+const sepClass = variant === 'header' ? 'header-lang-sep text-white/30' : 'text-stone-300';
 ---
 
 <div class:list={['inline-flex items-center gap-1', baseClass]} aria-label={t('aria.language', locale)}>

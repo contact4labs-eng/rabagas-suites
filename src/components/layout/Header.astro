@@ -16,9 +16,18 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 interface Props {
   locale: Locale;
   currentPath: string;
+  /**
+   * Set to `true` for pages whose first section has a LIGHT background
+   * (Suites index, Journal index/post, 404). The header renders in its
+   * "scrolled" (dark-text on cream) state from the start so the wordmark
+   * + nav links stay readable. When false (default), the header starts
+   * transparent with white text — correct over dark hero images on home,
+   * Our Story, Contact, and suite detail pages.
+   */
+  lightTop?: boolean;
 }
 
-const { locale, currentPath } = Astro.props;
+const { locale, currentPath, lightTop = false } = Astro.props;
 
 const navItems = [
   { key: 'nav.suites', path: '/suites' },
@@ -28,7 +37,11 @@ const navItems = [
 ];
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300" id="site-header">
+<header
+  class:list={['fixed inset-x-0 top-0 z-50 transition-all duration-300', lightTop && 'header-scrolled']}
+  id="site-header"
+  data-light-top={lightTop ? 'true' : 'false'}
+>
   <div class="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
     <!-- Logo -->
     <a href={getLocalizedPath('/', locale)} class="flex flex-col leading-none no-underline" style="color: inherit; text-decoration: none;" aria-label={t('aria.homeLogo', locale)}>
@@ -162,11 +175,22 @@ const navItems = [
     });
   });
 
+  // Pages with a light top (Suites/Journal/404) keep .header-scrolled
+  // applied at all scroll positions so white-on-cream invisibility
+  // never happens. Pages with a dark hero swap dynamically at 50px.
+  const headerLightTop = header?.dataset.lightTop === 'true';
+
   const onScroll = () => {
     const y = window.scrollY;
     if (!header) return;
-    if (y > 50) header.classList.add('header-scrolled');
-    else header.classList.remove('header-scrolled');
+    if (headerLightTop) {
+      // Always-scrolled: never strip the class.
+      header.classList.add('header-scrolled');
+    } else if (y > 50) {
+      header.classList.add('header-scrolled');
+    } else {
+      header.classList.remove('header-scrolled');
+    }
     if (y > 300 && y > lastScroll && !isOpen) {
       header.style.transform = 'translateY(-100%)';
     } else {
