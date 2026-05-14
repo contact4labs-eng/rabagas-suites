@@ -344,8 +344,14 @@ const heroPreloadSrcset = isHomepage
     ))}
   </head>
   <body>
-    <!-- GTM noscript -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PM6PBJQW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    {/* Phase 12.3 — GTM <noscript> iframe removed.
+        The original `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-...">`
+        loaded GTM unconditionally for visitors with JS disabled, bypassing
+        the cookie-consent gate set up in the head <script>. We accept the
+        analytics blind-spot for the (vanishingly small) no-JS audience to
+        keep the consent contract honest: no Google request fires before
+        the visitor explicitly accepts. If GTM-via-noscript is ever needed
+        again, gate it behind a server-rendered consent cookie. */}
 
     <!-- Skip to content — accessibility -->
     <a href="#main-content" class="fixed left-4 top-4 z-[999] -translate-y-20 rounded-sm bg-charcoal px-4 py-2 text-sm text-white transition-transform focus:translate-y-0" style="text-decoration:none;">

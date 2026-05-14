@@ -1,0 +1,36 @@
+# Cloudflare _redirects — Rabagas Suites
+# Phase 12.3: 301s for the legacy WordPress slug structure so the old
+# domain's SEO equity routes to the new Astro site after DNS cut-over.
+#
+# Syntax: `<from> <to> <status>`  one rule per line, most-specific-first.
+# Pages reads this file from /public/_redirects; Workers Static Assets
+# honors it from the assets directory.
+
+# ─── Suite detail pages: /hotel-room/<slug>/ → /en/suites/<slug>/ ────
+# The old site used /hotel-room/ as the CPT slug. International audience
+# is the dominant referrer for the old WP URLs, so redirect to /en/.
+/hotel-room/boutique-suite     /en/suites/boutique-suite/      301
+/hotel-room/epicure-suite      /en/suites/epicure-suite/       301
+/hotel-room/euphoria-suite     /en/suites/euphoria-suite/      301
+/hotel-room/moonshine-suite    /en/suites/moonshine-suite/     301
+/hotel-room/sunshine-suite     /en/suites/sunshine-suite/      301
+/hotel-room/apollonia-suite    /en/suites/apollonia-suite/     301
+/hotel-room/*                  /en/suites/                     301
+
+# ─── Press features: old /blog/<slug>/ → new /<locale>/journal/<slug>/ ─
+# Press posts are LIVE in the new Journal. Guide posts are still drafts
+# (Phase 12.2) — those 301 to the journal index rather than 404.
+/blog/were-featured-on-conde-nast-traveller    /en/journal/featured-in-conde-nast-traveller/    301
+/blog/tribute-to-rabagas-suites-on-athinorama-gr  /en/journal/tribute-on-athinorama/   301
+/blog/afieroma-stis-souites-rabagas-sto-athinorama-gr  /journal/afieroma-athinorama/   301
+/blog/hommage-a-rabagas-suites-sur-athinorama-gr  /fr/journal/hommage-athinorama/   301
+
+# ─── Old news index → new journal index ─────────────────────────────
+/our-news     /en/journal/      301
+/our-news/    /en/journal/      301
+
+# ─── Catch-all for any remaining /blog/* (guides still draft) ───────
+/blog/*       /en/journal/      301
+
+# ─── Old WP suites listing URL ──────────────────────────────────────
+/suites-in-sifnos   /en/suites/   301

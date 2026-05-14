@@ -40,14 +40,20 @@ const { locale } = Astro.props;
 <div
   id="cookie-consent"
   role="dialog"
-  aria-label={t('consent.title', locale)}
+  aria-modal="false"
+  aria-labelledby="cookie-consent-title"
+  aria-describedby="cookie-consent-body"
   aria-live="polite"
-  class="fixed inset-x-3 bottom-3 z-[110] hidden max-w-md rounded-xl border border-sand-200 bg-cream/95 p-5 shadow-premium backdrop-blur-md sm:bottom-5 sm:left-5 sm:right-auto sm:p-6"
+  hidden
+  class="fixed inset-x-3 bottom-20 z-[110] max-w-md rounded-xl border border-sand-200 bg-cream/95 p-5 shadow-premium backdrop-blur-md md:bottom-5 md:left-5 md:right-auto md:p-6"
 >
-  <h2 class="font-heading text-lg font-light text-ink">
+  {/* bottom-20 on mobile clears the 56px MobileBookingBar (which lives at
+       bottom-0, z-50, md:hidden). Desktop uses md:bottom-5 since the
+       MobileBookingBar is hidden at md+. */}
+  <h2 id="cookie-consent-title" class="font-heading text-lg font-light text-ink">
     {t('consent.title', locale)}
   </h2>
-  <p class="mt-2 text-sm leading-relaxed text-stone-500">
+  <p id="cookie-consent-body" class="mt-2 text-sm leading-relaxed text-stone-500">
     {t('consent.body', locale)}
   </p>
   {/* Mobile: flex-col with `min-h-11` so each button is ≥44px (WCAG 2.2.5
@@ -82,8 +88,23 @@ const { locale } = Astro.props;
   const accept = document.getElementById('cookie-accept');
   const decline = document.getElementById('cookie-decline');
 
-  function show() { banner?.classList.remove('hidden'); }
-  function hide() { banner?.classList.add('hidden'); }
+  // Banner uses the HTML `hidden` attribute (not the Tailwind `.hidden`
+  // class) so screen readers and aria-live correctly hide/announce. Show
+  // also moves keyboard focus to the Accept button for a11y. Decline
+  // returns focus to whatever opened the banner (the cookie-prefs link)
+  // when applicable.
+  let lastFocusedTrigger: HTMLElement | null = null;
+  function show() {
+    if (!banner) return;
+    banner.removeAttribute('hidden');
+    (accept as HTMLButtonElement | null)?.focus();
+  }
+  function hide() {
+    if (!banner) return;
+    banner.setAttribute('hidden', '');
+    lastFocusedTrigger?.focus();
+    lastFocusedTrigger = null;
+  }
 
   // Defer-show: avoid showing on the very first paint to keep LCP clean.
   // We give the page 800ms to settle.
@@ -108,9 +129,11 @@ const { locale } = Astro.props;
 
   // Allow the footer "Cookie preferences" link to re-open the banner.
   // It carries href="#cookie-preferences" and we intercept the click.
+  // We capture the triggering element so hide() can return focus to it.
   document.querySelectorAll<HTMLAnchorElement>('a[data-cookie-prefs]').forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
+      lastFocusedTrigger = a;
       localStorage.removeItem(KEY);
       show();
     });

@@ -10,6 +10,14 @@ const locale: Locale = 'el';
 const posts = await getJournalPosts(locale);
 const [featured, ...rest] = posts;
 
+// Only render filter chips for `kind`s that actually have at least one
+// published (non-draft) post. Prevents the dead-end where a visitor
+// clicks "Guides" and finds zero cards. Self-corrects when guides are
+// authored or flipped off-draft.
+const hasGuides = posts.some((p) => p.data.kind === 'guide');
+const hasPress = posts.some((p) => p.data.kind === 'press');
+const showFilterBar = hasGuides && hasPress; // both needed for filter to be meaningful
+
 const pageSchemas = [
   buildBreadcrumbSchema(
     [
@@ -40,22 +48,27 @@ const pageSchemas = [
     </div>
   </section>
 
-  <!-- Filter chips — pure CSS, no JS — using :has() + data-kind selectors -->
-  <section class="px-5 pb-6 lg:px-8">
-    <div class="mx-auto max-w-5xl" data-journal-filters>
-      <div class="flex flex-wrap items-center gap-2 border-b border-sand-200 pb-5">
-        <button type="button" data-filter="all" class="journal-filter is-active" aria-pressed="true">
-          {t('journal.filter.all', locale)}
-        </button>
-        <button type="button" data-filter="guide" class="journal-filter">
-          {t('journal.filter.guides', locale)}
-        </button>
-        <button type="button" data-filter="press" class="journal-filter">
-          {t('journal.filter.press', locale)}
-        </button>
+  {showFilterBar && (
+    <section class="px-5 pb-6 lg:px-8">
+      <div class="mx-auto max-w-5xl" data-journal-filters>
+        <div class="flex flex-wrap items-center gap-2 border-b border-sand-200 pb-5">
+          <button type="button" data-filter="all" class="journal-filter is-active" aria-pressed="true">
+            {t('journal.filter.all', locale)}
+          </button>
+          {hasGuides && (
+            <button type="button" data-filter="guide" class="journal-filter">
+              {t('journal.filter.guides', locale)}
+            </button>
+          )}
+          {hasPress && (
+            <button type="button" data-filter="press" class="journal-filter">
+              {t('journal.filter.press', locale)}
+            </button>
+          )}
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   {posts.length === 0 ? (
     <section class="px-5 py-24 text-center lg:px-8">

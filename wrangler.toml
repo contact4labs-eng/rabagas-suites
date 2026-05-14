@@ -13,9 +13,26 @@ compatibility_flags = ["nodejs_compat"]
 # the npm `preview` script (see package.json).
 
 # Secrets are NOT defined in this file. Local development reads them from
-# `.dev.vars` (gitignored); production reads them from the Cloudflare Pages
-# dashboard. The endpoint we use them in: src/pages/api/inquiry.ts via
-# `import.meta.env.RESEND_API_KEY` and `import.meta.env.EMAIL_TO`.
+# `.dev.vars` (gitignored); production reads them from the Cloudflare
+# Workers dashboard. The endpoint that reads them — src/pages/api/inquiry.ts
+# — uses the `cloudflare:workers` runtime `env` binding (the `import.meta.env`
+# pattern referenced in earlier comments is obsolete in Astro v6 + Cloudflare
+# adapter v13).
+#
+# REQUIRED for production:
+#   RESEND_API_KEY              — Resend.com API key. Without it,
+#                                 /api/inquiry returns HTTP 500 and the
+#                                 visitor sees the premium error UI
+#                                 (Phase 12.3 fail-closed behavior).
+# OPTIONAL:
+#   EMAIL_TO                    — Form destination. Defaults to
+#                                 info@rabagas-suites.gr.
+# LOCAL DEV ONLY (in .dev.vars):
+#   ALLOW_INQUIRY_FALLBACK=true — Permits stdout logging of inquiries
+#                                 when RESEND_API_KEY is unset. NEVER
+#                                 set in production secrets.
+#
+# See .env.example for the full reference.
 
 # `nodejs_compat` flag (above) is required by @astrojs/cloudflare's runtime
 # helpers since v12. It does NOT mean we're running Node — Workers still
