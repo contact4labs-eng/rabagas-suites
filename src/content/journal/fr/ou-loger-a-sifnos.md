@@ -5,6 +5,7 @@ canonical: where-to-stay-in-sifnos
 description: "Apollonia, Artemónas, Kamares, Vathí ou Platis Gialós ? Une analyse honnête des cinq meilleures bases à Sifnos — par type de voyageur, par humeur, par type de semaine."
 publishedAt: 2026-02-08
 kind: guide
+draft: true
 readingMinutes: 6
 related:
   - sifnos-holidays

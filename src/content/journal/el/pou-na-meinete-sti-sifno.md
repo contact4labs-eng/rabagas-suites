@@ -5,6 +5,7 @@ canonical: where-to-stay-in-sifnos
 description: "Απολλωνία, Αρτεμώνας, Καμάρες, Βαθύς ή Πλατύς Γιαλός; Μια ειλικρινής ανάλυση των πέντε καλύτερων βάσεων στη Σίφνο — ανά τύπο επισκέπτη, διάθεση και τύπο εβδομάδας."
 publishedAt: 2026-02-08
 kind: guide
+draft: true
 readingMinutes: 6
 related:
   - sifnos-holidays

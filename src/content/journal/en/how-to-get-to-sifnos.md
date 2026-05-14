@@ -5,6 +5,7 @@ canonical: how-to-get-to-sifnos
 description: "There are no flights to Sifnos. Here is what arriving actually looks like — ferries from Piraeus, the choice between high-speed and conventional, what happens when you dock at Kamares, and what to plan for."
 publishedAt: 2026-04-17
 kind: guide
+draft: true
 readingMinutes: 5
 related:
   - sifnos-holidays

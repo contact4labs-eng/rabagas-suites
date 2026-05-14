@@ -5,6 +5,7 @@ canonical: things-to-do-in-sifnos
 description: "Eleven small, specific things worth doing on Sifnos — beaches, villages, a path to walk at sunset, the right taverna for chickpeas, and what to skip."
 publishedAt: 2026-02-02
 kind: guide
+draft: true
 readingMinutes: 6
 related:
   - sifnos-holidays

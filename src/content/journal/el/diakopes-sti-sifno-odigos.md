@@ -5,6 +5,7 @@ canonical: sifnos-holidays
 description: "Ένας ειλικρινής οδηγός για μια εβδομάδα στη Σίφνο — πότε να πάτε, πόσο να μείνετε, τι αξίζει να δείτε και γιατί η Απολλωνία είναι η σωστή βάση."
 publishedAt: 2026-04-17
 kind: guide
+draft: true
 readingMinutes: 7
 related:
   - how-to-get-to-sifnos

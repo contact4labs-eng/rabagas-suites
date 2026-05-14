@@ -5,6 +5,7 @@ canonical: things-to-do-in-sifnos
 description: "Έντεκα μικρά και συγκεκριμένα πράγματα που αξίζει να κάνετε στη Σίφνο — παραλίες, χωριά, ένα μονοπάτι, η σωστή ταβέρνα για ρεβιθάδα και τι να αποφύγετε."
 publishedAt: 2026-02-02
 kind: guide
+draft: true
 readingMinutes: 6
 related:
   - sifnos-holidays

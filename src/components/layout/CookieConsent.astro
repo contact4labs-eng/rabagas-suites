@@ -50,18 +50,23 @@ const { locale } = Astro.props;
   <p class="mt-2 text-sm leading-relaxed text-stone-500">
     {t('consent.body', locale)}
   </p>
+  {/* Mobile: flex-col with `min-h-11` so each button is ≥44px (WCAG 2.2.5
+       AAA tap target). Note: `flex-1` inside a flex-col parent with no
+       intrinsic height collapses children to their content height (flex-basis
+       wins over `h-10`), so we drop flex-1 on mobile and only enable it on
+       sm: where the row layout makes equal-width buttons meaningful. */}
   <div class="mt-5 flex flex-col gap-2 sm:flex-row">
     <button
       type="button"
       id="cookie-accept"
-      class="inline-flex h-10 flex-1 items-center justify-center rounded-none bg-ink px-5 text-[0.7rem] font-semibold uppercase tracking-[0.15em] text-cream transition-colors hover:bg-charcoal"
+      class="inline-flex min-h-11 items-center justify-center rounded-none bg-ink px-5 text-[0.7rem] font-semibold uppercase tracking-[0.15em] text-cream transition-colors hover:bg-charcoal sm:h-11 sm:flex-1"
     >
       {t('consent.accept', locale)}
     </button>
     <button
       type="button"
       id="cookie-decline"
-      class="inline-flex h-10 flex-1 items-center justify-center rounded-none border border-ink bg-transparent px-5 text-[0.7rem] font-semibold uppercase tracking-[0.15em] text-ink transition-colors hover:bg-ink/5"
+      class="inline-flex min-h-11 items-center justify-center rounded-none border border-ink bg-transparent px-5 text-[0.7rem] font-semibold uppercase tracking-[0.15em] text-ink transition-colors hover:bg-ink/5 sm:h-11 sm:flex-1"
     >
       {t('consent.decline', locale)}
     </button>

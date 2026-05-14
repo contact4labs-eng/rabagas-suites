@@ -117,7 +117,12 @@ const pageSchemas = [
       font-weight: 600;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      padding: 0.5rem 1rem;
+      /* Mobile: min-height 44px (WCAG 2.2.5 AAA tap target). Padding is
+         the secondary driver — height does not collapse on touch devices. */
+      min-height: 2.75rem;
+      padding: 0.65rem 1.1rem;
+      display: inline-flex;
+      align-items: center;
       border-radius: 9999px;
       color: var(--color-stone-500);
       background-color: transparent;

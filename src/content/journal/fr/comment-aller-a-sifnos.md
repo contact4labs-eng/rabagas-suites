@@ -5,6 +5,7 @@ canonical: how-to-get-to-sifnos
 description: "Il n’y a pas de vols pour Sifnos. Voici à quoi ressemble vraiment l’arrivée — ferries depuis Le Pirée, choix entre rapide et conventionnel, et ce qu’il se passe au port de Kamares."
 publishedAt: 2026-04-17
 kind: guide
+draft: true
 readingMinutes: 5
 related:
   - sifnos-holidays

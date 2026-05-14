@@ -5,6 +5,7 @@ canonical: sifnos-holidays
 description: "Un guide honnête pour passer une semaine à Sifnos — quand partir, combien de temps rester, ce qui vaut la peine, et pourquoi s’installer à Apollonia."
 publishedAt: 2026-04-17
 kind: guide
+draft: true
 readingMinutes: 7
 related:
   - how-to-get-to-sifnos

@@ -5,6 +5,7 @@ canonical: things-to-do-in-sifnos
 description: "Onze choses précises à faire à Sifnos — plages, villages, un sentier au coucher du soleil, la bonne taverne pour les pois chiches, et ce qu’il vaut mieux éviter."
 publishedAt: 2026-02-02
 kind: guide
+draft: true
 readingMinutes: 6
 related:
   - sifnos-holidays

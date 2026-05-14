@@ -5,6 +5,7 @@ canonical: how-to-get-to-sifnos
 description: "Δεν υπάρχουν πτήσεις για τη Σίφνο. Δείτε πώς πραγματικά φτάνει κανείς — πλοία από τον Πειραιά, η επιλογή ανάμεσα σε ταχύπλοο και συμβατικό, τι σας περιμένει στο λιμάνι της Καμάρες."
 publishedAt: 2026-04-17
 kind: guide
+draft: true
 readingMinutes: 5
 related:
   - sifnos-holidays

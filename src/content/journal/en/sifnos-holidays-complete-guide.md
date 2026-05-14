@@ -5,6 +5,7 @@ canonical: sifnos-holidays
 description: "An honest guide to spending a week on Sifnos — when to go, how long to stay, what's worth doing, and where to base yourself in the village of Apollonia."
 publishedAt: 2026-04-17
 kind: guide
+draft: true
 readingMinutes: 7
 related:
   - how-to-get-to-sifnos
